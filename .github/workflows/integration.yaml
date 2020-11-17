@@ -44,9 +44,6 @@ jobs:
       - name: Install dependency
         run: npm ci
 
-      - name: Initialize db
-        run: chmod +x script.sh && npm run db
-
       - name: Run test
         env: 
           PORT: 5000
