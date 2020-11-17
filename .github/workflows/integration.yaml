@@ -39,8 +39,8 @@ jobs:
         run: npm run db
 
       - name: Run test
-        env:
-          - PORT=5000
-          - JWT_SECRET=abcd
-          - DB_PASSWORD=secret
+        env: 
+          PORT: 5000
+          JWT_SECRET: abcd
+          DB_PASSWORD: secret
         run: npm run test
