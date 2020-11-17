@@ -36,7 +36,7 @@ jobs:
         run: npm ci
 
       - name: Initialize db
-        run: npm run db
+        run: chmod +x script.sh && npm run db
 
       - name: Run test
         env: 
