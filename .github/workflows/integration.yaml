@@ -35,12 +35,12 @@ jobs:
       - name: Install dependency
         run: npm ci
 
-      - name: Run test
-        env: |
-          PORT=5000
-          JWT_SECRET=abcd
-          DB_PASSWORD=secret
-        run: npm run test
+      - name: Initialize db
+        run: npm run db
 
-      - name: Run lint
-        run: npm run lint
+      - name: Run test
+        env:
+          - PORT=5000
+          - JWT_SECRET=abcd
+          - DB_PASSWORD=secret
+        run: npm run test
