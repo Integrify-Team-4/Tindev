@@ -20,7 +20,7 @@ const DB_PASSWORD = process.env['DB_PASSWORD'] as string
 export const ormConfig = {
   type: 'postgres',
   host: 'localhost',
-  port: 3306,
+  port: 5432,
   username: 'postgres',
   password: DB_PASSWORD,
   database: 'tindev',
