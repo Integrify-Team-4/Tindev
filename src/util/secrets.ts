@@ -1,22 +1,38 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
-
 import logger from './logger'
+
+import User from '../entities/User.postgres'
 
 if (fs.existsSync('.env')) {
   logger.debug('Using .env file to supply config environment variables')
   dotenv.config({ path: '.env' })
 } else {
-  logger.debug('Using .env.example file to supply config environment variables')
-  dotenv.config({ path: '.env.example' }) // you can delete this after you create your own .env file!
+  logger.error('Please make a .env file')
 }
+
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
 export const JWT_SECRET = process.env['JWT_SECRET'] as string
-export const MONGODB_URI = (prod
-  ? process.env['MONGODB_URI']
-  : process.env['MONGODB_URI_LOCAL']) as string
+const DB_PASSWORD = process.env['DB_PASSWORD'] as string
+
+export const ormConfig = {
+  type: 'postgres',
+  host: 'localhost',
+  port: 3306,
+  username: 'postgres',
+  password: DB_PASSWORD,
+  database: 'tindev',
+  synchronize: true,
+  logging: false,
+  entities: [User],
+  cli: {
+    entitiesDir: 'entities',
+    migrationsDir: 'migrations',
+    subscribersDir: 'subscribers',
+  },
+}
 
 if (!JWT_SECRET) {
   logger.error(
@@ -25,15 +41,7 @@ if (!JWT_SECRET) {
   process.exit(1)
 }
 
-if (!MONGODB_URI) {
-  if (prod) {
-    logger.error(
-      'No mongo connection string. Set MONGODB_URI environment variable.'
-    )
-  } else {
-    logger.error(
-      'No mongo connection string. Set MONGODB_URI_LOCAL environment variable.'
-    )
-  }
+if (!DB_PASSWORD) {
+  logger.error('No postgres password. Set DB_PASSWORD environment variable.')
   process.exit(1)
 }

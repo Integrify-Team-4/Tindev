@@ -2,17 +2,14 @@ import express from 'express'
 import compression from 'compression'
 import bodyParser from 'body-parser'
 import lusca from 'lusca'
-import { createConnection, getConnection } from 'typeorm'
 import 'reflect-metadata'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
-const app = express()
+import userRouter from './routers/user'
 
-createConnection()
-  .then(() => console.log('connected to pg'))
-  .catch((e) => console.log(e))
+const app = express()
 
 //**Express configuration*/
 app.set('port', process.env.PORT || 3000)
@@ -25,6 +22,7 @@ app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
 
 //**All routers here*/
+app.use('/user', userRouter)
 
 //**Custom API error handler*/
 app.use(apiErrorHandler)
