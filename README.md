@@ -35,8 +35,45 @@ Scope:
 
 
 
+### Backend TinDev
+
+** Table of Contents **
+1. Backend Tool Set
+     The following tools are need to install on your machine:
+    - VS Code
+    - Node > V10
+    - npm > 6v
+    - 
+2.  Setup Database (no need)
+
+3. How to run the project on your local machine
+- first, clone the github repo(if you are not going to contribute on the repo) by the following command: `git clone git@github.com:Integrify-Team-4/Tindev.git `
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+(If you are going to contribute then, fork the repo into your account and then clone it from your account)
+- go to your Tindev directory and install npm modules by the following commands
+`cd Tindev` 
+`npm install`
+- if you are using the mac(give the permission to read script.sh file) by the following command
+`chmod -x ./script.sh`
+*This command allows to read the file and install the docker container into your system, so that you don't need to install pg database manually*
+- create a file in the root directory called `.env`
+- set up the file with this line
+`PORT=3000
+JWT_SECRET=abcd
+DB_PASSWORD=secret`
+- after setting up all of above, go to your terminal and hit the command `npm run watch`
