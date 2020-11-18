@@ -1,8 +1,8 @@
 # Tindev
-**###A job dating app for employer and job seeker**
+### A job dating app for employer and job seeker**
 Job Dating Web Application
 
-**#Introduction:**
+# Introduction
 
 The project is based on research about the solution of job seeker. The problem is that there is a very late response from the 
 job advertiser. For example, Job hunter is applying today, but he sometimes gets a response after a long time or sometimes he gets
@@ -37,7 +37,7 @@ Scope:
 
 ### Backend TinDev
 
-** Table of Contents **
+Table of Contents:
 1. Backend Tool Set
      The following tools are need to install on your machine:
     - VS Code
