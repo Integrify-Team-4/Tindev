@@ -70,7 +70,7 @@ This section will list all the techs that are used to complete the project. The 
 4. Deployment
     * [Husky](https://www.npmjs.com/package/husky)
     * [Git](https://git-scm.com/)
-    * [HitHub](https://github.com)
+    * [GitHub](https://github.com)
     * [Docker](https://www.docker.com)
 
 <!-- GETTING STARTED -->
