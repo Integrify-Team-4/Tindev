@@ -6,7 +6,7 @@ const connection = {
     const connection = await createConnection({
       type: 'postgres',
       host: 'localhost',
-      port: 3306,
+      port: 5432,
       username: 'postgres',
       password: 'secret',
       database: 'tindev',
@@ -30,7 +30,6 @@ const connection = {
     await Promise.all(
       entities.map(async (entity) => {
         const repository = connection.getRepository(entity.name)
-        console.log('repo', repository)
         await repository.clear()
       })
     )
