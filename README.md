@@ -5,13 +5,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
-<br />
-<p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
+  
   <h3 align="center">A Job Dating Web App</h3>
 
   <p align="center">
@@ -51,17 +45,9 @@
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
-The project is based on research about the solution of job seeker.  The problem is that there is a very late response from the 
-job advertiser. For example, Job hunter is applying today, but he sometimes gets a response after a long time or sometimes he gets
-a response after 6 months  or sometimes he doesn't get anything. So, the main aim of this research and the project would be to identify
-the solution either by suggesting to improve their profile within a short period with more skills or calling them for the interview when
-the hunter got matched as well as the employer. This project will try to solve the problem for Job Hunter whose profile is matched with the
-job title and the requirements of the employer. If the skills of the job hunter are matched with the requirements of the employer, 
-there would be immediate contact in between them and the further process will go on via both parties, the Job hunter and the employer.
+The propose of this web application is to avoid the descrimination on job seeker. The motto of this web application is for the priority of skills rather than others(age, name, nataionality and so on). As our research, it is quiet difficult to get the job in some of the country because of other factors and some of the company do focus only on nataionality and they don't care about the skills. So, this app will work to reduce this issue.
 
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
 
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
 
 ### Used Techs
 This section will list all the techs that are used to complete the project. The techs has beeen divided into two groups: 
@@ -85,7 +71,7 @@ This section will list all the techs that are used to complete the project. The 
 4. Deployment
     * [Husky](https://www.npmjs.com/package/husky)
     * [Git](https://git-scm.com/)
-    * [HitHub](https://github.com)
+    * [GitHub](https://github.com)
     * [Docker](https://www.docker.com)
 
 <!-- GETTING STARTED -->
@@ -174,7 +160,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [TinDev](https://github.com/Integrify-Team-4/Tindev)
 
 
 
@@ -199,9 +185,9 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[contributors-url]: https://github.com/Integrify-Team-4/Tindev/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
+[forks-url]: https://github.com/Integrify-Team-4/Tindev/network/members
 [stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=flat-square
 [stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
