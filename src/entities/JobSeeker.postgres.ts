@@ -1,4 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm'
+
 @Entity()
 export default class JobSeeker extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -30,6 +31,7 @@ export default class JobSeeker extends BaseEntity {
 
   @Column()
   relocate!: boolean
+
   @Column()
   experience!: string
 
