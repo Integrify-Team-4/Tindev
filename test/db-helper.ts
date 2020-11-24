@@ -1,5 +1,5 @@
 import { createConnection, getConnection, ConnectionOptions } from 'typeorm'
-import User from '../src/entities/User.postgres'
+import Entities from '../src/entities'
 
 const connection = {
   async create() {
@@ -12,7 +12,7 @@ const connection = {
       database: 'tindev',
       synchronize: true,
       logging: false,
-      entities: [User],
+      entities: Entities,
       dropSchema: true,
     })
 
