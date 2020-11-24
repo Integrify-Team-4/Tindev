@@ -6,8 +6,6 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
-  ManyToMany,
-  JoinTable,
   OneToMany,
 } from 'typeorm'
 
@@ -50,10 +48,11 @@ export default class JobSeeker extends BaseEntity {
   created!: Date
 
   @Column({
-    name: 'role',
     default: 'job seeker',
   })
-  @OneToOne(() => Education)
+  role!: string
+
+  @OneToOne(() => Education, { cascade: true })
   @JoinColumn()
   education!: Education
 

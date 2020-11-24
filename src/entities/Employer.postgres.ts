@@ -25,9 +25,12 @@ export default class Employer extends BaseEntity {
   address!: string
 
   @Column({
-    name: 'role',
     default: 'employer',
   })
-  @OneToMany(() => JobPost, (jobPost) => jobPost.employer)
+  role!: string
+
+  @OneToMany(() => JobPost, (jobPost) => jobPost.employer, {
+    cascade: ['remove'],
+  })
   jobPosts!: JobPost[]
 }
