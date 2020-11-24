@@ -26,6 +26,9 @@ export default class JobPost extends BaseEntity {
   @Column()
   seniority!: string
 
+  @Column()
+  createdAt!: Date
+
   // @ManyToMany(type => Skill) @JoinTable()
   // details: Skill
 
