@@ -9,12 +9,22 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    const user = await getConnection()
-      .createQueryBuilder()
-      .select()
-      .from(User, 'user')
-      .execute()
+    const user = await User.find()
+    res.send(user)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
+export const getUserByName = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const name = req.params.name
+    console.log(name)
+    const user = await User.getUserByName(name)
     res.send(user)
   } catch (error) {
     console.log(error)
@@ -27,16 +37,8 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values({
-        firstName: 'duy',
-        lastName: 'nguyen',
-        age: 22,
-      })
-      .execute()
+    const user = { ...req.body } as User
+    await User.create(user).save()
 
     res.send('success')
   } catch (error) {
