@@ -6,9 +6,6 @@ export default class Education extends BaseEntity {
   id!: number
 
   @Column()
-  title!: string
-
-  @Column()
   education!: string
 
   @Column()
