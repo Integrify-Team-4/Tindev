@@ -35,4 +35,8 @@ export default class JobPost extends BaseEntity {
   static getJobPostByTitle(title: string) {
     return this.find({ where: { title: title } })
   }
+
+  static getJobPostBySeniority(seniority: string) {
+    return this.find({ where: { seniority: seniority } })
+  }
 }
