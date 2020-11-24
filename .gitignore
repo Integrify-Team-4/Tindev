@@ -44,4 +44,3 @@ yarn.lock
 *.swp
 
 
-src/controllers/jobSeeker.ts
