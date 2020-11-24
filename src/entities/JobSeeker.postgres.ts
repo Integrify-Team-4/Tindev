@@ -1,4 +1,18 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+} from 'typeorm'
+
+import Education from './Education.postgres'
+import Skill from './Skill.postgres'
 
 @Entity()
 export default class JobSeeker extends BaseEntity {
@@ -15,25 +29,16 @@ export default class JobSeeker extends BaseEntity {
   email!: string
 
   @Column()
-  userId!: string
-
-  @Column()
   password!: string
 
   @Column()
-  profileImage!: string
+  image!: string
 
   @Column()
-  contactNo!: string
-
-  @Column()
-  roleId!: string
+  contact!: number
 
   @Column()
   relocate!: boolean
-
-  @Column()
-  experience!: string
 
   @Column()
   seniority!: string
@@ -41,6 +46,17 @@ export default class JobSeeker extends BaseEntity {
   @Column()
   startingDate!: Date
 
-  @Column()
-  signupDate!: Date
+  @CreateDateColumn()
+  created!: Date
+
+  @Column({
+    name: 'role',
+    default: 'job seeker',
+  })
+  @OneToOne(() => Education)
+  @JoinColumn()
+  education!: Education
+
+  @OneToMany(() => Skill, (skill) => skill.jobSeeker)
+  skills!: Skill[]
 }
