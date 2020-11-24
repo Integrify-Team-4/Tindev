@@ -3,6 +3,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+
   <h3 align="center">A Job Dating Web App</h3>
 
   <p align="center">
