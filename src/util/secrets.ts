@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import logger from './logger'
 
-import User from '../entities/User.postgres'
+import Entities from '../entities'
 
 if (fs.existsSync('.env')) {
   logger.debug('Using .env file to supply config environment variables')
@@ -26,7 +26,7 @@ export const ormConfig = {
   database: 'tindev',
   synchronize: true,
   logging: false,
-  entities: [User],
+  entities: Entities,
   cli: {
     entitiesDir: 'entities',
     migrationsDir: 'migrations',
