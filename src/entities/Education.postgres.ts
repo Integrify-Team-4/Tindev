@@ -6,7 +6,7 @@ export default class Education extends BaseEntity {
   id!: number
 
   @Column()
-  institute!: string[]
+  institute!: string
 
   @Column()
   degree!: string
