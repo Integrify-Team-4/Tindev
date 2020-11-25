@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import passport from 'passport'
 
+import { NotFoundError, UnauthorizedError } from '../helpers/apiError'
 //import Employer from '../entities/Employer.postgres'
 
 export const localLogin = async (
@@ -9,15 +10,12 @@ export const localLogin = async (
   next: NextFunction
 ) => {
   try {
-    passport.authenticate('local', function (error, employer) {
-      if (error) {
-        console.log(error)
-      }
+    await passport.authenticate('local', function (error, employer) {
       if (!employer) {
-        res.status(404).send('Email not found')
+        next(new NotFoundError('Company name or email not found', error))
       }
     })
   } catch (error) {
-    throw new Error('Invalid email or password')
+    next(new UnauthorizedError('Invalid email or password', error))
   }
 }
