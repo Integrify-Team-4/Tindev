@@ -1,7 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, JoinColumn } from 'typeorm'
-import {Role}
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  JoinColumn,
+  OneToOne,
+  OneToMany,
+} from 'typeorm'
+
+import JobPost from './JobPost.postgres'
+
 @Entity()
-export default class Employer {
+export default class Employer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
@@ -11,11 +21,16 @@ export default class Employer {
   @Column()
   companyInfo!: string
 
-  @OneToOne(() => Role )
-  @JoinColumn()
-  roleId: Role;
+  @Column()
+  address!: string
 
-  static getCompnayByName(name: string) {
-    return this.find({ where: { companyName: name } })
-  }
+  @Column({
+    default: 'employer',
+  })
+  role!: string
+
+  @OneToMany(() => JobPost, (jobPost) => jobPost.employer, {
+    cascade: ['remove'],
+  })
+  jobPosts!: JobPost[]
 }
