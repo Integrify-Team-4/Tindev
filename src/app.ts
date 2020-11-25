@@ -3,6 +3,7 @@ import compression from 'compression'
 import bodyParser from 'body-parser'
 import lusca from 'lusca'
 import 'reflect-metadata'
+import passport from 'passport'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
@@ -20,6 +21,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
+
+app.use(passport.initialize())
 
 //**All routers here*/
 app.use('/jobSeeker', userRouter)
