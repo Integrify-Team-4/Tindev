@@ -4,6 +4,6 @@ import { localLogin } from '../controllers/employerLogin'
 
 const router = express.Router()
 
-router.post('/login', localLogin)
+router.post('/login/local', localLogin)
 
 export default router

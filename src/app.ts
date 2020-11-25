@@ -9,6 +9,7 @@ import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
 import userRouter from './routers/jobSeeker'
+import { local } from './passport/passportEmployer'
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
 
 app.use(passport.initialize())
+passport.use(local)
 
 //**All routers here*/
 app.use('/jobSeeker', userRouter)

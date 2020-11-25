@@ -39,4 +39,8 @@ export default class Employer extends BaseEntity {
     cascade: ['remove'],
   })
   jobPosts!: JobPost[]
+
+  static localLogin(email: string, password: string) {
+    return this.find({ where: { email: email, password: password } })
+  }
 }
