@@ -7,7 +7,7 @@ import 'reflect-metadata'
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
-import userRouter from './routers/user'
+import userRouter from './routers/jobSeeker'
 
 const app = express()
 
@@ -22,7 +22,8 @@ app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
 
 //**All routers here*/
-app.use('/user', userRouter)
+app.use('/jobSeeker', userRouter)
+// app.use('/employer', userRouter)
 
 //**Custom API error handler*/
 app.use(apiErrorHandler)

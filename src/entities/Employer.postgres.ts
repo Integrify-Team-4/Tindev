@@ -19,6 +19,12 @@ export default class Employer extends BaseEntity {
   companyName!: string
 
   @Column()
+  email!: string
+
+  @Column()
+  password!: string
+
+  @Column()
   companyInfo!: string
 
   @Column()
