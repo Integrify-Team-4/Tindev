@@ -30,7 +30,7 @@ export default class JobSeeker extends BaseEntity {
   @Column()
   password!: string
 
-  @Column()
+  @Column({ nullable: true })
   image!: string
 
   @Column()
@@ -43,7 +43,7 @@ export default class JobSeeker extends BaseEntity {
   seniority!: string
 
   @Column()
-  startingDate!: Date
+  startingDate!: string
 
   @CreateDateColumn()
   created!: Date
@@ -60,4 +60,8 @@ export default class JobSeeker extends BaseEntity {
   @ManyToMany(() => Skill)
   @JoinTable()
   skills!: Skill[]
+
+  static getByFirstName(firstName: string) {
+    return this.find({ where: { firstName: firstName } })
+  }
 }
