@@ -9,6 +9,7 @@ import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
 import userRouter from './routers/jobSeeker'
+import employerAuthRouter from './routers/auth'
 import { local } from './passport/passportEmployer'
 
 const app = express()
@@ -28,6 +29,7 @@ passport.use(local)
 
 //**All routers here*/
 app.use('/jobSeeker', userRouter)
+app.use('/auth', employerAuthRouter)
 // app.use('/employer', userRouter)
 
 //**Custom API error handler*/
