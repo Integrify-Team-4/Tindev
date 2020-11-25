@@ -1,22 +1,21 @@
-import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 
-import User from '../entities/User.postgres'
+import JobSeeker from '../entities/JobSeeker.postgres'
 
-export const getUser = async (
+export const getJobSeeker = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = await User.find()
+    const user = await JobSeeker.find()
     res.send(user)
   } catch (error) {
     console.log(error)
   }
 }
 
-export const getUserByName = async (
+export const getJobSeekerByFirstName = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -24,21 +23,21 @@ export const getUserByName = async (
   try {
     const name = req.params.name
     console.log(name)
-    const user = await User.getUserByName(name)
+    const user = await JobSeeker.getByFirstName(name)
     res.send(user)
   } catch (error) {
     console.log(error)
   }
 }
 
-export const createUser = async (
+export const createJobSeeker = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = { ...req.body } as User
-    await User.create(user).save()
+    const user = { ...req.body } as JobSeeker
+    await JobSeeker.create(user).save()
 
     res.send('success')
   } catch (error) {
