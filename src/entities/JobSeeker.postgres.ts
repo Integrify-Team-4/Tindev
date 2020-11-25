@@ -6,7 +6,8 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
-  OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm'
 
 import Education from './Education.postgres'
@@ -56,6 +57,7 @@ export default class JobSeeker extends BaseEntity {
   @JoinColumn()
   education!: Education
 
-  @OneToMany(() => Skill, (skill) => skill.jobSeeker)
+  @ManyToMany(() => Skill)
+  @JoinTable()
   skills!: Skill[]
 }
