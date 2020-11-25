@@ -1,5 +1,5 @@
+import bcrypt from 'bcrypt'
 import { Request, Response, NextFunction } from 'express'
-
 import JobSeeker from '../entities/JobSeeker.postgres'
 
 export const getJobSeeker = async (
@@ -37,6 +37,8 @@ export const createJobSeeker = async (
 ) => {
   try {
     const user = { ...req.body } as JobSeeker
+    const hashedPassord = await bcrypt.hash(user.password, 8)
+    user.password = hashedPassord
     await JobSeeker.create(user).save()
 
     res.send('success')
