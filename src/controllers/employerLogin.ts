@@ -12,7 +12,7 @@ export const localLogin = async (
   try {
     await passport.authenticate('local', function (error, employer) {
       if (!employer) {
-        next(new NotFoundError('Company name or email not found', error))
+        next(new NotFoundError('Email or password not found', error))
       }
     })
   } catch (error) {
