@@ -27,8 +27,8 @@ describe('user controller', () => {
       startingDate: '10/12/2020',
     }
 
-    const response = await request(app).post('/user/create').send(user)
-    const newUser = await request(app).get('/user')
+    const response = await request(app).post('/jobSeeker/create').send(user)
+    const newUser = await request(app).get('/jobSeeker')
     console.log(newUser.body)
 
     expect(response.status).toBe(200)
