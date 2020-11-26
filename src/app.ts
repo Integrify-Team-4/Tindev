@@ -8,6 +8,7 @@ import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
 import userRouter from './routers/jobSeeker'
+import employerRouter from './routers/employer'
 
 const app = express()
 
@@ -23,7 +24,7 @@ app.use(lusca.xssProtection(true))
 
 //**All routers here*/
 app.use('/jobSeeker', userRouter)
-// app.use('/employer', userRouter)
+app.use('/employer', employerRouter)
 
 //**Custom API error handler*/
 app.use(apiErrorHandler)

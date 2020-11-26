@@ -34,4 +34,5 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
     expect(newUser.body.length).toBe(1)
   })
+
 })

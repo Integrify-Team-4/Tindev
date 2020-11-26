@@ -1,4 +1,3 @@
-import { createConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 
@@ -14,7 +13,7 @@ export const registerEmployer = async (
   try {
     const { companyName, email, password, companyInfo, address } = req.body
 
-    const exists = Employer.find(email)
+    const exists = await Employer.findOne({ email: email })
     console.log('Exists::>', exists)
     if (exists) {
       next(new BadRequestError(`Provided eMail ${email} already exists`))
@@ -30,9 +29,8 @@ export const registerEmployer = async (
     employer.address = address
 
     await employer.save()
-
-    // const getEmployer = await Employer.find()
+    res.status(200).json({ msg: 'Registered Successfully' })
   } catch (error) {
-    next(new BadRequestError())
+    next(new BadRequestError(error.message))
   }
 }
