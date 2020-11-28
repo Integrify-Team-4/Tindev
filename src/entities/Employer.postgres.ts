@@ -16,7 +16,7 @@ export default class Employer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column()
+  @Column({ unique: true })
   companyName!: string
 
   @Column()
@@ -42,7 +42,7 @@ export default class Employer extends BaseEntity {
   jobPosts!: JobPost[]
 
   static getEmployerByCompanyName(companyName: string) {
-    return this.find({ where: { companyName: companyName } })
+    return this.findOne({ where: { companyName: companyName } })
   }
 
   static localLogin(email: string, password: string) {

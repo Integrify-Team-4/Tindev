@@ -10,7 +10,6 @@ import apiContentType from './middlewares/apiContentType'
 
 import jobSeekerRouter from './routers/jobSeeker'
 import employerRouter from './routers/employer'
-import jobPostRouter from './routers/jobPost'
 import { local } from './passport/config'
 
 const app = express()
@@ -31,7 +30,6 @@ passport.use(local)
 //**All routers here*/
 app.use('/jobSeeker', jobSeekerRouter)
 app.use('/employer', employerRouter)
-app.use('/jobPost', jobPostRouter)
 
 //**Custom API error handler*/
 app.use(apiErrorHandler)
