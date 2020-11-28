@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
+import { getRepository } from 'typeorm'
 
 import JobSeeker from '../entities/JobSeeker.postgres'
+import Credential from '../entities/Credential.postgres'
 
 export const getJobSeeker = async (
   req: Request,
@@ -8,8 +10,8 @@ export const getJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const user = await JobSeeker.find()
-    res.send(user)
+    const user = await JobSeeker.find({ relations: ['credentials'] })
+    res.json(user)
   } catch (error) {
     console.log(error)
   }
@@ -36,8 +38,16 @@ export const createJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const user = { ...req.body } as JobSeeker
-    await JobSeeker.create(user).save()
+    const { info, credential } = req.body
+    const JobSeekerRepo = getRepository(JobSeeker)
+
+    const newCredential = Credential.create({ ...credential })
+    const newJobSeeker = JobSeeker.create({
+      ...info,
+      credentials: newCredential,
+    })
+
+    await JobSeekerRepo.save(newJobSeeker)
 
     res.send('success')
   } catch (error) {
