@@ -30,7 +30,9 @@ export default class Employer extends BaseEntity {
   })
   role!: string
 
-  @OneToOne(() => Credential, (credential) => credential.employer)
+  @OneToOne(() => Credential, (credential) => credential.employer, {
+    cascade: true,
+  })
   @JoinColumn()
   credentials!: Credential
 

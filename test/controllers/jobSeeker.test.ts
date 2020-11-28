@@ -16,7 +16,7 @@ describe('user controller', () => {
   })
 
   it('should create a job seeker', async () => {
-    const user = {
+    const form = {
       info: {
         firstName: 'duy',
         lastName: 'nguyen',
@@ -31,7 +31,7 @@ describe('user controller', () => {
       },
     }
 
-    const response = await request(app).post('/jobSeeker/create').send(user)
+    const response = await request(app).post('/jobSeeker/create').send(form)
     const newUser = await request(app).get('/jobSeeker')
     console.log(newUser.body)
 

@@ -22,13 +22,30 @@ describe('user controller', () => {
     }
 
     const response = await request(app)
-      .post('/auth/login/local')
+      .post('/employer/login/local')
       .send(loginInput)
-
-    console.log(response.body)
 
     expect(response.body.message).toEqual(
       'Email kirsi.trospe@gmail.com not found'
     )
+  })
+
+  it('should create new employer', async () => {
+    const form = {
+      info: {
+        companyName: 'google',
+        companyInfo: 'google-home',
+        address: 'google-address',
+      },
+      credential: {
+        email: 'google1@gmail.com',
+        password: 'password',
+      },
+    }
+
+    const response = await request(app).post('/employer/create').send(form)
+
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Registered Successfully')
   })
 })
