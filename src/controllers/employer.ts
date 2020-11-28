@@ -1,45 +1,53 @@
-import bcrypt from 'bcrypt'
 import { Request, Response, NextFunction } from 'express'
-import { getRepository } from 'typeorm'
+import bcrypt from 'bcrypt'
+import passport from 'passport'
 
+import {
+  NotFoundError,
+  UnauthorizedError,
+  InternalServerError,
+  BadRequestError,
+} from '../helpers/apiError'
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 
-export const getEmployer = async (
+//**Auth controllers */
+export const localLogin = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const employer = await Employer.find()
-    res.send(employer)
-  } catch (error) {
-    console.log(error)
-  }
-}
+  passport.authenticate('local', function (error, user, info) {
+    if (error) {
+      return next(new InternalServerError())
+    }
+    if (!user) {
+      if (info.message === 'Invalid email or password') {
+        return next(new UnauthorizedError(info.message))
+      }
+      return next(new NotFoundError(info.message))
+    }
 
-export const getEmployerByCompanyName = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const companyName = req.params.companyName
-    const user = await Employer.getEmployerByCompanyName(companyName)
     res.send(user)
-  } catch (error) {
-    console.log(error)
-  }
+  })(req, res, next)
 }
 
-export const createEmployer = async (
+//**Register Employer*/
+export const registerEmployer = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { info, credential } = req.body
-    const EmployerRepo = getRepository(Employer)
+    const exists = await Credential.findOne({
+      where: { email: credential.email },
+    })
+
+    if (exists) {
+      next(new BadRequestError(`Email ${credential.email} already exists`))
+    }
+
     credential.password = await bcrypt.hash(credential.password, 8)
 
     const newCredential = Credential.create({ ...credential })
@@ -48,10 +56,10 @@ export const createEmployer = async (
       credentials: newCredential,
     })
 
-    await EmployerRepo.save(newEmployer)
+    await Employer.save(newEmployer)
 
-    res.send('success')
+    res.status(200).json({ message: 'Registered Successfully' })
   } catch (error) {
-    console.log(error)
+    next(new InternalServerError(error.message))
   }
 }

@@ -12,7 +12,7 @@ import {
 
 import Education from './Education.postgres'
 import Skill from './Skill.postgres'
-import Credential from '../entities/Credential.postgres'
+import Credential from './Credential.postgres'
 
 @Entity()
 export default class JobSeeker extends BaseEntity {

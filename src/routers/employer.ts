@@ -1,13 +1,10 @@
 import express from 'express'
 
-import {
-  getEmployer,
-  createEmployer,
-  getEmployerByCompanyName,
-} from '../controllers/employer'
+import { localLogin, registerEmployer } from '../controllers/employer'
 
 const router = express.Router()
 
-router.get('/', getEmployer)
-router.get('/:companyName', getEmployerByCompanyName)
-router.post('/create', createEmployer)
+router.post('/login/local', localLogin)
+router.post('/create', registerEmployer)
+
+export default router

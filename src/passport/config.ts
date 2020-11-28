@@ -2,6 +2,7 @@ import passportLocal from 'passport-local'
 import bcrypt from 'bcrypt'
 
 import Employer from '../entities/Employer.postgres'
+import Credential from '../entities/Credential.postgres'
 
 const LocalStrategy = passportLocal.Strategy
 
@@ -12,16 +13,22 @@ export const local = new LocalStrategy(
   },
   async (email: string, password: string, done: any) => {
     try {
-      const employer = await Employer.findOne({ email })
+      const credential = await Credential.findOne({
+        where: { email: email },
+        relations: ['employer'],
+      })
 
-      if (!employer) {
+      if (!credential) {
         return done(null, false, { message: `Email ${email} not found` })
       }
-      const isMatch = await bcrypt.compare(password, employer.password)
+
+      const isMatch = await bcrypt.compare(password, credential.password)
+
       if (!isMatch) {
         return done(null, false, { message: 'Invalid email or password' })
       }
-      return done(null, employer)
+
+      return done(null, credential.employer)
     } catch (error) {
       console.log('error', error)
     }
