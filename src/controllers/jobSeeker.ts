@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import { Request, Response, NextFunction } from 'express'
 import { getRepository } from 'typeorm'
 
@@ -40,6 +41,7 @@ export const createJobSeeker = async (
   try {
     const { info, credential } = req.body
     const JobSeekerRepo = getRepository(JobSeeker)
+    credential.password = await bcrypt.hash(credential.password, 8)
 
     const newCredential = Credential.create({ ...credential })
     const newJobSeeker = JobSeeker.create({
