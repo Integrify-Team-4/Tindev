@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt'
 import { Request, Response, NextFunction } from 'express'
+import { getRepository } from 'typeorm'
+
 import JobSeeker from '../entities/JobSeeker.postgres'
+import Credential from '../entities/Credential.postgres'
 
 export const getJobSeeker = async (
   req: Request,
@@ -36,10 +39,17 @@ export const createJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const user = { ...req.body } as JobSeeker
-    const hashedPassord = await bcrypt.hash(user.password, 8)
-    user.password = hashedPassord
-    await JobSeeker.create(user).save()
+    const { info, credential } = req.body
+    const JobSeekerRepo = getRepository(JobSeeker)
+    credential.password = await bcrypt.hash(credential.password, 8)
+
+    const newCredential = Credential.create({ ...credential })
+    const newJobSeeker = JobSeeker.create({
+      ...info,
+      credentials: newCredential,
+    })
+
+    await JobSeekerRepo.save(newJobSeeker)
 
     res.send('success')
   } catch (error) {
