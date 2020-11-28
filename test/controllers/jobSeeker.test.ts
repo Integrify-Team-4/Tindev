@@ -17,14 +17,18 @@ describe('user controller', () => {
 
   it('should create a job seeker', async () => {
     const user = {
-      firstName: 'duy',
-      lastName: 'nguyen',
-      email: 'abc@gmail.com',
-      password: 'password',
-      contact: 1234,
-      relocate: true,
-      seniority: 'junior',
-      startingDate: '10/12/2020',
+      info: {
+        firstName: 'duy',
+        lastName: 'nguyen',
+        contact: 1234,
+        relocate: true,
+        seniority: 'junior',
+        startingDate: '10/12/2020',
+      },
+      credential: {
+        email: 'abc@gmail.com',
+        password: 'password',
+      },
     }
 
     const response = await request(app).post('/jobSeeker/create').send(user)

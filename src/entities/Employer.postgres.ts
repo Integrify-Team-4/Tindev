@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 
 import JobPost from './JobPost.postgres'
+import Credential from './Credential.postgres'
 
 @Entity()
 export default class Employer extends BaseEntity {
@@ -17,12 +18,6 @@ export default class Employer extends BaseEntity {
 
   @Column()
   companyName!: string
-
-  @Column()
-  email!: string
-
-  @Column()
-  password!: string
 
   @Column()
   companyInfo!: string
@@ -34,6 +29,10 @@ export default class Employer extends BaseEntity {
     default: 'employer',
   })
   role!: string
+
+  @OneToOne(() => Credential, (credential) => credential.employer)
+  @JoinColumn()
+  credentials!: Credential
 
   @OneToMany(() => JobPost, (jobPost) => jobPost.employer, {
     cascade: ['remove'],
