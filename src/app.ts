@@ -10,7 +10,7 @@ import apiContentType from './middlewares/apiContentType'
 
 import userRouter from './routers/jobSeeker'
 import employerAuthRouter from './routers/auth'
-import { local } from './passport/passportEmployer'
+import { local } from './passport/config'
 
 const app = express()
 

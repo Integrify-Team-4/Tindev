@@ -38,17 +38,4 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
     expect(newUser.body.length).toBe(1)
   })
-
-  it('should login employer', async () => {
-    const loginInput = {
-      email: 'kirsi.trospe@gmail.com',
-      password: 'kirsi'
-    }
-  
-    const response = await request(app)
-      .post('/auth/login/local')
-      .send(loginInput)
-  
-    expect(response.status).toBe(200)
-  })
 })
