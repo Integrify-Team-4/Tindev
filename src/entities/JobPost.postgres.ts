@@ -1,6 +1,7 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
   Column,
   BaseEntity,
   ManyToMany,
@@ -25,13 +26,15 @@ export default class JobPost extends BaseEntity {
   @Column()
   seniority!: string
 
-  @Column()
+  @CreateDateColumn()
   createdAt!: Date
 
-  @ManyToMany(() => Skill)
+  @ManyToMany(() => Skill, { cascade: ['insert'], nullable: true })
   @JoinTable()
   requiredSkills!: Skill[]
 
-  @ManyToOne(() => Employer, (employer) => employer.jobPosts)
+  @ManyToOne(() => Employer, (employer) => employer.jobPosts, {
+    cascade: ['insert'],
+  })
   employer!: Employer
 }

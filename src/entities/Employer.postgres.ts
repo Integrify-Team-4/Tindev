@@ -16,7 +16,7 @@ export default class Employer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column()
+  @Column({ unique: true })
   companyName!: string
 
   @Column()
