@@ -75,19 +75,21 @@ describe('user controller', () => {
       credential: {
         email: 'google1@gmail.com',
         password: 'password',
-      }
+      },
     }
 
     await request(app).post('/employer/create').send(employer)
 
     const loginInput = {
       email: employer.credential.email,
-      password: employer.credential.password
+      password: employer.credential.password,
     }
 
     const response = await request(app)
-    .post('/employer/login/local')
-    .send(loginInput)
+      .post('/employer/login/local')
+      .send(loginInput)
+
+    console.log(response.body)
 
     expect(response.status).toBe(200)
     expect(response.body.companyName).toBe('google')
@@ -96,18 +98,18 @@ describe('user controller', () => {
 
   it('should create a new job post', async () => {
     const jobPost = {
-      title: "Fullstack React- & Node.js Developer",
-      jobDescription: "We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform",
-      seniority: "Junior",
-      createdAt: 28/11/2020
+      title: 'Fullstack React- & Node.js Developer',
+      jobDescription:
+        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+      seniority: 'Junior',
     }
 
     await createEmployer()
-  
+
     const response = await request(app)
       .post('/employer/jobs/google')
       .send(jobPost)
-  
+
     console.log(response.body)
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')

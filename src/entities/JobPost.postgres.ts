@@ -1,12 +1,12 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  CreateDateColumn,
   Column,
   BaseEntity,
   ManyToMany,
   JoinTable,
   ManyToOne,
+  CreateDateColumn,
 } from 'typeorm'
 
 import Employer from './Employer.postgres'
