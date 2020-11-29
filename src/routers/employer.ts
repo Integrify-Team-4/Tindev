@@ -1,9 +1,10 @@
 import express from 'express'
 
-import { registerEmployer } from '../controllers/employer'
+import { registerEmployer, updateEmployer } from '../controllers/employer'
 
 const router = express.Router()
 
 router.post('/create-employer', registerEmployer)
+router.put('/:employerId', updateEmployer)
 
 export default router

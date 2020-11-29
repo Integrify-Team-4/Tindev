@@ -29,7 +29,7 @@ export default class JobPost extends BaseEntity {
   createdAt!: Date
 
   @ManyToMany(() => Skill)
-  @JoinTable()
+  @JoinTable() // specifies that this is the owner side of the relationship
   requiredSkills!: Skill[]
 
   @ManyToOne(() => Employer, (employer) => employer.jobPosts)
