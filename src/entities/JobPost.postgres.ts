@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  CreateDateColumn,
 } from 'typeorm'
 
 import Employer from './Employer.postgres'
@@ -25,13 +26,15 @@ export default class JobPost extends BaseEntity {
   @Column()
   seniority!: string
 
-  @Column()
+  @CreateDateColumn()
   createdAt!: Date
 
-  @ManyToMany(() => Skill)
+  @ManyToMany(() => Skill, { cascade: ['insert'], nullable: true })
   @JoinTable()
   requiredSkills!: Skill[]
 
-  @ManyToOne(() => Employer, (employer) => employer.jobPosts)
+  @ManyToOne(() => Employer, (employer) => employer.jobPosts, {
+    cascade: ['insert'],
+  })
   employer!: Employer
 }
