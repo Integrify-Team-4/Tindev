@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
-
 import {
   NotFoundError,
   UnauthorizedError,
@@ -10,6 +9,7 @@ import {
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import Credential from '../entities/Credential.postgres'
+import { getConnection, UpdateDateColumn } from 'typeorm'
 
 // Auth Controllers for job seeker
 export const jobSeekerLocalLogin = async (
@@ -46,9 +46,7 @@ export const createJobSeeker = async (
     if (exists) {
       next(new BadRequestError(`Email ${credential.email} already exists`))
     }
-
     credential.password = await bcrypt.hash(credential.password, 8)
-
     const newCredential = Credential.create({ ...credential })
     const newJobSeeker = JobSeeker.create({
       ...info,
@@ -74,5 +72,36 @@ export const getJobSeeker = async (
     res.json(user)
   } catch (error) {
     console.log(error)
+  }
+}
+
+// JobSeek update
+
+export const updateJobSeeker = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const update = req.body
+    console.log('update get body request', update)
+    const jobSeekerId = req.params.id
+    console.log('Jobseeker ID ', jobSeekerId)
+    await getConnection()
+      .createQueryBuilder()
+      .update(JobSeeker)
+      .set({
+        firstName: update.firstName,
+        lastName: update.lastName,
+        contact: update.contact,
+        relocate: update.relocate,
+        seniority: update.seniority,
+        startingDate: update.startingDate,
+      })
+      .where('id = :id', { id: `${jobSeekerId}` })
+      .execute()
+    res.status(200).json({ message: 'updated' })
+  } catch (error) {
+    next(new NotFoundError('ID NOT FIND'))
   }
 }

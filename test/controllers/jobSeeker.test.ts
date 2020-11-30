@@ -75,5 +75,44 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
   })
 
-  
+  it.only('Update JobSeeker Info', async() =>{
+    const jobSeeker = {
+      info: {
+        firstName: 'duy',
+        lastName: 'hello',
+        contact: 6987,
+        relocate: true,
+        seniority: 'senior',
+        startingDate: '10/12/2020',
+
+      },
+      credential: {
+        email: 'abc@gmail.com',
+        password: 'password',
+      },
+
+    }
+    const req1 = await request(app).post('/jobSeeker/create').send(jobSeeker)
+    console.log('Response 1 : ',req1.body)
+    const loginInput = {
+      email: jobSeeker.credential.email,
+      password: jobSeeker.credential.password,
+    }
+    const response = await request(app)
+      .post('/jobSeeker/login/local')
+      .send(loginInput)
+      console.log(response.body)
+    const update = {
+      firstName: 'Update Duy',
+        lastName: 'update lastname',
+        contact: 12345,
+        relocate: true,
+        seniority: 'Junior',
+        startingDate: '10/12/2020',
+    }
+    const updateResponse = await request(app).put('/jobSeeker').send(update)
+    // expect(response.status).toBe(200)
+    console.log('update Response ', updateResponse.body)
+
+  })
 })
