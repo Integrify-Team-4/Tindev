@@ -1,7 +1,6 @@
 import passportLocal from 'passport-local'
 import bcrypt from 'bcrypt'
 
-import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 
 const LocalStrategy = passportLocal.Strategy

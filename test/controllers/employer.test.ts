@@ -96,6 +96,36 @@ describe('user controller', () => {
     expect(response.body.id).toBe(1)
   })
 
+  it('should get employers', async () => {
+    await createEmployer()
+    const response = await request(app)
+      .get('/employer')
+
+    expect(response.status).toBe(200)
+  })
+
+  it('should update employer', async () => {
+    await createEmployer()
+    const employerId = await request(app)
+      .get('/employer/:id')
+
+      const update = {
+        info: {
+          companyName: 'Updated company name',
+          companyInfo: 'Updated company info',
+          address: 'Updated address'
+        },
+        credential: {
+          email: 'Updated email',
+          password: 'Updated password'
+        }
+      }
+
+      const response = await request(app).put(`/employer/${employerId}`).send(update)
+      expect(response.status).toBe(200)
+      expect(response.body.message).toBe('Updated successfully')
+  })
+
   it('should create a new job post', async () => {
     const jobPost = {
       title: 'Fullstack React- & Node.js Developer',
@@ -110,7 +140,6 @@ describe('user controller', () => {
       .post('/employer/jobs/google')
       .send(jobPost)
 
-    console.log(response.body)
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
