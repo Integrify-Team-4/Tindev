@@ -47,6 +47,8 @@ describe('user controller', () => {
     expect(newUser.body.length).toBe(1)
   })
 
+  // Login JobSeeker
+
   it('job Seeker should log in', async()=>{
     const jobSeeker = {
       info: {
@@ -63,7 +65,8 @@ describe('user controller', () => {
       },
     }
    
-     await request(app).post('/jobSeeker/create').send(jobSeeker)
+    const response1= await request(app).post('/jobSeeker/create').send(jobSeeker)
+    console.log('user created Successfully ', response1.body)
     const loginInput = {
       email: jobSeeker.credential.email,
       password: jobSeeker.credential.password,
@@ -75,25 +78,28 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
   })
 
-  it.only('Update JobSeeker Info', async() =>{
+
+
+  // Update JobSeeker 
+  it.only('Update JobSeeker Info', async()=>{
     const jobSeeker = {
       info: {
         firstName: 'duy',
-        lastName: 'hello',
-        contact: 6987,
+        lastName: 'nguyen',
+        contact: 1234,
         relocate: true,
-        seniority: 'senior',
+        seniority: 'junior',
         startingDate: '10/12/2020',
-
       },
       credential: {
         email: 'abc@gmail.com',
         password: 'password',
       },
-
     }
-    const req1 = await request(app).post('/jobSeeker/create').send(jobSeeker)
-    console.log('Response 1 : ',req1.body)
+   
+    const response1= await request(app).post('/jobSeeker/create').send(jobSeeker)
+    console.log('jobseeker created:  ',response1.body);
+    
     const loginInput = {
       email: jobSeeker.credential.email,
       password: jobSeeker.credential.password,
@@ -101,18 +107,20 @@ describe('user controller', () => {
     const response = await request(app)
       .post('/jobSeeker/login/local')
       .send(loginInput)
-      console.log(response.body)
+      console.log('This User LogedIn successfully',response.body)
+      const jobSeekerId = response.body.id
+      console.log('Job Seeker ID = ', jobSeekerId)
     const update = {
       firstName: 'Update Duy',
         lastName: 'update lastname',
         contact: 12345,
         relocate: true,
-        seniority: 'Junior',
+        seniority: 'LALALA',
         startingDate: '10/12/2020',
     }
-    const updateResponse = await request(app).put('/jobSeeker').send(update)
-    // expect(response.status).toBe(200)
+    const updateResponse = await request(app).put(`/jobSeeker/${jobSeekerId}`).send(update)
     console.log('update Response ', updateResponse.body)
+    expect(response.status).toBe(200)
 
   })
 })
