@@ -31,6 +31,8 @@ export const createJobSeeker = async (
 ) => {
   try {
     const { info, credential } = req.body
+    // console.log("req.body.info:::", info)
+    // console.log("req.body.credential:::", credential)
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })

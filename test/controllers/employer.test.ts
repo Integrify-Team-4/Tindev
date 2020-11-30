@@ -1,6 +1,7 @@
 import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
+import { InternalServerError } from '../../src/helpers/apiError'
 
 const createEmployer = async () => {
   const form = {
@@ -89,8 +90,6 @@ describe('user controller', () => {
       .post('/employer/login/local')
       .send(loginInput)
 
-    console.log(response.body)
-
     expect(response.status).toBe(200)
     expect(response.body.companyName).toBe('google')
     expect(response.body.id).toBe(1)
@@ -110,8 +109,35 @@ describe('user controller', () => {
       .post('/employer/jobs/google')
       .send(jobPost)
 
-    console.log(response.body)
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
+
+  it('should update job post', async () => {
+    const jobPost = {
+      title: 'Fullstack React- & Node.js Developer',
+      jobDescription:
+        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+      seniority: 'Junior',
+    }
+
+    await createEmployer()
+
+    const response = await request(app)
+      .post('/employer/jobs/google')
+      .send(jobPost)
+
+    const jobPostId = response.body.savedJobPost.id
+
+    const update = {
+      title: 'Updated job title',
+      jobDescription: 'Updated Job Description',
+      seniority: 'Junior',
+    }
+    
+    const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
+    expect(response1.status).toBe(200)
+    expect(response1.body.message).toBe('Updated')
+  })
+
 })

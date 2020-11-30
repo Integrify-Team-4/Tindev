@@ -11,6 +11,7 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
+import { getConnection } from 'typeorm'
 
 //**Auth controllers */
 export const localLogin = async (
@@ -84,10 +85,37 @@ export const createJobPost = async (
       employer: postingEmployer,
     })
 
-    await JobPost.save(newJobPost)
+    const savedJobPost = await JobPost.save(newJobPost)
 
-    res.json({ message: 'Posted' })
+    res.json({ message: 'Posted', savedJobPost })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+export const updateJobPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const update = req.body
+    console.log('newJobPost:::', update)
+    const jobPostedId = req.params.id
+
+    await getConnection()
+      .createQueryBuilder()
+      .update(JobPost)
+      .set({
+        title: update.title,
+        jobDescription: update.jobDescription,
+        seniority: update.seniority,
+      })
+      .where('id = :id', { id: `${jobPostedId}` })
+      .execute()
+
+    res.status(200).json({ message: 'Updated' })
+  } catch (error) {
+    return next(new InternalServerError(error.message))
   }
 }

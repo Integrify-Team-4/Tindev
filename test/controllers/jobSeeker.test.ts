@@ -33,7 +33,7 @@ describe('user controller', () => {
 
     const response = await request(app).post('/jobSeeker/create').send(form)
     const newUser = await request(app).get('/jobSeeker')
-    console.log(newUser.body)
+
 
     expect(response.status).toBe(200)
     expect(newUser.body.length).toBe(1)
