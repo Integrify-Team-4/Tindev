@@ -99,16 +99,11 @@ export const deleteJobPostbyId = async (
 ) => {
   try {
     const id = parseInt(req.params.id)
-    const isJobFound = JobPost.findOne(id)
-    if (!isJobFound) {
+    const jobPost = await JobPost.findOne(id)
+    if (!jobPost) {
       return next(new NotFoundError('Job is no more available'))
     }
-    await getConnection()
-      .createQueryBuilder()
-      .delete()
-      .from(JobPost)
-      .where('id = :id', { id: 1 })
-      .execute()
+    await jobPost?.remove()
     res.json({ message: 'success' })
   } catch (error) {
     console.log(error)
