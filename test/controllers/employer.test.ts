@@ -114,4 +114,6 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
+
+  
 })
