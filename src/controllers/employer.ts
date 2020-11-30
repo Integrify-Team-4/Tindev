@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
-
 import {
   NotFoundError,
   UnauthorizedError,
@@ -89,5 +88,23 @@ export const createJobPost = async (
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+export const deleteJobPostbyId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const isJobFound = JobPost.findOne(id)
+    if (!isJobFound) {
+      return next(new NotFoundError('Job is no more available'))
+    }
+
+    res.json({ message: 'success' })
+  } catch (error) {
+    console.log(error)
   }
 }
