@@ -130,7 +130,7 @@ describe('user controller', () => {
       .post('/employer/jobs/google')
       .send(jobPost)
 
-    const response = await request(app).delete('employer/jobs/1')
+    const response = await request(app).delete('/employer/jobs/1')
     
     
     expect(response.status).toBe(200)

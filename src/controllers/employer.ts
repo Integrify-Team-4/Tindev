@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
@@ -102,7 +103,12 @@ export const deleteJobPostbyId = async (
     if (!isJobFound) {
       return next(new NotFoundError('Job is no more available'))
     }
-
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(JobPost)
+      .where('id = :id', { id: 1 })
+      .execute()
     res.json({ message: 'success' })
   } catch (error) {
     console.log(error)
