@@ -115,5 +115,21 @@ describe('user controller', () => {
     expect(response.body.message).toBe('Posted')
   })
 
-  
+  it('should delete the job', async () => {
+    const jobPost = {
+      title: 'Fullstack React- & Node.js Developer',
+      jobDescription:
+        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+      seniority: 'Junior',
+    }
+
+    await createEmployer()
+
+    await request(app).post('/employer/jobs/google').send(jobPost)
+
+    const response = await request(app).delete('/employer/jobs/1')
+
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('success')
+  })
 })
