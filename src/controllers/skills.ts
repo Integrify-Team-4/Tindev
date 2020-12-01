@@ -23,3 +23,17 @@ export const creatingSkills = async (
     next(new InternalServerError(error.message))
   }
 }
+
+// getting all skills from database
+export const getSkills = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const skills = await Skill.find()
+    res.status(200).json({ skills })
+  } catch (error) {
+    next(new InternalServerError(error.message))
+  }
+}

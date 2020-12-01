@@ -20,4 +20,14 @@ describe('user controller', () => {
     expect(response.body.message).toBe('success to create skills')
     expect(response.status).toBe(200)
   })
+
+  it('should return all the lists of skills', async () => {
+    const skill_1 = { name: 'Java Developer' }
+    const skill_2 = { name: 'NodeJs Developer' }
+    await request(app).post('/skills/create').send(skill_1)
+    await request(app).post('/skills/create').send(skill_2)
+    const res = await request(app).get('/skills').send()
+    console.log('list of skills ', res.body)
+    expect(res.status).toBe(200)
+  })
 })
