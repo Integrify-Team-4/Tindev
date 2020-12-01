@@ -18,7 +18,7 @@ export const localLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', function (error, user, info) {
+  passport.authenticate('local', function (error, user: Employer, info) {
     if (error) {
       return next(new InternalServerError())
     }
@@ -46,7 +46,9 @@ export const registerEmployer = async (
     })
 
     if (exists) {
-      next(new BadRequestError(`Email ${credential.email} already exists`))
+      return next(
+        new BadRequestError(`Email ${credential.email} already exists`)
+      )
     }
 
     credential.password = await bcrypt.hash(credential.password, 8)
@@ -89,23 +91,5 @@ export const createJobPost = async (
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
-  }
-}
-
-export const deleteJobPostbyId = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const id = parseInt(req.params.id)
-    const jobPost = await JobPost.findOne(id)
-    if (!jobPost) {
-      return next(new NotFoundError('Job is no more available'))
-    }
-    await jobPost?.remove()
-    res.json({ message: 'success' })
-  } catch (error) {
-    console.log(error)
   }
 }

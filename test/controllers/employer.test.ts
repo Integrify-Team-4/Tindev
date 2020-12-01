@@ -109,6 +109,7 @@ describe('user controller', () => {
     const response = await request(app)
       .post('/employer/jobs/google')
       .send(jobPost)
+<<<<<<< HEAD
 
     console.log(response.body)
     expect(response.status).toBe(200)
@@ -128,8 +129,15 @@ describe('user controller', () => {
     await request(app).post('/employer/jobs/google').send(jobPost)
 
     const response = await request(app).delete('/employer/jobs/1')
+=======
+>>>>>>> e67fb9412a718dd26857533426dbc2464e397d23
 
+    console.log(response.body)
     expect(response.status).toBe(200)
+<<<<<<< HEAD
     expect(response.body.message).toBe('success')
+=======
+    expect(response.body.message).toBe('Posted')
+>>>>>>> e67fb9412a718dd26857533426dbc2464e397d23
   })
 })
