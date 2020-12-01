@@ -87,6 +87,7 @@ describe('user controller', () => {
   it('should update employer', async () => {
     const form = {
       info: {
+        id: '1',
         companyName: 'google',
         companyInfo: 'google-home',
         address: 'google-address',
@@ -101,6 +102,7 @@ describe('user controller', () => {
       
     const update = {
       info: {
+        id: '1',
         companyName: 'Updated company name',
         companyInfo: 'Updated company info',
         address: 'Updated address'
@@ -112,7 +114,7 @@ describe('user controller', () => {
     }
 
     const response = await request(app).put(`/employer/1`).send(update)
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(204)
     expect(response.body.message).toBe('Updated successfully')
   })
 
