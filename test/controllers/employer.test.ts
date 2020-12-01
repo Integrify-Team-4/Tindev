@@ -96,17 +96,9 @@ describe('user controller', () => {
     expect(response.body.id).toBe(1)
   })
 
-  it('should get employers', async () => {
-    await createEmployer()
-    const response = await request(app)
-      .get('/employer')
-
-    expect(response.status).toBe(200)
-  })
-
   it('should update employer', async () => {
     await createEmployer()
-    
+
     const employerId = await request(app)
       .get('/employer/1')
 

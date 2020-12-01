@@ -66,21 +66,6 @@ export const registerEmployer = async (
   }
 }
 
-//**Get all employers*/
-export const getEmployers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const users = await Employer.find({ relations: ['credentials'] })
-    res.json(users)
-    console.log('users', users)
-  } catch (error) {
-    next(new NotFoundError('Employers not found'))
-  }
-}
-
 //**Update employer*/
 export const updateEmployer = async (
   req: Request,
