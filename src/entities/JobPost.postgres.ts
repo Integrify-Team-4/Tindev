@@ -32,14 +32,18 @@ export default class JobPost extends BaseEntity {
   @ManyToMany(() => Skill, { cascade: ['insert'], nullable: true })
   @JoinTable()
   requiredSkills!: Skill[]
-  optionalSkills!: Skill[]
 
   @ManyToOne(() => Employer, (employer) => employer.jobPosts, {
     cascade: ['insert'],
   })
   employer!: Employer
 
-  static match(requiredSkills: Partial<JobPost>, optionalSkills: Partial<JobPost>) {
-    return this.find({ where: { requiredSkills: requiredSkills, optionalSkills: optionalSkills} })
+  static match(
+    requiredSkills: Partial<JobPost>,
+    optionalSkills: Partial<JobPost>
+  ) {
+    return this.find({
+      where: { requiredSkills: requiredSkills, optionalSkills: optionalSkills },
+    })
   }
 }
