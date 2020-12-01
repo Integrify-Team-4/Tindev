@@ -10,9 +10,9 @@ import Skill from '../entities/Skill.postgres'
 import JobPost from '../entities/JobPost.postgres'
 import { createQueryBuilder } from 'typeorm'
 
-export const getJobSeekerSkills = async (
-  req: Request, 
-  res: Response, 
+export const match = async (
+  req: Request,
+  res: Response,
   next: NextFunction
 ) => {
   try {
@@ -25,25 +25,26 @@ export const getJobSeekerSkills = async (
       return next(new NotFoundError('No jobseeker found'))
     }
     const jobSeekerSkills = jobSeeker.Skills
+    const jobPost = await JobPost.find({ relations: ['requiredSkills'] })
+    const requiredSkills = jobPost.requiredSkills
+    const optionalSkills = await JobPost.find({ relations: ['optionalSkills'] })
+    const matchingSkills = requiredSkills.filter((skill: any) =>
+      jobSeekerSkills.includes(skill)
+    )
+    const matchingOptionalSkills = optionalSkills.filter((skill) =>
+      jobSeekerSkills.includes(skill)
+    )
+
+    if (matchingSkills.length === requiredSkills.length) {
+      console.log('good match')
+    }
+    if (
+      matchingSkills.length >= requiredSkills.length - 1 &&
+      matchingOptionalSkills.length > 0
+    ) {
+      console.log('nice match')
+    }
   } catch (error) {
     console.log(error)
   }
 }
-
-export const match = async (
-  req: Request, 
-  res: Response, 
-
-)
-
-const requiredSkills = ['java', 'ruby', 'typescript']
-const jobSeekerSkills = ['java', 'typescript', 'c++']
-const optionalSkills = ['typescript', 'mongodb']
-const matchingSkills = requiredSkills.filter((skill) => jobSeekerSkills.includes(skill))
-const matchingOptionalSkills = optionalSkills.filter((skill) => jobSeekerSkills.includes(skill))
-console.log(matchingSkills)
-console.log(matchingOptionalSkills)
-if (matchingSkills.length === requiredSkills.length) {
-  console.log("good match")}
-if (matchingSkills.length >= requiredSkills.length && matchingOptionalSkills.length > 0) {
-  console.log("nice match")}
