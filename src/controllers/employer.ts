@@ -12,6 +12,7 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
+import app from 'src/app'
 
 //**Auth controllers */
 export const localLogin = async (
@@ -101,25 +102,28 @@ export const updateJobPost = async (
   next: NextFunction
 ) => {
   try {
-    const update = req.body
-    const jobPostedId = req.params.id
+    const update = req.body // get typed in data from body.
+    const jobPostedId = req.params.id // get specific ID of the post.
+    const jobPost = await JobPost.findOne({ where: { id: jobPostedId } }) // find the specific jobPosted ID
 
-    await getConnection()
-      .createQueryBuilder()
-      .update(JobPost)
-      .set({
-        title: update.title,
-        jobDescription: update.jobDescription,
-        seniority: update.seniority,
-      })
-      .where('id = :id', { id: `${jobPostedId}` })
-      .returning('*')
-      .execute()
-      .then((res) => {
-        return res.raw[0] // returning response.raw[0] in order to get the type back
-        // return console.log("RESInUpdate:::", res.raw[0])
-      })
+    if (!jobPost) {
+      next(new NotFoundError(`${jobPost} is not found`))
+    }
 
+    if (update.title) {
+      jobPost!.title = update.title
+    }
+    if (update.jobDescription) {
+      jobPost!.jobDescription = update.jobDescription
+    }
+    if (update.seniority) {
+      jobPost!.seniority = update.seniority
+    }
+    if (update.requiredSkills) {
+      jobPost!.requiredSkills = update.requiredSkills
+    }
+
+    await JobPost.update(jobPostedId, update)
     res.status(200).json({ message: 'Updated' })
   } catch (error) {
     return next(new InternalServerError(error.message))

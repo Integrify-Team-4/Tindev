@@ -121,9 +121,6 @@ describe('user controller', () => {
       jobDescription:
         'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
       seniority: 'Junior',
-      requiredSkills: [{
-        id: 1,
-        name: 'JavaScript'}]
     }
 
     await createEmployer()
@@ -135,15 +132,10 @@ describe('user controller', () => {
     const jobPostId = response.body.savedJobPost.id
     const update = {
       title: 'Updated job title',
-      jobDescription: jobPost.jobDescription,
-      seniority: jobPost.seniority,
-      requiredSkills: [{
-        id: 1,
-        name: 'TypeScript'}]
     }
     
-    
     const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
+
     expect(response1.status).toBe(200)
     expect(response1.body.message).toBe('Updated')
   })
