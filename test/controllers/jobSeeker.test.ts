@@ -2,6 +2,46 @@ import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
 
+const form = {
+  info: {
+    firstName: 'duy',
+    lastName: 'nguyen',
+    contact: 1234,
+    relocate: true,
+    seniority: 'junior',
+    startingDate: '10/12/2020',
+  },
+  credential: {
+    email: 'abc@gmail.com',
+    password: 'password',
+  },
+}
+
+const jobSeeker = {
+  info: {
+    firstName: 'duy',
+    lastName: 'nguyen',
+    contact: 1234,
+    relocate: true,
+    seniority: 'junior',
+    startingDate: '10/12/2020',
+  },
+  credential: {
+    email: 'abc@gmail.com',
+    password: 'password',
+  },
+}
+const loginInput = {
+  email: jobSeeker.credential.email,
+  password: jobSeeker.credential.password,
+}
+
+const createJobSeeker = async () =>
+  await request(app).post('/jobSeeker/create').send(form)
+
+const logInJobSeeker = async () =>
+  await request(app).post('/jobSeeker/login/local').send(loginInput)
+
 describe('user controller', () => {
   beforeAll(async () => {
     await connection.create()
@@ -25,22 +65,7 @@ describe('user controller', () => {
   })
 
   it('should create a job seeker', async () => {
-    const form = {
-      info: {
-        firstName: 'duy',
-        lastName: 'nguyen',
-        contact: 1234,
-        relocate: true,
-        seniority: 'junior',
-        startingDate: '10/12/2020',
-      },
-      credential: {
-        email: 'abc@gmail.com',
-        password: 'password',
-      },
-    }
-
-    const response = await request(app).post('/jobSeeker/create').send(form)
+    const response = await createJobSeeker()
     const newUser = await request(app).get('/jobSeeker')
     console.log(newUser.body)
 
@@ -48,6 +73,7 @@ describe('user controller', () => {
     expect(newUser.body.length).toBe(1)
   })
 
+<<<<<<< HEAD
   // Login JobSeeker
 
   it('job Seeker should log in', async () => {
@@ -124,4 +150,11 @@ describe('user controller', () => {
     console.log('update Response ', updateResponse.body)
     expect(response.status).toBe(200)
   })
+=======
+  it('job Seeker should log in', async () => {
+    await createJobSeeker()
+    const response = await logInJobSeeker()
+    expect(response.status).toBe(200)
+  })
+>>>>>>> a0048f3fc2a4e50aaa6f43c5a82314e92df39767
 })
