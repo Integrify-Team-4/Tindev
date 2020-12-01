@@ -66,6 +66,7 @@ export const registerEmployer = async (
   }
 }
 
+//Create JobPost
 export const createJobPost = async (
   req: Request,
   res: Response,
@@ -86,13 +87,14 @@ export const createJobPost = async (
     })
 
     const savedJobPost = await JobPost.save(newJobPost)
-
+    // console.log("savedJobPost:::1", savedJobPost)
     res.json({ message: 'Posted', savedJobPost })
   } catch (error) {
     next(new InternalServerError(error.message))
   }
 }
 
+//Update JobPost
 export const updateJobPost = async (
   req: Request,
   res: Response,
@@ -100,7 +102,6 @@ export const updateJobPost = async (
 ) => {
   try {
     const update = req.body
-    console.log('newJobPost:::', update)
     const jobPostedId = req.params.id
 
     await getConnection()
@@ -112,7 +113,12 @@ export const updateJobPost = async (
         seniority: update.seniority,
       })
       .where('id = :id', { id: `${jobPostedId}` })
+      .returning('*')
       .execute()
+      .then((res) => {
+        return res.raw[0] // returning response.raw[0] in order to get the type back
+        // return console.log("RESInUpdate:::", res.raw[0])
+      })
 
     res.status(200).json({ message: 'Updated' })
   } catch (error) {

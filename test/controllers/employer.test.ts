@@ -1,7 +1,7 @@
 import request from 'supertest'
+
 import connection from '../db-helper'
 import app from '../../src/app'
-import { InternalServerError } from '../../src/helpers/apiError'
 
 const createEmployer = async () => {
   const form = {
@@ -101,6 +101,9 @@ describe('user controller', () => {
       jobDescription:
         'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
       seniority: 'Junior',
+      requiredSkills: [{
+        id: 1,
+        name: 'JavaScript'}]
     }
 
     await createEmployer()
@@ -108,7 +111,6 @@ describe('user controller', () => {
     const response = await request(app)
       .post('/employer/jobs/google')
       .send(jobPost)
-
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
@@ -119,6 +121,9 @@ describe('user controller', () => {
       jobDescription:
         'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
       seniority: 'Junior',
+      requiredSkills: [{
+        id: 1,
+        name: 'JavaScript'}]
     }
 
     await createEmployer()
@@ -128,12 +133,15 @@ describe('user controller', () => {
       .send(jobPost)
 
     const jobPostId = response.body.savedJobPost.id
-
     const update = {
       title: 'Updated job title',
-      jobDescription: 'Updated Job Description',
-      seniority: 'Junior',
+      jobDescription: jobPost.jobDescription,
+      seniority: jobPost.seniority,
+      requiredSkills: [{
+        id: 1,
+        name: 'TypeScript'}]
     }
+    
     
     const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
     expect(response1.status).toBe(200)

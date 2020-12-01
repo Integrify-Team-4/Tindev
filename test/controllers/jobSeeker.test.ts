@@ -71,7 +71,6 @@ describe('user controller', () => {
     const response = await request(app)
       .post('/jobSeeker/login/local')
       .send(loginInput)
-      console.log(response.body)
     expect(response.status).toBe(200)
   })
 
