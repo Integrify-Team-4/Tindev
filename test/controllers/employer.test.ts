@@ -2,21 +2,46 @@ import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
 
-const createEmployer = async () => {
-  const form = {
-    info: {
-      companyName: 'google',
-      companyInfo: 'google-home',
-      address: 'google-address',
-    },
-    credential: {
-      email: 'google1@gmail.com',
-      password: 'password',
-    },
-  }
-
-  await request(app).post('/employer/create').send(form)
+const employer = {
+  info: {
+    companyName: 'google',
+    companyInfo: 'google-home',
+    address: 'google-address',
+  },
+  credential: {
+    email: 'google1@gmail.com',
+    password: 'password',
+  },
 }
+const loginInput = {
+  email: employer.credential.email,
+  password: employer.credential.password,
+}
+const form = {
+  info: {
+    companyName: 'google',
+    companyInfo: 'google-home',
+    address: 'google-address',
+  },
+  credential: {
+    email: 'google1@gmail.com',
+    password: 'password',
+  },
+}
+const jobPost = {
+  title: 'Fullstack React- & Node.js Developer',
+  jobDescription:
+    'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+  seniority: 'Junior',
+}
+const createEmployer = async () =>
+  await request(app).post('/employer/create').send(form)
+
+const loginEmployer = async () =>
+  await request(app).post('/employer/login/local').send(loginInput)
+
+const createJobPost = async () =>
+  await request(app).post('/employer/jobs/google').send(jobPost)
 
 describe('user controller', () => {
   beforeAll(async () => {
@@ -36,7 +61,6 @@ describe('user controller', () => {
       email: 'kirsi.trospe@gmail.com',
       password: 'kirsi',
     }
-
     const response = await request(app)
       .post('/employer/login/local')
       .send(loginInput)
@@ -47,88 +71,31 @@ describe('user controller', () => {
   })
 
   it('should create new employer', async () => {
-    const form = {
-      info: {
-        companyName: 'google',
-        companyInfo: 'google-home',
-        address: 'google-address',
-      },
-      credential: {
-        email: 'google1@gmail.com',
-        password: 'password',
-      },
-    }
-
     const response = await request(app).post('/employer/create').send(form)
-
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Registered Successfully')
   })
 
   it('should login employer', async () => {
-    const employer = {
-      info: {
-        companyName: 'google',
-        companyInfo: 'google-home',
-        address: 'google-address',
-      },
-      credential: {
-        email: 'google1@gmail.com',
-        password: 'password',
-      },
-    }
-
     await request(app).post('/employer/create').send(employer)
-
-    const loginInput = {
-      email: employer.credential.email,
-      password: employer.credential.password,
-    }
-
-    const response = await request(app)
-      .post('/employer/login/local')
-      .send(loginInput)
-
-    console.log(response.body)
-
+    const response = await loginEmployer()
     expect(response.status).toBe(200)
     expect(response.body.companyName).toBe('google')
     expect(response.body.id).toBe(1)
   })
 
   it('should create a new job post', async () => {
-    const jobPost = {
-      title: 'Fullstack React- & Node.js Developer',
-      jobDescription:
-        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-      seniority: 'Junior',
-    }
-
     await createEmployer()
-
-    const response = await request(app)
-      .post('/employer/jobs/google')
-      .send(jobPost)
-
-    console.log(response.body)
+    await loginEmployer()
+    const response = await createJobPost()
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
 
   it('should delete the job', async () => {
-    const jobPost = {
-      title: 'Fullstack React- & Node.js Developer',
-      jobDescription:
-        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-      seniority: 'Junior',
-    }
-
     await createEmployer()
-
-    await request(app).post('/employer/jobs/google').send(jobPost)
-
+    await createJobPost()
     const response = await request(app).delete('/employer/jobs/1')
-
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('success')
   })
