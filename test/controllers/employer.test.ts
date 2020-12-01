@@ -84,6 +84,29 @@ describe('user controller', () => {
     expect(response.body.id).toBe(1)
   })
 
+  it('should update employer', async () => {
+    await createEmployer()
+    
+    const employerId = await request(app)
+      .get('/employer/1')
+      
+    const update = {
+      info: {
+        companyName: 'Updated company name',
+        companyInfo: 'Updated company info',
+        address: 'Updated address'
+      },
+      credential: {
+        email: 'Updated email',
+        password: 'Updated password'
+      }
+    }
+
+    const response = await request(app).put(`/employer/${employerId}`).send(update)
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Updated successfully')
+  })
+
   it('should create a new job post', async () => {
     await createEmployer()
     await loginEmployer()

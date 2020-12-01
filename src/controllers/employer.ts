@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
@@ -17,7 +18,7 @@ export const localLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', function (error, user: Employer, info) {
+  passport.authenticate('local', function (error, user, info) {
     if (error) {
       return next(new InternalServerError())
     }
@@ -45,9 +46,7 @@ export const registerEmployer = async (
     })
 
     if (exists) {
-      return next(
-        new BadRequestError(`Email ${credential.email} already exists`)
-      )
+      next(new BadRequestError(`Email ${credential.email} already exists`))
     }
 
     credential.password = await bcrypt.hash(credential.password, 8)
@@ -61,6 +60,44 @@ export const registerEmployer = async (
     await Employer.save(newEmployer)
 
     res.status(200).json({ message: 'Registered Successfully' })
+  } catch (error) {
+    next(new InternalServerError(error.message))
+  }
+}
+
+//**Update employer*/
+export const updateEmployer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const employerId = req.params.id
+    const { update } = req.body
+    const employer = await Employer.findOne({ where: { id: employerId } })
+
+    if (!employer) {
+      throw new Error(`Employer ${employerId} not found`)
+    }
+    if (update.companyName) {
+      employer.companyName = update.companyName
+    }
+    if (update.companyInfo) {
+      employer.companyInfo = update.companyInfo
+    }
+    if (update.address) {
+      employer.address = update.address
+    }
+    if (update.email) {
+      employer.credentials.email = update.email
+    }
+    if (update.password) {
+      employer.credentials.password = update.password
+    }
+    const updatedEmployer = await Employer.update(employerId, update)
+    res.json(updatedEmployer)
+    res.status(200).json({ message: 'Updated successfully' })
+    return employer?.save()
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -90,5 +127,23 @@ export const createJobPost = async (
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+export const deleteJobPostbyId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const jobPost = await JobPost.findOne(id)
+    if (!jobPost) {
+      return next(new NotFoundError('Job is no more available'))
+    }
+    await jobPost?.remove()
+    res.json({ message: 'success' })
+  } catch (error) {
+    console.log(error)
   }
 }
