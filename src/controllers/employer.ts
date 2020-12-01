@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
@@ -128,5 +129,23 @@ export const createJobPost = async (
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+export const deleteJobPostbyId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const jobPost = await JobPost.findOne(id)
+    if (!jobPost) {
+      return next(new NotFoundError('Job is no more available'))
+    }
+    await jobPost?.remove()
+    res.json({ message: 'success' })
+  } catch (error) {
+    console.log(error)
   }
 }

@@ -38,4 +38,8 @@ export default class JobPost extends BaseEntity {
     cascade: ['insert'],
   })
   employer!: Employer
+
+  static match(requiredSkills: Partial<JobPost>, optionalSkills: Partial<JobPost>) {
+    return this.find({ where: { requiredSkills: requiredSkills, optionalSkills: optionalSkills} })
+  }
 }
