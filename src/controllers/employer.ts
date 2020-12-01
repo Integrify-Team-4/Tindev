@@ -1,4 +1,3 @@
-import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
