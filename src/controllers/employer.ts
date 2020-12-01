@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
@@ -11,7 +12,6 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
-import { getConnection } from 'typeorm'
 
 //**Auth controllers */
 export const localLogin = async (
