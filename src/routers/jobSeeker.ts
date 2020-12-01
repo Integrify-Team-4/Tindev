@@ -11,6 +11,6 @@ const router = express.Router()
 router.get('/', getJobSeeker)
 router.post('/create', createJobSeeker)
 router.post('/login/local', jobSeekerLocalLogin)
-router.put('/jobSeeker/:id', updateJobSeeker)
+router.put('/update/:id', updateJobSeeker)
 
 export default router
