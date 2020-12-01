@@ -6,5 +6,5 @@ export default class Skill extends BaseEntity {
   id!: number
 
   @Column()
-  name!: string
+  skill!: string
 }

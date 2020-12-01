@@ -106,8 +106,9 @@ describe('user controller', () => {
 
   it('should update employer', async () => {
     await createEmployer()
+    
     const employerId = await request(app)
-      .get('/employer/:id')
+      .get('/employer/1')
 
       const update = {
         info: {
@@ -126,6 +127,7 @@ describe('user controller', () => {
       expect(response.body.message).toBe('Updated successfully')
   })
 
+
   it('should create a new job post', async () => {
     const jobPost = {
       title: 'Fullstack React- & Node.js Developer',
@@ -140,6 +142,7 @@ describe('user controller', () => {
       .post('/employer/jobs/google')
       .send(jobPost)
 
+    console.log(response.body)
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })

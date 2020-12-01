@@ -3,9 +3,9 @@ import express from 'express'
 import {
   localLogin,
   registerEmployer,
-  getEmployer,
-  updateEmployer,
   createJobPost,
+  getEmployers,
+  updateEmployer,
 } from '../controllers/employer'
 
 const router = express.Router()
@@ -13,7 +13,7 @@ const router = express.Router()
 router.post('/login/local', localLogin)
 router.post('/create', registerEmployer)
 router.post('/jobs/:companyName', createJobPost)
-router.get('/', getEmployer)
-router.put('/employer/:id', updateEmployer)
+router.get('/', getEmployers)
+router.put('/:id', updateEmployer)
 
 export default router

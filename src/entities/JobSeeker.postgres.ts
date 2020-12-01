@@ -60,7 +60,7 @@ export default class JobSeeker extends BaseEntity {
 
   @ManyToMany(() => Skill)
   @JoinTable()
-  skills!: Skill[]
+  Skills!: Skill[]
 
   static getByFirstName(firstName: string) {
     return this.find({ where: { firstName: firstName } })

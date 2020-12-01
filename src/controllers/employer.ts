@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
-
 import {
   NotFoundError,
   UnauthorizedError,
@@ -18,7 +17,7 @@ export const localLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', function (error, user, info) {
+  passport.authenticate('local', function (error, user: Employer, info) {
     if (error) {
       return next(new InternalServerError())
     }
@@ -46,7 +45,9 @@ export const registerEmployer = async (
     })
 
     if (exists) {
-      next(new BadRequestError(`Email ${credential.email} already exists`))
+      return next(
+        new BadRequestError(`Email ${credential.email} already exists`)
+      )
     }
 
     credential.password = await bcrypt.hash(credential.password, 8)
@@ -66,16 +67,17 @@ export const registerEmployer = async (
 }
 
 //**Get all employers*/
-export const getEmployer = async (
+export const getEmployers = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = await Employer.find({ relations: ['credentials'] })
-    res.json(user)
+    const users = await Employer.find({ relations: ['credentials'] })
+    res.json(users)
+    console.log('users', users)
   } catch (error) {
-    next(new NotFoundError('Employer not found'))
+    next(new NotFoundError('Employers not found'))
   }
 }
 
