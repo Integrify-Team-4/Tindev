@@ -1,10 +1,19 @@
 import express from 'express'
 
-import { registerEmployer, updateEmployer } from '../controllers/employer'
+import {
+  localLogin,
+  registerEmployer,
+  createJobPost,
+  deleteJobPostbyId,
+} from '../controllers/employer'
 
 const router = express.Router()
 
-router.post('/create-employer', registerEmployer)
-router.put('/:employerId', updateEmployer)
+router.post('/login/local', localLogin)
+router.post('/create', registerEmployer)
+router.post('/jobs/:companyName', createJobPost)
+
+// deleting job post by id
+router.delete('/jobs/:id', deleteJobPostbyId)
 
 export default router

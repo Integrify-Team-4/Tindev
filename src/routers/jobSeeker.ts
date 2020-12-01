@@ -2,14 +2,14 @@ import express from 'express'
 
 import {
   getJobSeeker,
+  jobSeekerLocalLogin,
   createJobSeeker,
-  getJobSeekerByFirstName,
 } from '../controllers/jobSeeker'
 
 const router = express.Router()
 
 router.get('/', getJobSeeker)
-router.get('/:name', getJobSeekerByFirstName)
 router.post('/create', createJobSeeker)
+router.post('/login/local', jobSeekerLocalLogin)
 
 export default router

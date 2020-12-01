@@ -2,6 +2,47 @@ import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
 
+const employer = {
+  info: {
+    companyName: 'google',
+    companyInfo: 'google-home',
+    address: 'google-address',
+  },
+  credential: {
+    email: 'google1@gmail.com',
+    password: 'password',
+  },
+}
+const loginInput = {
+  email: employer.credential.email,
+  password: employer.credential.password,
+}
+const form = {
+  info: {
+    companyName: 'google',
+    companyInfo: 'google-home',
+    address: 'google-address',
+  },
+  credential: {
+    email: 'google1@gmail.com',
+    password: 'password',
+  },
+}
+const jobPost = {
+  title: 'Fullstack React- & Node.js Developer',
+  jobDescription:
+    'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+  seniority: 'Junior',
+}
+const createEmployer = async () =>
+  await request(app).post('/employer/create').send(form)
+
+const loginEmployer = async () =>
+  await request(app).post('/employer/login/local').send(loginInput)
+
+const createJobPost = async () =>
+  await request(app).post('/employer/jobs/google').send(jobPost)
+
 describe('user controller', () => {
   beforeAll(async () => {
     await connection.create()
@@ -15,21 +56,48 @@ describe('user controller', () => {
     await connection.close()
   })
 
+  it('should not login employer if email not found', async () => {
+    const loginInput = {
+      email: 'kirsi.trospe@gmail.com',
+      password: 'kirsi',
+    }
+    const response = await request(app)
+      .post('/employer/login/local')
+      .send(loginInput)
+
+    expect(response.body.message).toEqual(
+      'Email kirsi.trospe@gmail.com not found'
+    )
+  })
 
   it('should create new employer', async () => {
-    const employer = {
-      companyName: 'google',
-      email: 'google1@gmail.com',
-      password: 'password',
-      companyInfo: 'google-home',
-      address: 'google-address'
-    }
+    const response = await request(app).post('/employer/create').send(form)
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Registered Successfully')
+  })
 
-    const newEmployer = await request(app).post('/employer/create-employer').send(employer)
-    console.log("newUser.body", newEmployer.body)
+  it('should login employer', async () => {
+    await request(app).post('/employer/create').send(employer)
+    const response = await loginEmployer()
+    expect(response.status).toBe(200)
+    expect(response.body.companyName).toBe('google')
+    expect(response.body.id).toBe(1)
+  })
 
-    expect(newEmployer.status).toBe(200)
-    expect(newEmployer.body.msg).toBe('Registered Successfully')
+  it('should create a new job post', async () => {
+    await createEmployer()
+    await loginEmployer()
+    const response = await createJobPost()
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Posted')
+  })
+
+  it('should delete the job', async () => {
+    await createEmployer()
+    await createJobPost()
+    const response = await request(app).delete('/employer/jobs/1')
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('success')
   })
 
   it('should update employer', async () => {
@@ -58,3 +126,4 @@ describe('user controller', () => {
     })
 
   })
+})
