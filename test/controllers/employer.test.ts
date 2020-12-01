@@ -131,6 +131,7 @@ describe('user controller', () => {
     const jobPostId = response.body.savedJobPost.id
     const update = {
       title: 'Updated job title',
+      jobDescription: 'Updated Job Description',
     }
     
     const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
