@@ -93,6 +93,19 @@ export const createJobPost = async (
   }
 }
 
+export const getJobPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const jobPosts = await JobPost.find()
+    res.status(200).json({ message: 'Successfully fetched', jobPosts })
+  } catch (error) {
+    return next(new NotFoundError(error.message))
+  }
+}
+
 //Update JobPost
 export const updateJobPost = async (
   req: Request,

@@ -131,13 +131,17 @@ describe('user controller', () => {
     const jobPostId = response.body.savedJobPost.id
     const update = {
       title: 'Updated job title',
-      jobDescription: 'Updated Job Description',
+
     }
     
     const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
-
+    const jobPosts = await request(app).get(`/employer/jobs`)
+      console.log("jobPosts::", jobPosts.body)
     expect(response1.status).toBe(200)
     expect(response1.body.message).toBe('Updated')
   })
+
+
+
 
 })
