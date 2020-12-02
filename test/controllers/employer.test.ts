@@ -35,7 +35,7 @@ const jobPost = {
     'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
   seniority: 'Junior',
 }
-const createEmployer = async () =>
+const registerEmployer = async () =>
   await request(app).post('/employer/create').send(form)
 
 const loginEmployer = async () =>
@@ -94,54 +94,48 @@ describe('user controller', () => {
     expect(response.body.id).toBe(1)
   })
 
-  it('should create a new job post', async () => {
-    const jobPost = {
-      title: 'Fullstack React- & Node.js Developer',
-      jobDescription:
-        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-      seniority: 'Junior',
-      requiredSkills: [{
-        id: 1,
-        name: 'JavaScript'}]
+  it('should update employer', async () => {
+    const form = {
+      info: {
+        id: '1',
+        companyName: 'google',
+        companyInfo: 'google-home',
+        address: 'google-address',
+      },
+      credential: {
+        email: 'google1@gmail.com',
+        password: 'password',
+      },
+    }
+  
+    await request(app).post('/employer/create').send(form)
+      
+    const update = {
+      info: {
+        id: '1',
+        companyName: 'Updated company name',
+        companyInfo: 'Updated company info',
+        address: 'Updated address'
+      },
+      credential: {
+        email: 'Updated email',
+        password: 'Updated password'
+      }
     }
 
-    await createEmployer()
+    const response = await request(app).put(`/employer/1`).send(update)
+    const employers = await request(app).get('/employer')
+    console.log('employers', employers.body)
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Updated successfully')
+  })
 
-    const response = await request(app)
-      .post('/employer/jobs/google')
-      .send(jobPost)
+  it('should create a new job post', async () => {
+    await registerEmployer()
+    await loginEmployer()
+    const response = await createJobPost()
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
-
-  it('should update job post', async () => {
-    const jobPost = {
-      title: 'Fullstack React- & Node.js Developer',
-      jobDescription:
-        'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-      seniority: 'Junior',
-    }
-
-    await createEmployer()
-
-    const response = await request(app)
-      .post('/employer/jobs/google')
-      .send(jobPost)
-
-    const jobPostId = response.body.savedJobPost.id
-    const update = {
-      title: 'Updated job title',
-
-    }
-    
-    const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
-    const jobPosts = await request(app).get(`/employer/jobs`)
-      console.log("jobPosts::", jobPosts.body)
-    expect(response1.status).toBe(200)
-    expect(response1.body.message).toBe('Updated')
-  })
-
-
-
 
 })
