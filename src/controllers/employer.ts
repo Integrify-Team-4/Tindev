@@ -93,6 +93,7 @@ export const createJobPost = async (
   }
 }
 
+//Get JobPosts
 export const getJobPosts = async (
   req: Request,
   res: Response,
@@ -135,7 +136,6 @@ export const updateJobPost = async (
     }
 
     await JobPost.save(jobPost)
-    // await JobPost.update(jobPostedId, update)
     res.status(200).json({ message: 'Updated' })
   } catch (error) {
     return next(new InternalServerError(error.message))
