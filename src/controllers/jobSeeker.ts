@@ -87,7 +87,7 @@ export const updateJobSeeker = async (
   try {
     const update = req.body
     console.log('update get body request', update)
-    const jobSeekerId = req.params.id
+    const jobSeekerId = parseInt(req.params.id)
     console.log('Jobseeker ID ', jobSeekerId)
     const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
     if (!jobSeeker) {
