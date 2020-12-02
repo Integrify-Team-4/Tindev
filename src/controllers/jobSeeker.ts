@@ -9,6 +9,7 @@ import {
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import Credential from '../entities/Credential.postgres'
+import Eduction from '../entities/Education.postgres'
 import { getConnection, UpdateDateColumn } from 'typeorm'
 
 // Auth Controllers for job seeker
