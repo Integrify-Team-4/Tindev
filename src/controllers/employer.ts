@@ -66,14 +66,14 @@ export const registerEmployer = async (
 }
 
 //**Get all employers*/
-export const getEmployer = async (
+export const getEmployers = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = await Employer.find({ relations: ['credentials'] })
-    res.json(user)
+    const users = await Employer.find({ relations: ['credentials'] })
+    res.status(200).json({ message: 'Successfully fetched employers', users })
   } catch (error) {
     next(new NotFoundError('Employer not found'))
   }
@@ -86,12 +86,14 @@ export const updateEmployer = async (
   next: NextFunction
 ) => {
   try {
-    const employerId = req.params.id
+    const employerId = parseInt(req.params.id)
     const { update } = req.body
-    const employer = await Employer.findOne({ where: { id: employerId } })
+    const employer = await Employer.findOne(employerId, {
+      relations: ['credentials'],
+    })
 
     if (!employer) {
-      throw new Error(`Employer ${employerId} not found`)
+      return next(new NotFoundError())
     }
     if (update.companyName) {
       employer.companyName = update.companyName
@@ -108,10 +110,12 @@ export const updateEmployer = async (
     if (update.password) {
       employer.credentials.password = update.password
     }
-    const updatedEmployer = await Employer.update(employerId, update)
-    res.json(updatedEmployer)
-    res.status(200).json({ message: 'Updated successfully' })
-    return employer?.save()
+    const updatedEmployer = await Employer.save(employer)
+    res.json({ message: 'Updated successfully', data: updatedEmployer })
+    // const updatedEmployer = await Employer.update(employerId, update)
+    // res.json(updatedEmployer)
+    // res.status(200).json({ message: 'Updated successfully' })
+    // return employer?.save()
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -141,5 +145,19 @@ export const createJobPost = async (
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+//**Get all jobposts */
+export const getJobPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const jobPosts = await JobPost.find()
+    res.status(200).json({ message: 'Successfully fetched jobs', jobPosts })
+  } catch (error) {
+    return next(new NotFoundError(error.message))
   }
 }
