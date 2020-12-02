@@ -6,9 +6,7 @@ import {
   BadRequestError,
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
-import Skill from '../entities/Skill.postgres'
 import JobPost from '../entities/JobPost.postgres'
-import { createQueryBuilder } from 'typeorm'
 
 export const match = async (
   req: Request,
@@ -16,36 +14,34 @@ export const match = async (
   next: NextFunction
 ) => {
   try {
+    // get jobseeker skills
     const jobSeeker = await JobSeeker.createQueryBuilder('jobSeeker')
       .leftJoinAndSelect('jobSeeker.skills', 'skill')
       .where('jobSeeker.id = :id')
-      .getMany()
+      .getOne()
     if (!jobSeeker) {
       return next(new NotFoundError('No jobseeker found'))
     }
-    //const jobSeekerSkills = jobSeeker.skills
-    const jobPost = await JobPost.find({
-      relations: ['requiredSkills', 'optionalSkills'],
+    // get jobpost required skills
+    const jobPosts = await JobPost.createQueryBuilder('jobPost')
+      .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
+      .where('jobPost.id = :id')
+      // .andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeeker.skills}% })
+      .getMany()
+
+    // get match
+    const jobPostSkills = jobPosts?.map((jp) => {
+      return jp.requiredSkills
     })
-    res.json(jobPost)
 
-    //     const matchingSkills = requiredSkills.filter((skill: any) =>
-    //       jobSeekerSkills.toLowerCase().includes(skill.toLowerCase())
-    //     )
-    //     const matchingOptionalSkills = optionalSkills.filter((skill: any) =>
-    //       jobSeekerSkills.includes(skill)
-    //     )
+    const match = jobPostSkills?.map((jps) => {
+      jps.filter((s) => jobSeeker?.skills.includes(s))
+    })
 
-    //     if (matchingSkills.length === requiredSkills.length) {
-    //       console.log('good match')
-    //     }
-    //     if (
-    //       matchingSkills.length >= requiredSkills.length - 1 &&
-    //       matchingOptionalSkills.length > 0
-    //     ) {
-    //       console.log('nice match')
-    //     }
+    if (match?.length === jobPostSkills.length) {
+      return console.log('match')
+    }
   } catch (error) {
-    console.log(error)
+    next(new InternalServerError())
   }
 }
