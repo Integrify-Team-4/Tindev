@@ -22,8 +22,8 @@ describe('user controller', () => {
   })
 
   it('should return all the lists of skills', async () => {
-    const skill_1 = { name: 'Java Developer' }
-    const skill_2 = { name: 'NodeJs Developer' }
+    const skill_1 = { name: 'Java' }
+    const skill_2 = { name: 'NodeJs' }
     await request(app).post('/skills/create').send(skill_1)
     await request(app).post('/skills/create').send(skill_2)
     const res = await request(app).get('/skills').send()
