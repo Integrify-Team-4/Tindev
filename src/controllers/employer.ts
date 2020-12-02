@@ -65,6 +65,58 @@ export const registerEmployer = async (
   }
 }
 
+//**Get all employers*/
+export const getEmployers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const users = await Employer.find({ relations: ['credentials'] })
+    res.status(200).json({ message: 'Successfully fetched employers', users })
+  } catch (error) {
+    next(new NotFoundError('Employer not found'))
+  }
+}
+
+//**Update employer*/
+export const updateEmployer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const employerId = parseInt(req.params.id)
+    const update = req.body
+    const employer = await Employer.findOne(employerId, {
+      relations: ['credentials'],
+    })
+
+    if (!employer) {
+      return next(new NotFoundError())
+    }
+    if (update.companyName) {
+      employer.companyName = update.companyName
+    }
+    if (update.companyInfo) {
+      employer.companyInfo = update.companyInfo
+    }
+    if (update.address) {
+      employer.address = update.address
+    }
+    if (update.email) {
+      employer.credentials.email = update.email
+    }
+    if (update.password) {
+      employer.credentials.password = update.password
+    }
+    const updatedEmployer = await Employer.save(employer)
+    res.json({ message: 'Updated successfully', data: updatedEmployer })
+  } catch (error) {
+    next(new InternalServerError(error.message))
+  }
+}
+
 export const createJobPost = async (
   req: Request,
   res: Response,
