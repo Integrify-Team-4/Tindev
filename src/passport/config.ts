@@ -14,7 +14,7 @@ export const local = new LocalStrategy(
     try {
       const credential = await Credential.findOne({
         where: { email: email },
-        relations: ['employer'],
+        relations: ['employer', 'jobSeeker'],
       })
 
       if (!credential) {
@@ -27,7 +27,7 @@ export const local = new LocalStrategy(
         return done(null, false, { message: 'Invalid email or password' })
       }
 
-      return done(null, credential.employer)
+      return done(null, credential.employer || credential.jobSeeker)
     } catch (error) {
       console.log('error', error)
     }

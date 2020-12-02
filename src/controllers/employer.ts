@@ -1,7 +1,7 @@
+import { getConnection } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
-
 import {
   NotFoundError,
   UnauthorizedError,
@@ -87,7 +87,7 @@ export const updateEmployer = async (
 ) => {
   try {
     const employerId = parseInt(req.params.id)
-    const { update } = req.body
+    const update = req.body
     const employer = await Employer.findOne(employerId, {
       relations: ['credentials'],
     })
@@ -112,10 +112,6 @@ export const updateEmployer = async (
     }
     const updatedEmployer = await Employer.save(employer)
     res.json({ message: 'Updated successfully', data: updatedEmployer })
-    // const updatedEmployer = await Employer.update(employerId, update)
-    // res.json(updatedEmployer)
-    // res.status(200).json({ message: 'Updated successfully' })
-    // return employer?.save()
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -148,16 +144,20 @@ export const createJobPost = async (
   }
 }
 
-//**Get all jobposts */
-export const getJobPosts = async (
+export const deleteJobPostbyId = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const jobPosts = await JobPost.find()
-    res.status(200).json({ message: 'Successfully fetched jobs', jobPosts })
+    const id = parseInt(req.params.id)
+    const jobPost = await JobPost.findOne(id)
+    if (!jobPost) {
+      return next(new NotFoundError('Job is no more available'))
+    }
+    await jobPost?.remove()
+    res.json({ message: 'success' })
   } catch (error) {
-    return next(new NotFoundError(error.message))
+    console.log(error)
   }
 }
