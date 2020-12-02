@@ -96,6 +96,7 @@ describe('user controller', () => {
 
   it('should update employer', async () => {
     await registerEmployer()
+    await createJobPost()
 
     const update = {
       info: {
@@ -110,9 +111,6 @@ describe('user controller', () => {
     }
 
     const response = await request(app).put(`/employer/jobs/1`).send(update)
-    const employers = await request(app).get('/employer/jobs')
-
-    console.log('employers', employers.body)
 
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Updated successfully')
