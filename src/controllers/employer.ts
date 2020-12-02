@@ -87,7 +87,7 @@ export const updateEmployer = async (
 ) => {
   try {
     const employerId = parseInt(req.params.id)
-    const { update } = req.body
+    const update = req.body
     const employer = await Employer.findOne(employerId, {
       relations: ['credentials'],
     })
