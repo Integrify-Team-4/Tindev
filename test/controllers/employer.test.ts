@@ -107,20 +107,20 @@ describe('user controller', () => {
         password: 'password',
       },
     }
-  
+
     await request(app).post('/employer/create').send(form)
-      
+
     const update = {
       info: {
         id: '1',
         companyName: 'Updated company name',
         companyInfo: 'Updated company info',
-        address: 'Updated address'
+        address: 'Updated address',
       },
       credential: {
         email: 'Updated email',
-        password: 'Updated password'
-      }
+        password: 'Updated password',
+      },
     }
 
     const response = await request(app).put(`/employer/1`).send(update)
@@ -146,13 +146,14 @@ describe('user controller', () => {
     const update = {
       title: 'Updated job title',
     }
-    
-    const response1 = await request(app).put(`/employer/jobs/${jobPostId}`).send(update)
+
+    const response1 = await request(app)
+      .put(`/employer/jobs/${jobPostId}`)
+      .send(update)
     expect(response1.status).toBe(200)
     expect(response1.body.message).toBe('Updated')
   })
 
-})
   it('should delete the job', async () => {
     await registerEmployer()
     await createJobPost()
