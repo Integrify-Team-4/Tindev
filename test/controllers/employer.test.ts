@@ -34,7 +34,7 @@ const jobPost = {
     'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
   seniority: 'Junior',
 }
-const createEmployer = async () =>
+const registerEmployer = async () =>
   await request(app).post('/employer/create').send(form)
 
 const loginEmployer = async () =>
@@ -85,7 +85,7 @@ describe('user controller', () => {
   })
 
   it('should update employer', async () => {
-    await createEmployer()
+    await registerEmployer()
 
     const employerId = await request(app)
       .get('/employer/1')
@@ -102,14 +102,14 @@ describe('user controller', () => {
         }
       }
 
-      const response = await request(app).put(`/employer/${employerId}`).send(update)
+      const response = await request(app).put(`/employer/1`).send(update)
       expect(response.status).toBe(200)
       expect(response.body.message).toBe('Updated successfully')
   })
 
 
   it('should create a new job post', async () => {
-    await createEmployer()
+    await registerEmployer()
     await loginEmployer()
     const response = await createJobPost()
     expect(response.status).toBe(200)
@@ -117,7 +117,7 @@ describe('user controller', () => {
   })
 
   it('should delete the job', async () => {
-    await createEmployer()
+    await registerEmployer()
     await createJobPost()
     const response = await request(app).delete('/employer/jobs/1')
     expect(response.status).toBe(200)

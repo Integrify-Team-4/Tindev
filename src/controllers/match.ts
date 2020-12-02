@@ -16,22 +16,24 @@ export const match = async (
   next: NextFunction
 ) => {
   try {
-    const id = req.params.id
     const jobSeeker = await createQueryBuilder('jobSeeker')
-      .leftJoinAndSelect('jobSeeker.Skills', 'skills')
-      .where('jobSeeker.id = :id', { id: id })
+      .leftJoinAndSelect('jobSeeker.skills', 'skill')
+      .where('jobSeeker.id = :id')
       .getMany()
     if (!jobSeeker) {
       return next(new NotFoundError('No jobseeker found'))
     }
-    const jobSeekerSkills = jobSeeker.Skills
-    const jobPost = await JobPost.find({ relations: ['requiredSkills'] })
+    const jobSeekerSkills = jobSeeker.skills
+    const jobPost = await JobPost.find({
+      relations: ['requiredSkills', 'optionalSkills'],
+    })
+    res.json(jobPost)
     const requiredSkills = jobPost.requiredSkills
-    const optionalSkills = await JobPost.find({ relations: ['optionalSkills'] })
+    const optionalSkills = jobPost.optionalSkills
     const matchingSkills = requiredSkills.filter((skill: any) =>
-      jobSeekerSkills.includes(skill)
+      jobSeekerSkills.toLowerCase().includes(skill.toLowerCase())
     )
-    const matchingOptionalSkills = optionalSkills.filter((skill) =>
+    const matchingOptionalSkills = optionalSkills.filter((skill: any) =>
       jobSeekerSkills.includes(skill)
     )
 
