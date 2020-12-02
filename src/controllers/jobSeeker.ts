@@ -112,20 +112,6 @@ export const updateJobSeeker = async (
 
     await JobSeeker.update(jobSeekerId, update)
     res.status(200).json({ message: 'JobSeeker Updated' })
-
-    // await getConnection()
-    //   .createQueryBuilder()
-    //   .update(JobSeeker)
-    //   .set({
-    //     firstName: update.firstName,
-    //     lastName: update.lastName,
-    //     contact: update.contact,
-    //     relocate: update.relocate,
-    //     seniority: update.seniority,
-    //     startingDate: update.startingDate,
-    //   })
-    //   .where('id = :id', { id: `${jobSeekerId}` })
-    //   .execute()
   } catch (error) {
     next(new NotFoundError('ID NOT FIND'))
   }
