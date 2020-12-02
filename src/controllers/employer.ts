@@ -105,7 +105,7 @@ export const updateJobPost = async (
     const jobPost = await JobPost.findOne({ where: { id: jobPostedId } }) // find the specific jobPosted ID
 
     if (!jobPost) {
-      next(new NotFoundError(`${jobPost} is not found`))
+      return next(new NotFoundError(`${jobPost} is not found`))
     }
 
     if (update.title) {
@@ -121,7 +121,8 @@ export const updateJobPost = async (
       jobPost!.requiredSkills = update.requiredSkills
     }
 
-    await JobPost.update(jobPostedId, update)
+    await JobPost.save(jobPost)
+    // await JobPost.update(jobPostedId, update)
     res.status(200).json({ message: 'Updated' })
   } catch (error) {
     return next(new InternalServerError(error.message))
