@@ -68,7 +68,6 @@ describe('user controller', () => {
     const response = await createJobSeeker()
     const newUser = await request(app).get('/jobSeeker')
 
-
     expect(response.status).toBe(200)
     expect(newUser.body.length).toBe(1)
   })

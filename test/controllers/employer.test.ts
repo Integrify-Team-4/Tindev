@@ -113,7 +113,7 @@ describe('user controller', () => {
     const response = await request(app).put(`/employer/jobs/1`).send(update)
 
     expect(response.status).toBe(200)
-    expect(response.body.message).toBe('Updated successfully')
+    expect(response.body.message).toBe('Updated')
   })
 
   it('should create a new job post', async () => {
