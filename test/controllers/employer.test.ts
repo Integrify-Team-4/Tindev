@@ -85,28 +85,48 @@ describe('user controller', () => {
   })
 
   it('should update employer', async () => {
-    await registerEmployer()
-
-    const employerId = await request(app)
-      .get('/employer/1')
-
-      const update = {
-        info: {
-          companyName: 'Updated company name',
-          companyInfo: 'Updated company info',
-          address: 'Updated address'
-        },
-        credential: {
-          email: 'Updated email',
-          password: 'Updated password'
-        }
+    const form = {
+      info: {
+        id: '1',
+        companyName: 'google',
+        companyInfo: 'google-home',
+        address: 'google-address',
+      },
+      credential: {
+        email: 'google1@gmail.com',
+        password: 'password',
+      },
+    }
+  
+    await request(app).post('/employer/create').send(form)
+      
+    const update = {
+      info: {
+        id: '1',
+        companyName: 'Updated company name',
+        companyInfo: 'Updated company info',
+        address: 'Updated address'
+      },
+      credential: {
+        email: 'Updated email',
+        password: 'Updated password'
       }
+    }
 
-      const response = await request(app).put(`/employer/1`).send(update)
-      expect(response.status).toBe(200)
-      expect(response.body.message).toBe('Updated successfully')
+    const response = await request(app).put(`/employer/1`).send(update)
+    const employers = await request(app).get('/employer')
+    console.log('employers', employers.body)
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Updated successfully')
   })
 
+  it('should get employers', async () => {
+    await registerEmployer()
+    const response = await request(app)
+      .get('/employer')
+
+    expect(response.status).toBe(200)
+  })
 
   it('should create a new job post', async () => {
     await registerEmployer()
