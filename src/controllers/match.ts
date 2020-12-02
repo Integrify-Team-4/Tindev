@@ -16,36 +16,35 @@ export const match = async (
   next: NextFunction
 ) => {
   try {
-    const jobSeeker = await createQueryBuilder('jobSeeker')
+    const jobSeeker = await JobSeeker.createQueryBuilder('jobSeeker')
       .leftJoinAndSelect('jobSeeker.skills', 'skill')
       .where('jobSeeker.id = :id')
       .getMany()
     if (!jobSeeker) {
       return next(new NotFoundError('No jobseeker found'))
     }
-    const jobSeekerSkills = jobSeeker.skills
+    //const jobSeekerSkills = jobSeeker.skills
     const jobPost = await JobPost.find({
       relations: ['requiredSkills', 'optionalSkills'],
     })
     res.json(jobPost)
-    const requiredSkills = jobPost.requiredSkills
-    const optionalSkills = jobPost.optionalSkills
-    const matchingSkills = requiredSkills.filter((skill: any) =>
-      jobSeekerSkills.toLowerCase().includes(skill.toLowerCase())
-    )
-    const matchingOptionalSkills = optionalSkills.filter((skill: any) =>
-      jobSeekerSkills.includes(skill)
-    )
 
-    if (matchingSkills.length === requiredSkills.length) {
-      console.log('good match')
-    }
-    if (
-      matchingSkills.length >= requiredSkills.length - 1 &&
-      matchingOptionalSkills.length > 0
-    ) {
-      console.log('nice match')
-    }
+    //     const matchingSkills = requiredSkills.filter((skill: any) =>
+    //       jobSeekerSkills.toLowerCase().includes(skill.toLowerCase())
+    //     )
+    //     const matchingOptionalSkills = optionalSkills.filter((skill: any) =>
+    //       jobSeekerSkills.includes(skill)
+    //     )
+
+    //     if (matchingSkills.length === requiredSkills.length) {
+    //       console.log('good match')
+    //     }
+    //     if (
+    //       matchingSkills.length >= requiredSkills.length - 1 &&
+    //       matchingOptionalSkills.length > 0
+    //     ) {
+    //       console.log('nice match')
+    //     }
   } catch (error) {
     console.log(error)
   }
