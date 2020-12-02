@@ -38,12 +38,12 @@ export const match = async (
       return jps.filter((s) => jobSeeker?.skills.includes(s))
     })
 
-    const lenghts = jobPostSkillsArr.map((jps) => {
+    const lengths = jobPostSkillsArr.map((jps) => {
       return jps.length
     })
 
     const match = matches.map((m) => {
-      return lenghts.filter((l) => l === m.length)
+      return lengths.filter((l) => l === m.length)
     })
     console.log('match', match)
   } catch (error) {

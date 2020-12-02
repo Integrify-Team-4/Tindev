@@ -39,12 +39,7 @@ export default class JobPost extends BaseEntity {
   })
   employer!: Employer
 
-  static match(
-    requiredSkills: Partial<JobPost>,
-    optionalSkills: Partial<JobPost>
-  ) {
-    return this.find({
-      where: { requiredSkills: requiredSkills, optionalSkills: optionalSkills },
-    })
+  static match(id: string) {
+    return this.find({ where: { id: id } })
   }
 }
