@@ -30,17 +30,22 @@ export const match = async (
       .getMany()
 
     // get match
-    const jobPostSkills = jobPosts?.map((jp) => {
+    const jobPostSkillsArr = jobPosts?.map((jp) => {
       return jp.requiredSkills
     })
 
-    const match = jobPostSkills?.map((jps) => {
-      jps.filter((s) => jobSeeker?.skills.includes(s))
+    const matches = jobPostSkillsArr?.map((jps) => {
+      return jps.filter((s) => jobSeeker?.skills.includes(s))
     })
 
-    if (match?.length === jobPostSkills.length) {
-      return console.log('match')
-    }
+    const lenghts = jobPostSkillsArr.map((jps) => {
+      return jps.length
+    })
+
+    const match = matches.map((m) => {
+      return lenghts.filter((l) => l === m.length)
+    })
+    console.log('match', match)
   } catch (error) {
     next(new InternalServerError())
   }
