@@ -65,7 +65,58 @@ export const registerEmployer = async (
   }
 }
 
-//Create JobPost
+//**Get all employers*/
+export const getEmployers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const users = await Employer.find({ relations: ['credentials'] })
+    res.status(200).json({ message: 'Successfully fetched employers', users })
+  } catch (error) {
+    next(new NotFoundError('Employer not found'))
+  }
+}
+
+//**Update employer*/
+export const updateEmployer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const employerId = parseInt(req.params.id)
+    const update = req.body
+    const employer = await Employer.findOne(employerId, {
+      relations: ['credentials'],
+    })
+
+    if (!employer) {
+      return next(new NotFoundError())
+    }
+    if (update.companyName) {
+      employer.companyName = update.companyName
+    }
+    if (update.companyInfo) {
+      employer.companyInfo = update.companyInfo
+    }
+    if (update.address) {
+      employer.address = update.address
+    }
+    if (update.email) {
+      employer.credentials.email = update.email
+    }
+    if (update.password) {
+      employer.credentials.password = update.password
+    }
+    const updatedEmployer = await Employer.save(employer)
+    res.json({ message: 'Updated successfully', data: updatedEmployer })
+  } catch (error) {
+    next(new InternalServerError(error.message))
+  }
+}
+
 export const createJobPost = async (
   req: Request,
   res: Response,
@@ -115,7 +166,7 @@ export const updateJobPost = async (
 ) => {
   try {
     const update = req.body // get typed in data from body.
-    const jobPostedId = req.params.id // get specific ID of the post.
+    const jobPostedId = parseInt(req.params.id) // get specific ID of the post.
     const jobPost = await JobPost.findOne({ where: { id: jobPostedId } }) // find the specific jobPosted ID
 
     if (!jobPost) {
@@ -139,5 +190,23 @@ export const updateJobPost = async (
     res.status(200).json({ message: 'Updated' })
   } catch (error) {
     return next(new InternalServerError(error.message))
+  }
+}
+
+export const deleteJobPostbyId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const jobPost = await JobPost.findOne(id)
+    if (!jobPost) {
+      return next(new NotFoundError('Job is no more available'))
+    }
+    await jobPost?.remove()
+    res.json({ message: 'success' })
+  } catch (error) {
+    console.log(error)
   }
 }
