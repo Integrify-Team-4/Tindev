@@ -87,20 +87,45 @@ export const updateJobSeeker = async (
     console.log('update get body request', update)
     const jobSeekerId = req.params.id
     console.log('Jobseeker ID ', jobSeekerId)
-    await getConnection()
-      .createQueryBuilder()
-      .update(JobSeeker)
-      .set({
-        firstName: update.firstName,
-        lastName: update.lastName,
-        contact: update.contact,
-        relocate: update.relocate,
-        seniority: update.seniority,
-        startingDate: update.startingDate,
-      })
-      .where('id = :id', { id: `${jobSeekerId}` })
-      .execute()
-    res.status(200).json({ message: 'updated' })
+    const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
+    if (!jobSeeker) {
+      next(new NotFoundError(`${jobSeeker} not found`))
+    }
+    if (update.firstName) {
+      jobSeeker!.firstName = update.firstName
+    }
+    if (update.lastName) {
+      jobSeeker!.lastName = update.lastName
+    }
+    if (update.contact) {
+      jobSeeker!.contact = update.contact
+    }
+    if (update.relocate) {
+      jobSeeker!.relocate = update.relocate
+    }
+    if (update.seniority) {
+      jobSeeker!.seniority = update.seniority
+    }
+    if (update.startingDate) {
+      jobSeeker!.startingDate = update.startingDate
+    }
+
+    await JobSeeker.update(jobSeekerId, update)
+    res.status(200).json({ message: 'JobSeeker Updated' })
+
+    // await getConnection()
+    //   .createQueryBuilder()
+    //   .update(JobSeeker)
+    //   .set({
+    //     firstName: update.firstName,
+    //     lastName: update.lastName,
+    //     contact: update.contact,
+    //     relocate: update.relocate,
+    //     seniority: update.seniority,
+    //     startingDate: update.startingDate,
+    //   })
+    //   .where('id = :id', { id: `${jobSeekerId}` })
+    //   .execute()
   } catch (error) {
     next(new NotFoundError('ID NOT FIND'))
   }

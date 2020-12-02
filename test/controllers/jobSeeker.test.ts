@@ -73,68 +73,20 @@ describe('user controller', () => {
     expect(newUser.body.length).toBe(1)
   })
 
-<<<<<<< HEAD
   // Login JobSeeker
 
   it('job Seeker should log in', async () => {
-    const jobSeeker = {
-      info: {
-        firstName: 'duy',
-        lastName: 'nguyen',
-        contact: 1234,
-        relocate: true,
-        seniority: 'junior',
-        startingDate: '10/12/2020',
-      },
-      credential: {
-        email: 'abc@gmail.com',
-        password: 'password',
-      },
-    }
-
-    const response1 = await request(app)
-      .post('/jobSeeker/create')
-      .send(jobSeeker)
-    console.log('user created Successfully ', response1.body)
-    const loginInput = {
-      email: jobSeeker.credential.email,
-      password: jobSeeker.credential.password,
-    }
-    const response = await request(app)
-      .post('/jobSeeker/login/local')
-      .send(loginInput)
+    await createJobSeeker()
+    const response = await logInJobSeeker()
     console.log(response.body)
     expect(response.status).toBe(200)
   })
 
   // Update JobSeeker
   it('Update JobSeeker Info', async () => {
-    const jobSeeker = {
-      info: {
-        firstName: 'duy',
-        lastName: 'nguyen',
-        contact: 1234,
-        relocate: true,
-        seniority: 'junior',
-        startingDate: '10/12/2020',
-      },
-      credential: {
-        email: 'abc@gmail.com',
-        password: 'password',
-      },
-    }
+    await createJobSeeker()
 
-    const response1 = await request(app)
-      .post('/jobSeeker/create')
-      .send(jobSeeker)
-
-    const loginInput = {
-      email: jobSeeker.credential.email,
-      password: jobSeeker.credential.password,
-    }
-    const response = await request(app)
-      .post('/jobSeeker/login/local')
-      .send(loginInput)
+    const response = await logInJobSeeker()
     const jobSeekerId = response.body.id
     const update = {
       firstName: 'Update Duy',
@@ -150,11 +102,4 @@ describe('user controller', () => {
     console.log('update Response ', updateResponse.body)
     expect(response.status).toBe(200)
   })
-=======
-  it('job Seeker should log in', async () => {
-    await createJobSeeker()
-    const response = await logInJobSeeker()
-    expect(response.status).toBe(200)
-  })
->>>>>>> a0048f3fc2a4e50aaa6f43c5a82314e92df39767
 })

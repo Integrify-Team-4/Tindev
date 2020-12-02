@@ -1,4 +1,5 @@
 import express from 'express'
+// import authjwt from '../middlewares/authjwt'
 
 import {
   getJobSeeker,

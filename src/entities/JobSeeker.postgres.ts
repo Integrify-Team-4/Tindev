@@ -65,8 +65,4 @@ export default class JobSeeker extends BaseEntity {
   static getByFirstName(firstName: string) {
     return this.find({ where: { firstName: firstName } })
   }
-  // static updateJobSeeker(id: id){
-  //  this.find({where: {id: id}})
-  //  return this.findById()
-  // }
 }
