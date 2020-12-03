@@ -74,8 +74,7 @@ describe('user controller', () => {
   })
 
   // Login JobSeeker
-
-  it('job Seeker should log in', async () => {
+  it('should login jobseeker', async () => {
     const jobSeeker = {
       info: {
         firstName: 'duy',
@@ -154,4 +153,13 @@ describe('user controller', () => {
     const response = await logInJobSeeker()
     expect(response.status).toBe(200)
   })
+
+  // it('should match jobseeker with job posts', async () => {
+  //   const response = await createJobSeeker()
+  //   const newUser = await request(app).get('/jobSeeker')
+    
+
+  // })
 })
+
+

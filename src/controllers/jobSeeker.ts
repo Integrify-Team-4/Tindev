@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
 
-import { match } from './match'
-
 import {
   NotFoundError,
   UnauthorizedError,

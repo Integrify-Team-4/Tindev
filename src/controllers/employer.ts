@@ -119,6 +119,20 @@ export const updateEmployer = async (
   }
 }
 
+// getting employer based on matched credentials
+export const getEmployer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await Employer.find({ relations: ['credentials'] })
+    res.json(user)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const createJobPost = async (
   req: Request,
   res: Response,
@@ -165,5 +179,16 @@ export const deleteJobPostbyId = async (
     res.json({ message: 'success' })
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const getMatch = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    return next(new NotFoundError())
   }
 }
