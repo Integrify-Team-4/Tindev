@@ -36,14 +36,11 @@ export const match = async (
       if (jobPosts.length === 0) 
         return next(new NotFoundError)
 
-      const mostSkills = _
+      const skills = _
         .chain(jobPosts)
         .groupBy('jobSeeker')
-        .map((jobPost: any, jobSeeker: any) => ({ jobSeeker: jobSeeker, requiredSkills: _.sumBy(jobPost, 'requiredSkills') }))
-        .sortBy('requiredSkills')
-        .last()
-        .value()
-        return mostSkills
+        .map((jobPost: any, jobSeeker: any) => ({ jobSeeker: jobSeeker, skills: _.sortBy(jobPost, 'requiredSkills') }))
+        return skills
     }
   } catch (error) {
   next(new InternalServerError)
