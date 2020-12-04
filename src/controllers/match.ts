@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
+const _ = require('lodash')
+
 import {
   NotFoundError,
   UnauthorizedError,
@@ -24,29 +26,27 @@ export const match = async (
     }
     // get jobpost required skills
     const jobPosts = await JobPost.createQueryBuilder('jobPost')
-      .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
+      .innerJoinAndSelect('jobPost.requiredSkills', 'skill')
       .where('jobPost.id = :id')
-      // .andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeeker.skills}% })
+      //.andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeeker.skills}% })
       .getMany()
 
     // get match
-    const jobPostSkillsArr = jobPosts?.map((jp) => {
-      return jp.requiredSkills
-    })
+    const matching = (jobPosts: any) => {
+      if (jobPosts.length === 0) 
+        return next(new NotFoundError)
 
-    const matches = jobPostSkillsArr?.map((jps) => {
-      return jps.filter((s) => jobSeeker?.skills.includes(s))
-    })
-
-    const lengths = jobPostSkillsArr.map((jps) => {
-      return jps.length
-    })
-
-    const match = matches.map((m) => {
-      return lengths.filter((l) => l === m.length)
-    })
-    console.log('match', match)
+      const mostSkills = _
+        .chain(jobPosts)
+        .groupBy('jobSeeker')
+        .map((jobPost: any, jobSeeker: any) => ({ jobSeeker: jobSeeker, requiredSkills: _.sumBy(jobPost, 'requiredSkills') }))
+        .sortBy('requiredSkills')
+        .last()
+        .value()
+        return mostSkills
+    }
   } catch (error) {
-    next(new InternalServerError())
+  next(new InternalServerError)
   }
 }
+
