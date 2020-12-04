@@ -42,6 +42,7 @@ export const match = async (
         .map((jobPost: any, jobSeeker: any) => ({ jobSeeker: jobSeeker, skills: _.sortBy(jobPost, 'requiredSkills') }))
         return skills
     }
+    return matching
   } catch (error) {
   next(new InternalServerError)
   }
