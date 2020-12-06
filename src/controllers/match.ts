@@ -9,6 +9,12 @@ export const match = async (
   jobPosts: any,
 ) => {
   try {
+    if (jobPosts.length === 0) {
+      throw new Error('Jobposts not found')
+    }
+    if (!jobSeekerId) {
+      throw new Error('Jobseeker not found')
+    }
     //get jobseeker skills
     const jobSeekerWithSkills = await JobSeeker.createQueryBuilder('jobSeeker')
       .leftJoinAndSelect('jobSeeker.skills', 'skill')
@@ -24,28 +30,22 @@ export const match = async (
     //get jobpost required skills TODO: Fix this
     const jobPostsWithSkills = await JobPost.createQueryBuilder('jobPost')
       .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
-      .where('jobPost.id = :id', { id: jobPosts.map((j: any) => j.id) })
-      //.andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeekerSkills}% })
+      .where('jobPost.id = :id', { id: jobPosts.map((j: any) => ({ id: j.id, requiredSkills: j.requiredSkills })) })
+      .andWhere('jobPost.requiredSkills like :requiredSkills', { requiredSkills: `%${jobSeekerSkills}%` })
       .getMany()
-      console.log('jobPostsWithRequiredSkills', jobPostsWithSkills)
-
-      if (jobPosts.length === 0) 
-        throw new Error('Jobposts not found')
-      if (!jobSeekerId) {
-        throw new Error('Jobseeker not found')
-      }
+      return (console.log('jobPostsWithRequiredSkills', jobPostsWithSkills))
 
     //get match
-    const matchingSkills = _
-      .chain(jobPosts)
-      .groupBy(jobSeekerWithSkills)
-      .map((jobPost: any, jobSeeker: any) => ({ 
-        jobSeeker: jobSeekerWithSkills, 
-        skills: _.filter(jobPost, jobPostsWithSkills) 
-        .includes(jobSeeker, jobSeekerSkills)
-      }))
+    // const matchingSkills = _
+    //   .chain(jobPosts)
+    //   .groupBy(jobSeekerWithSkills)
+    //   .map((jobPost: any, jobSeeker: any) => ({ 
+    //     jobSeeker: jobSeekerWithSkills, 
+    //     skills: _.filter(jobPost, jobPostsWithSkills) 
+    //     .includes(jobSeeker, jobSeekerSkills)
+    //   }))
     
-    return (console.log('matching skills', matchingSkills))
+    // return (console.log('matching skills', matchingSkills))
   } catch (error) {
     console.log('Internal server error', error)
   }
