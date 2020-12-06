@@ -152,7 +152,7 @@ export const createJobPost = async (
       employer: postingEmployer,
     })
 
-    await JobPost.save(newJobPost)
+    await JobPost.save(newJobPost)  
 
     res.json({ message: 'Posted' })
   } catch (error) {
@@ -178,13 +178,4 @@ export const deleteJobPostbyId = async (
   }
 }
 
-export const getMatch = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-  } catch (error) {
-    return next(new NotFoundError())
-  }
-}
+
