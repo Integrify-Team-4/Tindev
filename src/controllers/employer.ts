@@ -1,7 +1,8 @@
-import { getConnection } from 'typeorm'
+
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
+
 import {
   NotFoundError,
   UnauthorizedError,
@@ -18,7 +19,7 @@ export const localLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', function (error, user: Employer, info) {
+  passport.authenticate('local', function (error, user, info) {
     if (error) {
       return next(new InternalServerError())
     }
@@ -46,9 +47,7 @@ export const registerEmployer = async (
     })
 
     if (exists) {
-      return next(
-        new BadRequestError(`Email ${credential.email} already exists`)
-      )
+      next(new BadRequestError(`Email ${credential.email} already exists`))
     }
 
     credential.password = await bcrypt.hash(credential.password, 8)
@@ -112,25 +111,10 @@ export const updateEmployer = async (
     if (update.password) {
       employer.credentials.password = update.password
     }
-    
     const updatedEmployer = await Employer.save(employer)
     res.json({ message: 'Updated successfully', data: updatedEmployer })
   } catch (error) {
     next(new InternalServerError(error.message))
-  }
-}
-
-// getting employer based on matched credentials
-export const getEmployer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const user = await Employer.find({ relations: ['credentials'] })
-    res.json(user)
-  } catch (error) {
-    console.log(error)
   }
 }
 
@@ -153,11 +137,25 @@ export const createJobPost = async (
       employer: postingEmployer,
     })
 
-    await JobPost.save(newJobPost)  
-
-    res.json({ message: 'Posted' })
+    const savedJobPost = await JobPost.save(newJobPost)
+    // console.log("savedJobPost:::1", savedJobPost)
+    res.json({ message: 'Posted', savedJobPost })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+//Get JobPosts
+export const getJobPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const jobPosts = await JobPost.find()
+    res.status(200).json({ message: 'Successfully fetched', jobPosts })
+  } catch (error) {
+    return next(new NotFoundError(error.message))
   }
 }
 
@@ -213,5 +211,3 @@ export const deleteJobPostbyId = async (
     console.log(error)
   }
 }
-
-
