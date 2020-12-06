@@ -154,10 +154,6 @@ export const createJobPost = async (
 
     await JobPost.save(newJobPost)
 
-    const jobPostId = parseInt(req.params.id)
-    await JobPost.findOne(jobPostId)
-    await JobPost.match(jobPost)
-
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
