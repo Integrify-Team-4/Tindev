@@ -112,9 +112,7 @@ export const updateEmployer = async (
     if (update.password) {
       employer.credentials.password = update.password
     }
-    if (update.jobPost) {
-      employer.jobPosts = update.jobPost
-    }
+    
     const updatedEmployer = await Employer.save(employer)
     res.json({ message: 'Updated successfully', data: updatedEmployer })
   } catch (error) {
@@ -160,6 +158,41 @@ export const createJobPost = async (
     res.json({ message: 'Posted' })
   } catch (error) {
     next(new InternalServerError(error.message))
+  }
+}
+
+//Update JobPost
+export const updateJobPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const update = req.body // get typed in data from body.
+    const jobPostedId = parseInt(req.params.id) // get specific ID of the post.
+    const jobPost = await JobPost.findOne({ where: { id: jobPostedId } }) // find the specific jobPosted ID
+
+    if (!jobPost) {
+      return next(new NotFoundError(`${jobPost} is not found`))
+    }
+
+    if (update.title) {
+      jobPost!.title = update.title
+    }
+    if (update.jobDescription) {
+      jobPost!.jobDescription = update.jobDescription
+    }
+    if (update.seniority) {
+      jobPost!.seniority = update.seniority
+    }
+    if (update.requiredSkills) {
+      jobPost!.requiredSkills = update.requiredSkills
+    }
+
+    await JobPost.save(jobPost)
+    res.status(200).json({ message: 'Updated' })
+  } catch (error) {
+    return next(new InternalServerError(error.message))
   }
 }
 

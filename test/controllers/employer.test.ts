@@ -136,6 +136,24 @@ describe('user controller', () => {
     expect(response.body.message).toBe('Posted')
   })
 
+  it('should update job post', async () => {
+    await registerEmployer()
+    
+    const response = await createJobPost()
+    
+    const jobPostId = response.body.savedJobPost.id
+    const update = {
+      title: 'Updated job title',
+    }
+    
+    const response1 = await request(app)
+      .put(`/employer/jobs/${jobPostId}`)
+      .send(update)
+    expect(response1.status).toBe(200)
+    expect(response1.body.message).toBe('Updated')
+    })
+    
+
   it('should delete the job', async () => {
     await registerEmployer()
     await createJobPost()
