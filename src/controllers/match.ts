@@ -14,19 +14,20 @@ export const match = async (
       .leftJoinAndSelect('jobSeeker.skills', 'skill')
       .where('jobSeeker.id = :id', { id: jobSeekerId })
       .getOne()
-      console.log('match-js-id', jobSeekerId)
       console.log('jobSeekerWithSkills', jobSeekerWithSkills) // skills array is empty TODO: Fix
     if (!jobSeekerWithSkills) {
       throw new Error('Jobseeker not found')
     }
+
+    const jobSeekerSkills = jobSeekerWithSkills.skills
   
     //get jobpost required skills TODO: Fix this
-    const jobPostsWithRequiredSkills = await JobPost.createQueryBuilder('jobPost')
+    const jobPostsWithSkills = await JobPost.createQueryBuilder('jobPost')
       .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
       .where('jobPost.id = :id', { id: jobPosts.map((j: any) => j.id) })
-      //.andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeeker.skills}% })
+      //.andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeekerSkills}% })
       .getMany()
-      console.log('jobPostsWithRequiredSkills', jobPostsWithRequiredSkills)
+      console.log('jobPostsWithRequiredSkills', jobPostsWithSkills)
 
       if (jobPosts.length === 0) 
         throw new Error('Jobposts not found')
@@ -34,18 +35,14 @@ export const match = async (
         throw new Error('Jobseeker not found')
       }
 
-    const newJobSeeker = await JobSeeker.findOne({
-      where: { id: jobSeekerId }
-    })
-
     //get match
     const matchingSkills = _
       .chain(jobPosts)
-      .groupBy(newJobSeeker)
+      .groupBy(jobSeekerWithSkills)
       .map((jobPost: any, jobSeeker: any) => ({ 
-        jobSeeker: newJobSeeker, 
-        skills: _.filter(jobPost, jobPostsWithRequiredSkills) 
-        .includes(jobSeeker, jobSeekerWithSkills)
+        jobSeeker: jobSeekerWithSkills, 
+        skills: _.filter(jobPost, jobPostsWithSkills) 
+        .includes(jobSeeker, jobSeekerSkills)
       }))
     
     return (console.log('matching skills', matchingSkills))
