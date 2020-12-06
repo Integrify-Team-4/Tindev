@@ -112,6 +112,9 @@ export const updateEmployer = async (
     if (update.password) {
       employer.credentials.password = update.password
     }
+    if (update.jobPost) {
+      employer.jobPosts = update.jobPost
+    }
     const updatedEmployer = await Employer.save(employer)
     res.json({ message: 'Updated successfully', data: updatedEmployer })
   } catch (error) {
