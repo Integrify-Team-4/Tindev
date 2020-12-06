@@ -5,7 +5,6 @@ import { match } from '../../src/controllers/match'
 
 const form = {
   info: {
-    id: 1,
     firstName: 'duy',
     lastName: 'nguyen',
     contact: 1234,
@@ -21,7 +20,6 @@ const form = {
 
 const jobSeeker = {
   info: {
-    id: 1,
     firstName: 'duy',
     lastName: 'nguyen',
     contact: 1234,
@@ -43,44 +41,48 @@ const jobSeeker = {
   },
 }
 
-// const jobPost_1 = {
-//   id: 1,
-//   title: 'Fullstack React- & Node.js Developer',
-//   jobDescription: 'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-//   seniority: 'Junior',
-//   createdAt: "01/12/2020",
-//   requiredSkills: {
-//     skill_1: 'javascript',
-//     skill_2: 'typescript'
-//   }
-// }
+const jobPost_1 = {
+  title: 'Fullstack React- & Node.js Developer',
+  jobDescription: 'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+  seniority: 'Junior',
+  createdAt: "01/12/2020",
+  requiredSkills: {
+    skill_1: 'javascript',
+    skill_2: 'typescript'
+  }
+}
 
-// const jobPost_2 = {
-//   id: 1,
-//   title: 'Fullstack React- & Node.js Developer',
-//   jobDescription: 'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-//   seniority: 'Senior',
-//   createdAt: "01/12/2020",
-//   requiredSkills: {
-//     skill_1: 'javascript',
-//     skill_2: 'ruby',
-//     skill_3: 'rails'
-//   }
-// }
+const jobPost_2 = {
+  title: 'Fullstack React- & Node.js Developer',
+  jobDescription: 'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
+  seniority: 'Senior',
+  createdAt: "01/12/2020",
+  requiredSkills: {
+    skill_1: 'javascript',
+    skill_2: 'ruby',
+    skill_3: 'rails'
+  }
+}
 
-// const employer = {
-//   info: {
-//     id: 1,
-//     companyName: 'techeck',
-//     companyInfo: 'techeck-home',
-//     address: 'etcheck-address',
-//   },
-//   credential: {
-//     email: 'teckeck@gmail.com',
-//     password: 'password',
-//   },
-//   jobPost: jobPost_1,
-// }
+const employer = {
+  info: {
+    companyName: 'techeck',
+    companyInfo: 'techeck-home',
+    address: 'etcheck-address',
+  },
+  credential: {
+    email: 'teckeck@gmail.com',
+    password: 'password',
+  },
+  jobPosts: [
+    {
+      jobPost: jobPost_1
+    },
+    {
+      jobPost: jobPost_2
+    }
+  ]
+}
 
 const loginInput = {
   email: jobSeeker.credential.email,
@@ -93,16 +95,16 @@ const createJobSeeker = async () =>
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
 
-// const registerEmployer = async () => {
-//   await request(app).post('/employer/create').send(employer)
-// }
+const registerEmployer = async () => {
+  await request(app).post('/employer/create').send(employer)
+}
 
-// const createJobPost = async () => {
-//   await request(app).post('/employer/jobs/google').send(jobPost_1)
-//   await request(app).post('/employer/jobs/google').send(jobPost_2)
-// }
+const createJobPost = async () => {
+  await request(app).post('/employer/jobs/google').send(jobPost_1)
+  await request(app).post('/employer/jobs/google').send(jobPost_2)
+}
 
-//const jobPosts = [jobPost_1, jobPost_2]
+const jobPosts = [jobPost_1, jobPost_2]
 
 describe('user controller', () => {
   beforeAll(async () => {
@@ -216,12 +218,14 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
   })
 
-  // it('should match jobseeker skills with job posts skills', async () => {
-  //   createJobSeeker()
-  //   createJobPost()
-  //   registerEmployer()
-  //   await match(jobSeeker.info.id, jobPosts)
-  // })
+  it('should match jobseeker skills with job posts skills', async () => {
+    await createJobSeeker()
+    const jobSeekers = await request(app).get('/jobSeeker')
+    const jobSeekerId = jobSeekers.body[0].id
+    createJobPost()
+    registerEmployer()
+    await match(jobSeekerId, jobPosts)
+  })
 })
 
 

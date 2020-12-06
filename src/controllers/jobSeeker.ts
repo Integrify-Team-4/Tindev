@@ -10,7 +10,6 @@ import {
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import Credential from '../entities/Credential.postgres'
-import { getConnection, UpdateDateColumn } from 'typeorm'
 
 // Auth Controllers for job seeker
 export const jobSeekerLocalLogin = async (
@@ -56,7 +55,7 @@ export const createJobSeeker = async (
 
     await JobSeeker.save(newJobSeeker)
 
-    const jobSeekerId = info.id
+    const jobSeekerId = parseInt(req.params.id)
     const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
     if (!jobSeeker) {
       next(new NotFoundError(`${jobSeeker} not found`))
@@ -91,7 +90,7 @@ export const updateJobSeeker = async (
 ) => {
   try {
     const update = req.body
-    const jobSeekerId = req.params.id
+    const jobSeekerId = parseInt(req.params.id)
     const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
     if (!jobSeeker) {
       next(new NotFoundError(`${jobSeeker} not found`))
@@ -118,6 +117,6 @@ export const updateJobSeeker = async (
     await JobSeeker.update(jobSeekerId, update)
     res.status(200).json({ message: 'JobSeeker Updated' })
   } catch (error) {
-    next(new NotFoundError('ID NOT FIND'))
+    next(new NotFoundError('Jobseeker not found'))
   }
 }

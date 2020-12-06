@@ -93,7 +93,7 @@ describe('user controller', () => {
     expect(response.body.companyName).toBe('google')
     expect(response.body.id).toBe(1)
   })
-
+  //TODO: Fix
   it('should update employer', async () => {
     await registerEmployer()
     await createJobPost()
@@ -130,7 +130,7 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Posted')
   })
-
+  // TODO: Fix
   it('should update job post', async () => {
     await registerEmployer()
 
