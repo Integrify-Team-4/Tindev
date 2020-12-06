@@ -26,7 +26,7 @@ export const match = async (
     }
     // get jobpost required skills
     const jobPosts = await JobPost.createQueryBuilder('jobPost')
-      .innerJoinAndSelect('jobPost.requiredSkills', 'skill')
+      .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
       .where('jobPost.id = :id')
       //.andWhere('jobPost.requiredSkills like :requiredSkills', { skills: %${jobSeeker.skills}% })
       .getMany()
@@ -36,11 +36,15 @@ export const match = async (
       if (jobPosts.length === 0) 
         return next(new NotFoundError)
 
-      const skills = _
+      const matchingSkills = _
         .chain(jobPosts)
         .groupBy('jobSeeker')
-        .map((jobPost: any, jobSeeker: any) => ({ jobSeeker: jobSeeker, skills: _.sortBy(jobPost, 'requiredSkills') }))
-        return skills
+        .map((jobPost: any, jobSeeker: any) => ({ 
+          jobSeeker: jobSeeker, 
+          skills: _.filter(jobPost, 'requiredSkills') 
+          .includes(jobSeeker, 'skills')
+        }))
+      return matchingSkills
     }
     return matching
   } catch (error) {
