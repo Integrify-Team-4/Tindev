@@ -31,7 +31,7 @@ export const match = async (
     const jobPostsWithSkills = await JobPost.createQueryBuilder('jobPost')
       .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
       .where('jobPost.id = :id', { id: jobPosts.map((j: any) => ({ id: j.id, requiredSkills: j.requiredSkills })) })
-      .andWhere('jobPost.requiredSkills like :requiredSkills', { requiredSkills: `%${jobSeekerSkills}%` })
+      .andWhere('jobPost.requiredSkills like :skills', { skills: `%${jobSeekerSkills}%` })
       .getMany()
       return (console.log('jobPostsWithRequiredSkills', jobPostsWithSkills))
 
