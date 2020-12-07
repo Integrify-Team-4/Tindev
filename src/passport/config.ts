@@ -1,11 +1,12 @@
 import passportLocal from 'passport-local'
 import bcrypt from 'bcrypt'
+import passportJWT, { ExtractJwt } from 'passport-jwt'
 
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 
 const LocalStrategy = passportLocal.Strategy
-
+const JWTStrategy = passportJWT.Strategy
 export const local = new LocalStrategy(
   {
     usernameField: 'email',
@@ -32,5 +33,20 @@ export const local = new LocalStrategy(
     } catch (error) {
       console.log('error', error)
     }
+  }
+)
+
+export const jwt = new JWTStrategy(
+  {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET,
+  },
+  async (jwtPayload, done) => {
+    const { id } = jwtPayload
+    const user = await Credential.findOne(id, {
+      relations: ['jobSeeker', 'employer'],
+    })
+    if (!user) return done(null, false)
+    return done(null, user)
   }
 )
