@@ -1,53 +1,77 @@
 import { Request, Response, NextFunction } from 'express'
-const _ = require('lodash')
 
+import {
+  NotFoundError,
+  UnauthorizedError,
+  InternalServerError,
+  BadRequestError,
+} from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import JobPost from '../entities/JobPost.postgres'
+import Skill from '../entities/Skill.postgres'
 
 export const match = async (
-  jobSeekerId: number,
-  jobPosts: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   try {
-    if (jobPosts.length === 0) {
-      throw new Error('Jobposts not found')
-    }
-    if (!jobSeekerId) {
-      throw new Error('Jobseeker not found')
-    }
-    //get jobseeker skills
-    const jobSeekerWithSkills = await JobSeeker.createQueryBuilder('jobSeeker')
-      .leftJoinAndSelect('jobSeeker.skills', 'skill')
-      .where('jobSeeker.id = :id', { id: jobSeekerId })
-      .getOne()
-      console.log('jobSeekerWithSkills', jobSeekerWithSkills) // skills array is empty TODO: Fix
-    if (!jobSeekerWithSkills) {
-      throw new Error('Jobseeker not found')
+    const id = req.params.id
+    const jobSeeker = await JobSeeker.findOne(id, { relations: ['skills'] })
+
+    if (!jobSeeker) return next(new NotFoundError('User not found'))
+
+    const seekerSkillIds = jobSeeker.skills.map((skill) => skill.id)
+
+    const posts = await Promise.all(
+      seekerSkillIds.map(async (id) => {
+        const skill = (await Skill.findOne(id, {
+          relations: ['jobPosts'],
+        })) as Skill
+
+        return skill.jobPosts
+      })
+    )
+
+    type Acc = {
+      [id: string]: number
     }
 
-    const jobSeekerSkills = jobSeekerWithSkills.skills
-  
-    //get jobpost required skills TODO: Fix this
-    const jobPostsWithSkills = await JobPost.createQueryBuilder('jobPost')
-      .leftJoinAndSelect('jobPost.requiredSkills', 'skill')
-      .where('jobPost.id = :id', { id: jobPosts.map((j: any) => ({ id: j.id, requiredSkills: j.requiredSkills })) })
-      .andWhere('jobPost.requiredSkills like :skills', { skills: `%${jobSeekerSkills}%` })
-      .getMany()
-      return (console.log('jobPostsWithRequiredSkills', jobPostsWithSkills))
+    //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] */
+    const matchedPosts = posts.flat()
 
-    //get match
-    // const matchingSkills = _
-    //   .chain(jobPosts)
-    //   .groupBy(jobSeekerWithSkills)
-    //   .map((jobPost: any, jobSeeker: any) => ({ 
-    //     jobSeeker: jobSeekerWithSkills, 
-    //     skills: _.filter(jobPost, jobPostsWithSkills) 
-    //     .includes(jobSeeker, jobSeekerSkills)
-    //   }))
-    
-    // return (console.log('matching skills', matchingSkills))
+    //**Count the times that a post id come up and store it in a object */
+    const count = matchedPosts.reduce((acc: Acc, next: JobPost) => {
+      if (acc[next.id]) {
+        acc[next.id]++
+        return acc
+      }
+      acc[next.id] = 1
+      return acc
+    }, {})
+
+    //**Sort the id of posts based on its count */
+    const result = Object.keys(count).sort((a, b) => {
+      if (count[a] < count[b]) return 1
+      return -1
+    })
+
+    //**Take the first three ids */
+    const finalResult = result.slice(0, 3)
+
+    //**Query for the employers that own the post ids */
+    const matchedEmployers = await Promise.all(
+      finalResult.map(async (id) => {
+        const employer = ((await JobPost.findOne(id, {
+          relations: ['employer'],
+        })) as JobPost).employer
+        return employer
+      })
+    )
+
+    res.deliver(200, 'success', matchedEmployers)
   } catch (error) {
-    console.log('Internal server error', error)
+    next(new InternalServerError())
   }
 }
 

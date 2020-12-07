@@ -186,7 +186,7 @@ export const updateJobPost = async (
     if (update.requiredSkills) {
       jobPost!.requiredSkills = update.requiredSkills
     }
-
+    
     await JobPost.save(jobPost)
     res.status(200).json({ message: 'Updated' })
   } catch (error) {

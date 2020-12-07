@@ -29,7 +29,7 @@ export default class JobPost extends BaseEntity {
   @CreateDateColumn()
   createdAt!: Date
 
-  @ManyToMany(() => Skill, { cascade: ['insert'], nullable: true })
+  @ManyToMany(() => Skill, { nullable: true })
   @JoinTable()
   requiredSkills!: Skill[]
 

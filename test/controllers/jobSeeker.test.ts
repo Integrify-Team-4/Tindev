@@ -31,14 +31,14 @@ const jobSeeker = {
     email: 'abc@gmail.com',
     password: 'password',
   },
-  skills: {
-    skill_1: 'javascript',
-    skill_2: 'nodejs',
-    skill_3: 'reactjs',
-    skill_4: 'typescript',
-    skill_5: 'html',
-    skill_6: 'css'
-  },
+  skills: [
+    { skill_1: 'javascript' },
+    { skill_2: 'nodejs' },
+    { skill_3: 'reactjs' },
+    { skill_4: 'typescript' },
+    { skill_5: 'html' },
+    { skill_6: 'css' }
+  ],
 }
 
 const jobPost_1 = {
@@ -90,7 +90,7 @@ const loginInput = {
 }
 
 const createJobSeeker = async () =>
-  await request(app).post('/jobSeeker/create').send(form)
+  await request(app).post('/jobSeeker/create').send(jobSeeker)
 
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
@@ -99,12 +99,15 @@ const registerEmployer = async () => {
   await request(app).post('/employer/create').send(employer)
 }
 
+const creatingSkills = async () => {
+  await request(app).post('/skills/create').send({ name: 'javascript' })
+  await request(app).post('/skills/create').send({ name: 'reactjs' })
+}
+
 const createJobPost = async () => {
   await request(app).post('/employer/jobs/google').send(jobPost_1)
   await request(app).post('/employer/jobs/google').send(jobPost_2)
 }
-
-const jobPosts = [jobPost_1, jobPost_2]
 
 describe('user controller', () => {
   beforeAll(async () => {
@@ -224,7 +227,7 @@ describe('user controller', () => {
     const jobSeekerId = jobSeekers.body[0].id
     createJobPost()
     registerEmployer()
-    await match(jobSeekerId, jobPosts)
+    await match(jobSeekerId)
   })
 })
 

@@ -10,6 +10,7 @@ import {
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import Credential from '../entities/Credential.postgres'
+import Skills from '../entities/Skill.postgres'
 
 // Auth Controllers for job seeker
 export const jobSeekerLocalLogin = async (
@@ -38,7 +39,7 @@ export const createJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const { info, credential } = req.body
+    const { info, credential, skill } = req.body
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
@@ -48,9 +49,11 @@ export const createJobSeeker = async (
     }
     credential.password = await bcrypt.hash(credential.password, 8)
     const newCredential = Credential.create({ ...credential })
+    const jobSeekerSkill = Skills.create({...skill })
     const newJobSeeker = JobSeeker.create({
       ...info,
       credentials: newCredential,
+      skills: jobSeekerSkill
     })
 
     await JobSeeker.save(newJobSeeker)
@@ -75,7 +78,7 @@ export const getJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const user = await JobSeeker.find({ relations: ['credentials'] })
+    const user = await JobSeeker.find({ relations: ['credentials', 'skills'] })
     res.json(user)
   } catch (error) {
     console.log(error)
