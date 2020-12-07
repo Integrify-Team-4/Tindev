@@ -40,6 +40,8 @@ export const createJobSeeker = async (
 ) => {
   try {
     const { info, credential } = req.body
+    // console.log("req.body.info:::", info)
+    // console.log("req.body.credential:::", credential)
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
@@ -86,7 +88,7 @@ export const updateJobSeeker = async (
   try {
     const update = req.body
     console.log('update get body request', update)
-    const jobSeekerId = req.params.id
+    const jobSeekerId = parseInt(req.params.id)
     console.log('Jobseeker ID ', jobSeekerId)
     const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
     if (!jobSeeker) {

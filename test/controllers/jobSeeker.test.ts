@@ -67,7 +67,6 @@ describe('user controller', () => {
   it('should create a job seeker', async () => {
     const response = await createJobSeeker()
     const newUser = await request(app).get('/jobSeeker')
-    console.log(newUser.body)
 
     expect(response.status).toBe(200)
     expect(newUser.body.length).toBe(1)
@@ -102,4 +101,12 @@ describe('user controller', () => {
     console.log('update Response ', updateResponse.body)
     expect(response.status).toBe(200)
   })
+<<<<<<< HEAD
+=======
+  it('job Seeker should log in', async () => {
+    await createJobSeeker()
+    const response = await logInJobSeeker()
+    expect(response.status).toBe(200)
+  })
+>>>>>>> 82c5c47b0c01d948ee0732e45c39c00830a12490
 })

@@ -7,6 +7,7 @@ import passport from 'passport'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
+import responseHandler from './middlewares/responseHandler'
 
 import jobSeekerRouter from './routers/jobSeeker'
 import employerRouter from './routers/employer'
@@ -29,6 +30,7 @@ app.use(lusca.xssProtection(true))
 app.use(passport.initialize())
 passport.use(local)
 
+app.use(responseHandler)
 //**All routers here*/
 app.use('/jobSeeker', jobSeekerRouter)
 app.use('/employer', employerRouter)
