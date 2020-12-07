@@ -1,4 +1,13 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from 'typeorm'
+
+import JobSeeker from './JobSeeker.postgres'
+import JobPost from './JobPost.postgres'
 
 @Entity()
 export default class Skill extends BaseEntity {
@@ -7,4 +16,10 @@ export default class Skill extends BaseEntity {
 
   @Column()
   name!: string
+
+  @ManyToMany(() => JobPost, (jobPost) => jobPost.requiredSkills)
+  jobPosts!: JobPost[]
+
+  @ManyToMany(() => JobSeeker, (jobSeeker) => jobSeeker.skills)
+  jobSeekers!: JobSeeker[]
 }
