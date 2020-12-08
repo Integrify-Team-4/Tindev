@@ -44,7 +44,7 @@ const loginEmployer = async () =>
 const createJobPost = async () =>
   await request(app).post('/employer/jobs/google').send(jobPost)
 
-describe('user controller', () => {
+describe('employer controller', () => {
   beforeAll(async () => {
     await connection.create()
   })

@@ -1,7 +1,13 @@
+import { NextFunction, Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
 
+jest.mock(
+  '../../src/middlewares/tokenVerify',
+  () => (req: Request, res: Response, next: NextFunction) => next()
+)
 const form = {
   info: {
     firstName: 'duy',
@@ -53,14 +59,15 @@ describe('user controller', () => {
   afterAll(async () => {
     await connection.close()
   })
+  // user should fail to log in because of wrong email
   it('Should not log in if email not found', async () => {
-    const loginInput = {
+    const wrong_loginInput = {
       email: 'duy@gmail.com',
       password: 'duy@123',
     }
     const response = await request(app)
       .post('/jobSeeker/login/local')
-      .send(loginInput)
+      .send(wrong_loginInput)
     expect(response.body.message).toEqual('Email duy@gmail.com not found')
   })
 
@@ -72,6 +79,7 @@ describe('user controller', () => {
     expect(newUser.body.length).toBe(1)
   })
 
+<<<<<<< HEAD
   // Login JobSeeker
   it('should login jobseeker', async () => {
     const jobSeeker = {
@@ -101,37 +109,21 @@ describe('user controller', () => {
       .post('/jobSeeker/login/local')
       .send(loginInput)
     console.log(response.body)
+=======
+  // user should log in if credential is 100% matched
+
+  it('job Seeker should log in', async () => {
+    await createJobSeeker()
+    const response = await logInJobSeeker()
+    console.log('hello i am from job seeker login test file ', response.body)
+>>>>>>> f55c763617139e62de4fd58a9084e4043bb24dfc
     expect(response.status).toBe(200)
   })
 
   // Update JobSeeker
   it('Update JobSeeker Info', async () => {
-    const jobSeeker = {
-      info: {
-        firstName: 'duy',
-        lastName: 'nguyen',
-        contact: 1234,
-        relocate: true,
-        seniority: 'junior',
-        startingDate: '10/12/2020',
-      },
-      credential: {
-        email: 'abc@gmail.com',
-        password: 'password',
-      },
-    }
-
-    const response1 = await request(app)
-      .post('/jobSeeker/create')
-      .send(jobSeeker)
-
-    const loginInput = {
-      email: jobSeeker.credential.email,
-      password: jobSeeker.credential.password,
-    }
-    const response = await request(app)
-      .post('/jobSeeker/login/local')
-      .send(loginInput)
+    await createJobSeeker()
+    const response = await logInJobSeeker()
     const jobSeekerId = response.body.id
     const update = {
       firstName: 'Update Duy',
@@ -146,11 +138,7 @@ describe('user controller', () => {
       .send(update)
     console.log('update Response ', updateResponse.body)
     expect(response.status).toBe(200)
-  })
-  it('job Seeker should log in', async () => {
-    await createJobSeeker()
-    const response = await logInJobSeeker()
-    expect(response.status).toBe(200)
+    expect(updateResponse.status).toBe(200)
   })
 
   // it('should match jobseeker with job posts', async () => {

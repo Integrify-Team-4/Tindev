@@ -1,4 +1,5 @@
 import express from 'express'
+import tokenVerify from '../middlewares/tokenVerify'
 
 import {
   getJobSeeker,
@@ -13,6 +14,6 @@ router.get('/', getJobSeeker)
 router.post('/create', createJobSeeker)
 router.post('/create', match)
 router.post('/login/local', jobSeekerLocalLogin)
-router.put('/update/:id', updateJobSeeker)
+router.put('/update/:id', tokenVerify, updateJobSeeker)
 
 export default router
