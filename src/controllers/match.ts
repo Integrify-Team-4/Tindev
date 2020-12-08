@@ -28,7 +28,7 @@ export const match = async (
         const skill = (await Skill.findOne(id, {
           relations: ['jobPosts'],
         })) as Skill
-
+    
         return skill.jobPosts
       })
     )
