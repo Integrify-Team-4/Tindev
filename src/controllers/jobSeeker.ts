@@ -10,7 +10,6 @@ import {
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import Credential from '../entities/Credential.postgres'
-import Skills from '../entities/Skill.postgres'
 
 // Auth Controllers for job seeker
 export const jobSeekerLocalLogin = async (
