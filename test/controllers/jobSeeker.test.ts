@@ -48,7 +48,7 @@ const createJobSeeker = async () =>
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
 
-describe('user controller', () => {
+describe('jobSeeker controller', () => {
   beforeAll(async () => {
     await connection.create()
   })
@@ -79,44 +79,12 @@ describe('user controller', () => {
     expect(newUser.body.length).toBe(1)
   })
 
-<<<<<<< HEAD
-  // Login JobSeeker
-  it('should login jobseeker', async () => {
-    const jobSeeker = {
-      info: {
-        firstName: 'duy',
-        lastName: 'nguyen',
-        contact: 1234,
-        relocate: true,
-        seniority: 'junior',
-        startingDate: '10/12/2020',
-      },
-      credential: {
-        email: 'abc@gmail.com',
-        password: 'password',
-      },
-    }
-
-    const response1 = await request(app)
-      .post('/jobSeeker/create')
-      .send(jobSeeker)
-    console.log('user created Successfully ', response1.body)
-    const loginInput = {
-      email: jobSeeker.credential.email,
-      password: jobSeeker.credential.password,
-    }
-    const response = await request(app)
-      .post('/jobSeeker/login/local')
-      .send(loginInput)
-    console.log(response.body)
-=======
   // user should log in if credential is 100% matched
 
   it('job Seeker should log in', async () => {
     await createJobSeeker()
     const response = await logInJobSeeker()
     console.log('hello i am from job seeker login test file ', response.body)
->>>>>>> f55c763617139e62de4fd58a9084e4043bb24dfc
     expect(response.status).toBe(200)
   })
 
@@ -144,9 +112,6 @@ describe('user controller', () => {
   // it('should match jobseeker with job posts', async () => {
   //   const response = await createJobSeeker()
   //   const newUser = await request(app).get('/jobSeeker')
-    
 
   // })
 })
-
-

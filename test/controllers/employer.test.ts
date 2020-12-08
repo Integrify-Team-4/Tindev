@@ -116,19 +116,11 @@ describe('employer controller', () => {
     expect(response.body.message).toBe('Updated')
   })
 
-  it('should get employers', async () => {
-    await registerEmployer()
-    const response = await request(app)
-      .get('/employer')
-
-    expect(response.status).toBe(200)
-  })
-
   it('should create a new job post', async () => {
     await registerEmployer()
     const response = await createJobPost()
     expect(response.status).toBe(200)
-    expect(response.body.message).toBe('Posted')
+    expect(response.body.message).toBe('posted')
   })
 
   it('should update job post', async () => {
@@ -136,7 +128,8 @@ describe('employer controller', () => {
 
     const response = await createJobPost()
 
-    const jobPostId = response.body.savedJobPost.id
+    console.log(response.body)
+    const jobPostId = response.body.payload.id
     const update = {
       title: 'Updated job title',
     }
