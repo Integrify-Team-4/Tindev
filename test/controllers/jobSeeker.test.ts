@@ -101,12 +101,4 @@ describe('user controller', () => {
     console.log('update Response ', updateResponse.body)
     expect(response.status).toBe(200)
   })
-<<<<<<< HEAD
-=======
-  it('job Seeker should log in', async () => {
-    await createJobSeeker()
-    const response = await logInJobSeeker()
-    expect(response.status).toBe(200)
-  })
->>>>>>> 82c5c47b0c01d948ee0732e45c39c00830a12490
-})
+
