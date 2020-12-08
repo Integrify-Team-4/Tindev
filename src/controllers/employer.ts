@@ -18,7 +18,7 @@ export const localLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', function (error, user, info) {
+  passport.authenticate('local', function (error, user: Employer, info) {
     if (error) {
       return next(new InternalServerError())
     }
@@ -46,7 +46,9 @@ export const registerEmployer = async (
     })
 
     if (exists) {
-      next(new BadRequestError(`Email ${credential.email} already exists`))
+      return next(
+        new BadRequestError(`Email ${credential.email} already exists`)
+      )
     }
 
     credential.password = await bcrypt.hash(credential.password, 8)
@@ -117,6 +119,20 @@ export const updateEmployer = async (
   }
 }
 
+// getting employer based on matched credentials
+export const getEmployer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await Employer.find({ relations: ['credentials'] })
+    res.json(user)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const createJobPost = async (
   req: Request,
   res: Response,
@@ -137,8 +153,7 @@ export const createJobPost = async (
     })
 
     const savedJobPost = await JobPost.save(newJobPost)
-    // console.log("savedJobPost:::1", savedJobPost)
-    res.json({ message: 'Posted', savedJobPost })
+    res.deliver(201, 'posted', savedJobPost)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -208,5 +223,16 @@ export const deleteJobPostbyId = async (
     res.json({ message: 'success' })
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const getMatch = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    return next(new NotFoundError())
   }
 }

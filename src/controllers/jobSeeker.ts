@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
+
 import {
   NotFoundError,
   UnauthorizedError,
@@ -9,7 +10,6 @@ import {
 } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import Credential from '../entities/Credential.postgres'
-import { getConnection, UpdateDateColumn } from 'typeorm'
 
 // Auth Controllers for job seeker
 export const jobSeekerLocalLogin = async (
@@ -27,11 +27,16 @@ export const jobSeekerLocalLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
-    res.status(200).send(jobSeeker)
+    const id = jobSeeker.id
+    console.log('hello id', id)
+
+    const token = jwt.sign({ id: id }, process.env.JWT_SECRET as string)
+    console.log(token)
+    const userSerialize = { ...jobSeeker, token }
+    res.status(200).send(userSerialize)
   })(req, res, next)
 }
 
-// Register Job Seeker
 export const createJobSeeker = async (
   req: Request,
   res: Response,
@@ -39,15 +44,16 @@ export const createJobSeeker = async (
 ) => {
   try {
     const { info, credential } = req.body
-    // console.log("req.body.info:::", info)
-    // console.log("req.body.credential:::", credential)
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
 
     if (exists) {
-      next(new BadRequestError(`Email ${credential.email} already exists`))
+      return next(
+        new BadRequestError(`Email ${credential.email} already exists`)
+      )
     }
+
     credential.password = await bcrypt.hash(credential.password, 8)
     const newCredential = Credential.create({ ...credential })
     const newJobSeeker = JobSeeker.create({

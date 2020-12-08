@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import Skill from '../../src/entities/Skill.postgres'
+import Skill from '../entities/Skill.postgres'
 
 import {
   NotFoundError,
