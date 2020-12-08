@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
-
+import jwt from 'jsonwebtoken'
 import {
   NotFoundError,
   UnauthorizedError,
