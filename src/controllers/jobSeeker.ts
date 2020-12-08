@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
-
+import jwt from 'jsonwebtoken'
 import {
   NotFoundError,
   UnauthorizedError,
@@ -27,11 +27,16 @@ export const jobSeekerLocalLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
-    res.status(200).send(jobSeeker)
+    const id = jobSeeker.id
+    console.log('hello id', id)
+
+    const token = jwt.sign({ id: id }, process.env.JWT_SECRET as string)
+    console.log(token)
+    const userSerialize = { ...jobSeeker, token }
+    res.status(200).send(userSerialize)
   })(req, res, next)
 }
 
-// Register Job Seeker and match with job posts
 export const createJobSeeker = async (
   req: Request,
   res: Response,
@@ -44,8 +49,11 @@ export const createJobSeeker = async (
     })
 
     if (exists) {
-      next(new BadRequestError(`Email ${credential.email} already exists`))
+      return next(
+        new BadRequestError(`Email ${credential.email} already exists`)
+      )
     }
+
     credential.password = await bcrypt.hash(credential.password, 8)
     const newCredential = Credential.create({ ...credential })
     const newJobSeeker = JobSeeker.create({

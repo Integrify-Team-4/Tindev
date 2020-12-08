@@ -210,6 +210,3 @@ export const deleteJobPostbyId = async (
     console.log(error)
   }
 }
-
-
-

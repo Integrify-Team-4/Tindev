@@ -7,9 +7,8 @@ import {
   updateJobPost,
   getJobPosts,
   deleteJobPostbyId,
-  //getEmployer,
-  getEmployers,
   updateEmployer,
+  getEmployers,
 } from '../controllers/employer'
 import { match } from '../controllers/match'
 
@@ -25,6 +24,8 @@ router.get('/jobs', getJobPosts)
 //router.get('/:id', getEmployer)
 router.get('/', getEmployers)
 router.get('/jobs/match/:id', match)
+router.get('/', getEmployers)
+router.put('/:id', updateEmployer)
 
 // deleting job post by id
 router.delete('/jobs/:id', deleteJobPostbyId)

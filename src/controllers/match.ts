@@ -32,10 +32,8 @@ export const match = async (
         return skill.jobPosts
       })
     )
-<<<<<<< HEAD
-=======
+
     console.log('posts', posts)
->>>>>>> matcher
 
     type Acc = {
       [id: string]: number
@@ -43,10 +41,8 @@ export const match = async (
 
     //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] */
     const matchedPosts = posts.flat()
-<<<<<<< HEAD
-=======
+
     console.log('matchedPosts', matchedPosts)
->>>>>>> matcher
 
     //**Count the times that a post id come up and store it in a object */
     const count = matchedPosts.reduce((acc: Acc, next: JobPost) => {
@@ -57,20 +53,16 @@ export const match = async (
       acc[next.id] = 1
       return acc
     }, {})
-<<<<<<< HEAD
-=======
+
     console.log('count', count)
->>>>>>> matcher
 
     //**Sort the id of posts based on its count */
     const result = Object.keys(count).sort((a, b) => {
       if (count[a] < count[b]) return 1
       return -1
     })
-<<<<<<< HEAD
-=======
+
     console.log(result)
->>>>>>> matcher
 
     //**Take the first three ids */
     const finalResult = result.slice(0, 3)

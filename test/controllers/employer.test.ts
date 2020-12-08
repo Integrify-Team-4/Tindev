@@ -44,7 +44,7 @@ const loginEmployer = async () =>
 const createJobPost = async () =>
   await request(app).post('/employer/jobs/google').send(jobPost)
 
-describe('user controller', () => {
+describe('employer controller', () => {
   beforeAll(async () => {
     await connection.create()
   })
@@ -116,14 +116,6 @@ describe('user controller', () => {
     expect(response.body.message).toBe('Updated')
   })
 
-  it('should get employers', async () => {
-    await registerEmployer()
-    const response = await request(app)
-      .get('/employer')
-
-    expect(response.status).toBe(200)
-  })
-
   it('should create a new job post', async () => {
     await registerEmployer()
     const response = await createJobPost()
@@ -136,7 +128,8 @@ describe('user controller', () => {
 
     const response = await createJobPost()
 
-    const jobPostId = response.body.savedJobPost.id
+    console.log(response.body)
+    const jobPostId = response.body.payload.id
     const update = {
       title: 'Updated job title',
     }
