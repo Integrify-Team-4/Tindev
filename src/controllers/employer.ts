@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
@@ -12,6 +11,8 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
+import { match } from '../controllers/match'
+import { any } from 'bluebird'
 
 //**Auth controllers */
 export const localLogin = async (
@@ -138,8 +139,7 @@ export const createJobPost = async (
     })
 
     const savedJobPost = await JobPost.save(newJobPost)
-    // console.log("savedJobPost:::1", savedJobPost)
-    res.json({ message: 'Posted', savedJobPost })
+    res.deliver(201, 'Posted', savedJobPost)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -186,7 +186,6 @@ export const updateJobPost = async (
     if (update.requiredSkills) {
       jobPost!.requiredSkills = update.requiredSkills
     }
-    
     await JobPost.save(jobPost)
     res.status(200).json({ message: 'Updated' })
   } catch (error) {
@@ -211,3 +210,6 @@ export const deleteJobPostbyId = async (
     console.log(error)
   }
 }
+
+
+

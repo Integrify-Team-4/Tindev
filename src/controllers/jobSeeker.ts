@@ -39,7 +39,7 @@ export const createJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const { info, credential, skill } = req.body
+    const { info, credential } = req.body
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
@@ -49,21 +49,12 @@ export const createJobSeeker = async (
     }
     credential.password = await bcrypt.hash(credential.password, 8)
     const newCredential = Credential.create({ ...credential })
-    const jobSeekerSkill = Skills.create({...skill })
     const newJobSeeker = JobSeeker.create({
       ...info,
       credentials: newCredential,
-      skills: jobSeekerSkill
     })
 
     await JobSeeker.save(newJobSeeker)
-
-    const jobSeekerId = parseInt(req.params.id)
-    const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
-    if (!jobSeeker) {
-      next(new NotFoundError(`${jobSeeker} not found`))
-    }
-    await JobSeeker.match(jobSeekerId)
 
     res.send('success')
   } catch (error) {
