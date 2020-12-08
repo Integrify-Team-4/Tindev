@@ -48,4 +48,8 @@ export default class Employer extends BaseEntity {
   static localLogin(email: string, password: string) {
     return this.find({ where: { email: email, password: password } })
   }
+
+  static updateEmployer(id: string, update: Partial<Employer>) {
+    return this.find({ where: { id: id, update: update } })
+  }
 }

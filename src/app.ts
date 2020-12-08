@@ -3,8 +3,8 @@ import compression from 'compression'
 import bodyParser from 'body-parser'
 import lusca from 'lusca'
 import 'reflect-metadata'
+import { ENVIRONMENT } from './util/secrets'
 import passport from 'passport'
-
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 import responseHandler from './middlewares/responseHandler'
@@ -13,12 +13,13 @@ import jobSeekerRouter from './routers/jobSeeker'
 import employerRouter from './routers/employer'
 import skillsRouter from './routers/skills'
 
-import { local } from './passport/config'
+import { local, jwt } from './passport/config'
 
 const app = express()
-
+console.log('IT IS ENVIRONMENT ', ENVIRONMENT)
 //**Express configuration*/
-app.set('port', 5000)
+
+app.set('port', process.env.PORT || 5000)
 
 //**Use common 3rd-party middlewares*/
 app.use(compression())
@@ -29,6 +30,7 @@ app.use(lusca.xssProtection(true))
 
 app.use(passport.initialize())
 passport.use(local)
+passport.use(jwt)
 
 app.use(responseHandler)
 //**All routers here*/
