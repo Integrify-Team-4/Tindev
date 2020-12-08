@@ -40,7 +40,6 @@ export const createJobSeeker = async (
 ) => {
   try {
     const { info, credential } = req.body
-    const jobSeeker = req.body
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
@@ -56,10 +55,6 @@ export const createJobSeeker = async (
     })
 
     await JobSeeker.save(newJobSeeker)
-
-    const jobSeekerId = parseInt(req.params.id)
-    await JobSeeker.findOne(jobSeekerId)
-    await JobSeeker.match(jobSeeker)
 
     res.send('success')
   } catch (error) {
@@ -90,9 +85,7 @@ export const updateJobSeeker = async (
 ) => {
   try {
     const update = req.body
-    console.log('update get body request', update)
     const jobSeekerId = parseInt(req.params.id)
-    console.log('Jobseeker ID ', jobSeekerId)
     const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
     if (!jobSeeker) {
       next(new NotFoundError(`${jobSeeker} not found`))

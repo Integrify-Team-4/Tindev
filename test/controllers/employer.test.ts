@@ -131,12 +131,13 @@ describe('user controller', () => {
     expect(response.body.message).toBe('Posted')
   })
 
+  // TODO: Fix
   it('should update job post', async () => {
     await registerEmployer()
 
     const response = await createJobPost()
-
-    const jobPostId = response.body.savedJobPost.id
+  
+    const jobPostId = response.body.id
     const update = {
       title: 'Updated job title',
     }

@@ -11,6 +11,8 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
+import { match } from '../controllers/match'
+import { any } from 'bluebird'
 
 //**Auth controllers */
 export const localLogin = async (
@@ -153,7 +155,7 @@ export const createJobPost = async (
     })
 
     const savedJobPost = await JobPost.save(newJobPost)
-    res.deliver(201, 'posted', savedJobPost)
+    res.deliver(201, 'Posted', savedJobPost)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -226,13 +228,5 @@ export const deleteJobPostbyId = async (
   }
 }
 
-export const getMatch = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-  } catch (error) {
-    return next(new NotFoundError())
-  }
-}
+
+
