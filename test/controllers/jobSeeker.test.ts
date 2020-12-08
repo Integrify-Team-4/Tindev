@@ -48,7 +48,7 @@ const createJobSeeker = async () =>
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
 
-describe('user controller', () => {
+describe('jobSeeker controller', () => {
   beforeAll(async () => {
     await connection.create()
   })
@@ -108,4 +108,10 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
     expect(updateResponse.status).toBe(200)
   })
+
+  // it('should match jobseeker with job posts', async () => {
+  //   const response = await createJobSeeker()
+  //   const newUser = await request(app).get('/jobSeeker')
+
+  // })
 })

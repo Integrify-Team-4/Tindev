@@ -2,7 +2,6 @@ import passportLocal from 'passport-local'
 import bcrypt from 'bcrypt'
 import passportJWT, { ExtractJwt } from 'passport-jwt'
 
-import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 
 const LocalStrategy = passportLocal.Strategy
