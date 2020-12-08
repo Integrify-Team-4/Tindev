@@ -8,14 +8,13 @@ jest.mock(
   '../../src/middlewares/tokenVerify',
   () => (req: Request, res: Response, next: NextFunction) => next()
 )
-
-const jobSeeker = {
+const form = {
   info: {
     firstName: 'duy',
     lastName: 'nguyen',
     contact: 1234,
     relocate: true,
-    seniority: 'mid',
+    seniority: 'junior',
     startingDate: '10/12/2020',
   },
   credential: {
@@ -24,18 +23,32 @@ const jobSeeker = {
   },
 }
 
+const jobSeeker = {
+  info: {
+    firstName: 'duy',
+    lastName: 'nguyen',
+    contact: 1234,
+    relocate: true,
+    seniority: 'junior',
+    startingDate: '10/12/2020',
+  },
+  credential: {
+    email: 'abc@gmail.com',
+    password: 'password',
+  },
+}
 const loginInput = {
   email: jobSeeker.credential.email,
   password: jobSeeker.credential.password,
 }
 
 const createJobSeeker = async () =>
-  await request(app).post('/jobSeeker/create').send(jobSeeker)
+  await request(app).post('/jobSeeker/create').send(form)
 
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
 
-describe('user controller', () => {
+describe('jobSeeker controller', () => {
   beforeAll(async () => {
     await connection.create()
   })
@@ -95,5 +108,10 @@ describe('user controller', () => {
     expect(response.status).toBe(200)
     expect(updateResponse.status).toBe(200)
   })
-})
 
+  // it('should match jobseeker with job posts', async () => {
+  //   const response = await createJobSeeker()
+  //   const newUser = await request(app).get('/jobSeeker')
+
+  // })
+})
