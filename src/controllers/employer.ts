@@ -124,7 +124,7 @@ export const createJobPost = async (
   next: NextFunction
 ) => {
   try {
-    const { info, skill } = req.body
+    const { info, skills } = req.body
     const companyName = req.params.companyName
     const postingEmployer = await Employer.getEmployerByCompanyName(companyName)
 
@@ -132,11 +132,11 @@ export const createJobPost = async (
       return next(new NotFoundError(`Employer ${companyName} not found`))
     }
 
-    const newSkill = Skill.create({ ...skill })
+    const seekerSkills = Skill.find({ where: { requiredSkills: skills.requiredSkills } })
 
     const newJobPost = JobPost.create({
       ...info,
-      requiredSkills: newSkill,
+      requiredSkills: seekerSkills,
       employer: postingEmployer,
     })
 
