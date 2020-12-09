@@ -132,7 +132,7 @@ export const createJobPost = async (
       return next(new NotFoundError(`Employer ${companyName} not found`))
     }
 
-    const seekerSkills = Skill.find({ where: { id: skills.id } })
+    const seekerSkills = Skill.find({ where: { id: skills.map((s: any) => s.id) } })
 
     const newJobPost = JobPost.create({
       ...info,
