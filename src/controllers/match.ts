@@ -20,7 +20,7 @@ export const match = async (
     const jobSeeker = await JobSeeker.findOne(id, { relations: ['skills'] })
 
     if (!jobSeeker) return next(new NotFoundError('User not found'))
-
+  
     const seekerSkillIds = jobSeeker.skills.map((skill) => skill.id)
 
     const posts = await Promise.all(
@@ -28,12 +28,24 @@ export const match = async (
         const skill = (await Skill.findOne(id, {
           relations: ['jobPosts'],
         })) as Skill
-    
+        
         return skill.jobPosts
       })
     )
 
-    console.log('posts', posts)
+    // const jobPosts = await JobPost.find()
+
+    // const matched = await Promise.all(
+    //   jobPosts.map(jobPost => {
+    //     return seekerSkillIds.map(id => {
+    //       if (jobPost.requiredSkills.map(rs => rs.id === id)) {
+    //       return jobPost
+    //       }
+    //     })
+    //   })
+    // )
+
+    // console.log(matched)
 
     type Acc = {
       [id: string]: number
@@ -48,7 +60,7 @@ export const match = async (
     const count = matchedPosts.reduce((acc: Acc, next: JobPost) => {
       if (acc[next.id]) {
         acc[next.id]++
-        return acc
+          return acc
       }
       acc[next.id] = 1
       return acc

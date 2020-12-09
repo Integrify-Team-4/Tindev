@@ -11,8 +11,7 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
-import { match } from '../controllers/match'
-import { any } from 'bluebird'
+import Skill from '../entities/Skill.postgres'
 
 //**Auth controllers */
 export const localLogin = async (
@@ -125,7 +124,7 @@ export const createJobPost = async (
   next: NextFunction
 ) => {
   try {
-    const jobPost = req.body
+    const { info, skill } = req.body
     const companyName = req.params.companyName
     const postingEmployer = await Employer.getEmployerByCompanyName(companyName)
 
@@ -133,8 +132,11 @@ export const createJobPost = async (
       return next(new NotFoundError(`Employer ${companyName} not found`))
     }
 
+    const newSkill = Skill.create({ ...skill })
+
     const newJobPost = JobPost.create({
-      ...jobPost,
+      ...info,
+      requiredSkills: newSkill,
       employer: postingEmployer,
     })
 

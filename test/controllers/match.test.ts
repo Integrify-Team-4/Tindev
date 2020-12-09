@@ -7,30 +7,31 @@ process.on('uncaughtException', function (err) {
 });
 
 const creatingSkills = async () => {
-  await request(app).post('/skills/create').send({ name: 'javascript' })
-  await request(app).post('/skills/create').send({ name: 'reactjs' })
-  await request(app).post('/skills/create').send({ name: 'typescript' })
-  await request(app).post('/skills/create').send({ name: 'react' })
-  await request(app).post('/skills/create').send({ name: 'nodejs' })
-  await request(app).post('/skills/create').send({ name: 'docker' })
-  await request(app).post('/skills/create').send({ name: 'aws' })
-  await request(app).post('/skills/create').send({ name: 'gcp' })
-  await request(app).post('/skills/create').send({ name: 'iac' })
+  const skill1 = await request(app).post('/skills/create').send({ name: 'javascript' })
+  const skill2 = await request(app).post('/skills/create').send({ name: 'reactjs' })
+  const skill3 = await request(app).post('/skills/create').send({ name: 'typescript' })
+  const skill4 = await request(app).post('/skills/create').send({ name: 'react' })
+  const skill5 = await request(app).post('/skills/create').send({ name: 'nodejs' })
+  const skill6 = await request(app).post('/skills/create').send({ name: 'docker' })
+  const skill7 = await request(app).post('/skills/create').send({ name: 'aws' })
+  const skill8 = await request(app).post('/skills/create').send({ name: 'gcp' })
+  const skill9 = await request(app).post('/skills/create').send({ name: 'iac' })
+  return [skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, skill9]
 }
 
 const jobPost1Skills = async () => {
-  await request(app).get('/skills/1').send({ name: 'javascript' })
-  await request(app).get('/skills/2').send({ name: 'reactjs' })
-  await request(app).get('/skills/3').send({ name: 'nodejs' })
+  await request(app).get('/skills/1')
+  await request(app).get('/skills/2')
+  await request(app).get('/skills/3')
 }
 
 const jobPost2Skills = async () => {
-  await request(app).get('/skills/1').send({ name: 'javascript' })
-  await request(app).get('/skills/2').send({ name: 'reactjs' })
-  await request(app).get('/skills/3').send({ name: 'typescript' })
-  await request(app).get('/skills/4').send({ name: 'react' })
-  await request(app).get('/skills/5').send({ name: 'nodejs' })
-  await request(app).get('/skills/6').send({ name: 'docker' })
+  await request(app).get('/skills/1')
+  await request(app).get('/skills/2')
+  await request(app).get('/skills/3')
+  await request(app).get('/skills/4')
+  await request(app).get('/skills/5')
+  await request(app).get('/skills/6')
 }
 
 const jobPost3Skills = async () => {
@@ -39,7 +40,7 @@ const jobPost3Skills = async () => {
   await request(app).get('/skills/9')
 }
 
-const jobSeekerSkills = async () => {
+const skills = async (): Promise<request.Response> => {
   return await request(app).get('/skills')
 }
 
@@ -56,8 +57,11 @@ const jobSeeker = {
     email: 'abc@gmail.com',
     password: 'password',
   },
-  skills: jobSeekerSkills()
+  skills: [
+    skills
+  ]
 }
+console.log('JOBSEEKER', jobSeeker)
 
 const jobPost_1 = {
   title: 'Fullstack React- & Node.js Developer',
@@ -165,8 +169,8 @@ describe('match controller', () => {
   })
 
   it('should return jobseeker-company-match', async () => {
-    const jobSeeker = await createJobSeeker() 
-    console.log('jobSeeker', jobSeeker.body) // {}
+    // const jobSeeker = await createJobSeeker() 
+    // console.log('jobSeeker', jobSeeker.body) // {}
     await creatingSkills()
     await createJobPost1()
     await createJobPost2()
@@ -175,14 +179,14 @@ describe('match controller', () => {
     
     // NOT OK
     const newUser = await request(app).get(`/jobSeeker`)
-    console.log('newwUser', newUser.body) // {}
-    const jobPosts = await request(app).get('/employer/jobs')
-    console.log('jobposts', jobPosts.body) // []
-    const employer = await request(app).get('/employer/1')
-    console.log('employer', employer.body) // []
+    console.log('newwUser', newUser.body) // []
     const skills = await request(app).get('/skills')
     console.log('skills', skills.body) // OK
-
+    const jobPosts = await request(app).get('/employer/jobs')
+    console.log('jobposts', jobPosts.body) // jobPosts: []
+    const employer = await request(app).get('/employer/1')
+    console.log('employer', employer.body) // {}
+    
     const response = await match()
     
     const jobPostMatches = await request(app).get('employer/jobs/match/:id')
