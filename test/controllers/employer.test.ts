@@ -1,7 +1,13 @@
+import { NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
 import connection from '../db-helper'
 import app from '../../src/app'
+
+jest.mock(
+  '../../src/middlewares/tokenVerify',
+  () => (req: Request, res: Response, next: NextFunction) => next()
+)
 
 const employer = {
   info: {

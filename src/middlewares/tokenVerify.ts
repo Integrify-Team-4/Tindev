@@ -8,13 +8,15 @@ const tokenVerify = async (req: Request, res: Response, next: NextFunction) => {
     if (error) {
       return next(new InternalServerError())
     }
+    console.log('user is from token verify ', user)
     if (!user) {
       return next(new UnauthorizedError('Invalid token, Please login again'))
     }
-
+    next()
     req.user = user
-
-    return next()
+    console.log(req.user, 'it is from token verify')
+    return req.user
+    //return next()
   })(req, res, next)
 }
 

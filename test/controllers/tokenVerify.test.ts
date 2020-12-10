@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
+
 const form = {
   info: {
     firstName: 'duy',
@@ -75,4 +76,16 @@ describe('user controller', () => {
     expect(updateResponse.status).toBe(200)
     expect(response.status).toBe(200)
   })
+  // signup and login and then read profile
+  // it('should be signup first, and then log in and then read the profile', async () => {
+  //   await createJobSeeker()
+  //   const response = await logInJobSeeker()
+  //   const { id } = response.body
+  //   console.log('this is the id of logged in user ', id)
+  //   const readProfile = await request(app)
+  //     .get(`jobSeeker/user/me`)
+  //     .set('Authorization', `Bearer ${response.body.token}`)
+  //     .send()
+  //   console.log(readProfile)
+  // })
 })

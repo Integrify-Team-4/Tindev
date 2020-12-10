@@ -27,11 +27,12 @@ export const jobSeekerLocalLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
-    const id = jobSeeker.id
-    console.log('hello id', id)
 
-    const token = jwt.sign({ id: id }, process.env.JWT_SECRET as string)
-    console.log(token)
+    const token = jwt.sign(
+      { id: jobSeeker.id },
+      process.env.JWT_SECRET as string
+    )
+
     const userSerialize = { ...jobSeeker, token }
     res.status(200).send(userSerialize)
   })(req, res, next)
@@ -92,9 +93,7 @@ export const updateJobSeeker = async (
 ) => {
   try {
     const update = req.body
-    console.log('update get body request', update)
     const jobSeekerId = parseInt(req.params.id)
-    console.log('Jobseeker ID ', jobSeekerId)
     const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
     if (!jobSeeker) {
       next(new NotFoundError(`${jobSeeker} not found`))
@@ -124,3 +123,17 @@ export const updateJobSeeker = async (
     next(new NotFoundError('ID NOT FIND'))
   }
 }
+// read user profile
+// export const readMyProfile = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const userId = req.params.id
+//     const user = await JobSeeker.findOne(userId)
+//     console.log('I am reading my profile ', user)
+//   } catch (e) {
+//     return next(new NotFoundError())
+//   }
+// }
