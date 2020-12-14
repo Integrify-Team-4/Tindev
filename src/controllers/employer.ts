@@ -11,6 +11,7 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
+import { updateJobSeeker } from './jobSeeker'
 
 //**Auth controllers */
 export const localLogin = async (
