@@ -13,7 +13,6 @@ import responseHandler from './middlewares/responseHandler'
 import jobSeekerRouter from './routers/jobSeeker'
 import employerRouter from './routers/employer'
 import skillsRouter from './routers/skills'
-
 import { local, jwt } from './passport/config'
 import { sortedIndex } from 'lodash'
 
