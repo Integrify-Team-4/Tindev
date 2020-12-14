@@ -85,12 +85,24 @@ describe('jobSeeker controller', () => {
   it('job Seeker should log in', async () => {
     await createJobSeeker()
     const response = await logInJobSeeker()
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    console.log(response.body)
+=======
+    console.log('hello i am from job seeker login test file ', response.body)
+>>>>>>> develop
+>>>>>>> 31bf3f49fb3c562eefd2097995bc93d0c11e5c20
     expect(response.status).toBe(200)
   })
 
   // Update JobSeeker
   it('Update JobSeeker Info', async () => {
     await createJobSeeker()
+<<<<<<< HEAD
+
+=======
+>>>>>>> develop
     const response = await logInJobSeeker()
     const jobSeekerId = response.body.id
     const update = {
@@ -111,9 +123,16 @@ describe('jobSeeker controller', () => {
     expect(updateResponse.body.message).toBe('JobSeeker Updated')
   })
 
+<<<<<<< HEAD
   // it('should match jobSeeker with job posts', async () => {
+=======
+<<<<<<< HEAD
+=======
+  // it('should match jobseeker with job posts', async () => {
+>>>>>>> 31bf3f49fb3c562eefd2097995bc93d0c11e5c20
   //   const response = await createJobSeeker()
   //   const newUser = await request(app).get('/jobSeeker')
 
   // })
 })
+>>>>>>> develop
