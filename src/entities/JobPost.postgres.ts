@@ -29,17 +29,15 @@ export default class JobPost extends BaseEntity {
   @CreateDateColumn()
   createdAt!: Date
 
-  @ManyToMany(() => Skill, { nullable: true })
+  @ManyToMany(() => Skill, (skill) => skill.jobPosts, {
+    cascade: true,
+  })
   @JoinTable()
-  requiredSkills!: Skill[]
-
-  //**Too complicated as for now, let's settle with requiredSkills first */
-  // @ManyToMany(() => Skill, { nullable: true })
-  // @JoinTable()
-  // optionalSkills!: Skill[]
+  skills!: Skill[]
 
   @ManyToOne(() => Employer, (employer) => employer.jobPosts, {
     cascade: ['insert'],
+    eager: true,
   })
   employer!: Employer
 

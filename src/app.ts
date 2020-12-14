@@ -16,7 +16,7 @@ import skillsRouter from './routers/skills'
 import { local, jwt } from './passport/config'
 
 const app = express()
-console.log('IT IS ENVIRONMENT ', ENVIRONMENT)
+console.log('APP IS IN ENVIRONMENT ', ENVIRONMENT)
 //**Express configuration*/
 
 app.set('port', process.env.PORT || 5000)

@@ -10,66 +10,72 @@ import JobSeeker from '../entities/JobSeeker.postgres'
 import JobPost from '../entities/JobPost.postgres'
 import Skill from '../entities/Skill.postgres'
 
+type JobPostResult = {
+  [id: string]: { count: number; jobPost: JobPost }
+}
+
 export const match = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const id = req.params.id
-    const jobSeeker = await JobSeeker.findOne(id, { relations: ['skills'] })
+    const jobSeeker = req.user as JobSeeker
+    console.log('JOBSEEKER', jobSeeker)
 
     if (!jobSeeker) return next(new NotFoundError('User not found'))
 
     const seekerSkillIds = jobSeeker.skills.map((skill) => skill.id)
 
-    const posts = await Promise.all(
+    const posts = (await Promise.all(
       seekerSkillIds.map(async (id) => {
-        const skill = (await Skill.findOne(id, {
-          relations: ['jobPosts'],
-        })) as Skill
+        try {
+          const skill = (await Skill.findOne(id, {
+            relations: ['jobPosts'],
+          })) as Skill
 
-        return skill.jobPosts
+          if (skill.jobPosts.length === 0) return
+          return skill.jobPosts
+        } catch (error) {
+          console.log(error)
+          next(new InternalServerError())
+        }
       })
-    )
+    )) as JobPost[][]
 
-    type Acc = {
-      [id: string]: number
-    }
-
-    //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] */
+    //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] to [...jobPosts] */
     const matchedPosts = posts.flat()
 
-    //**Count the times that a post id come up and store it in a object */
-    const count = matchedPosts.reduce((acc: Acc, next: JobPost) => {
-      if (acc[next.id]) {
-        acc[next.id]++
+    if (matchedPosts.length === 0)
+      return next(new NotFoundError('No match found'))
+
+    //**Count the times that a post come up and store it in a object*/
+    //**The count is equivalent to how many skills is matched */
+    const matchCount = matchedPosts.reduce(
+      (acc: JobPostResult, next: JobPost) => {
+        if (next.id in acc) {
+          acc[next.id].count++
+          return acc
+        }
+        acc[next.id] = {
+          count: 1,
+          jobPost: next,
+        }
         return acc
-      }
-      acc[next.id] = 1
-      return acc
-    }, {})
-
-    //**Sort the id of posts based on its count */
-    const result = Object.keys(count).sort((a, b) => {
-      if (count[a] < count[b]) return 1
-      return -1
-    })
-
-    //**Take the first three ids */
-    const finalResult = result.slice(0, 3)
-
-    //**Query for the employers that own the post ids */
-    const matchedEmployers = await Promise.all(
-      finalResult.map(async (id) => {
-        const employer = ((await JobPost.findOne(id, {
-          relations: ['employer'],
-        })) as JobPost).employer
-        return employer
-      })
+      },
+      {}
     )
 
-    res.deliver(200, 'success', matchedEmployers)
+    //**Filter posts to those that has count >= 3 */
+    const filterPost: JobPost[] = []
+
+    for (const id in matchCount) {
+      if (matchCount[id].count >= 3) {
+        filterPost.push(matchCount[id].jobPost)
+      }
+    }
+
+    res.deliver(200, 'success', filterPost)
   } catch (error) {
     next(new InternalServerError())
   }
