@@ -1,32 +1,19 @@
+import { NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
 
-import { createJobPost, registerEmployer, updateJobPost } from './employer.test'
-import { createJobSeeker } from './jobSeeker.test'
+import {
+  createJobSeeker,
+  createManySkills,
+  createEmployer,
+  loginJobSeeker,
+  loginEmployer,
+  createJobPost,
+} from '../controller-helpers'
+import { jobPostForm } from '../dto'
 
-const skills = [
-  {
-    name: 'Javascript',
-  },
-  {
-    name: 'Java',
-  },
-  {
-    name: 'React',
-  },
-]
-const createSkills = async (skill: { name: string }) => {
-  return await request(app).post('/skills/create').send(skill)
-}
-
-const createManySkills = async () => {
-  return await Promise.all(
-    skills.map(async (skill) => await createSkills(skill))
-  )
-}
-
-describe('user controller', () => {
+describe('Matcher controller', () => {
   beforeAll(async () => {
     await connection.create()
   })
@@ -40,23 +27,31 @@ describe('user controller', () => {
   })
 
   it('should find match', async () => {
-    const response1 = await createManySkills()
-    const response2 = await createJobSeeker()
-    const response3 = await registerEmployer()
-    const response4 = await createJobPost()
-    const response5 = await updateJobPost()
-    const res = await request(app).get('/skills')
-    console.log('all skills', res.body)
+    await createManySkills()
+    await createEmployer()
+    await createJobPost()
+    const res2 = await createJobSeeker()
+    const res5 = await request(app).get('/skills')
 
-    console.log(response1[1].body)
-    console.log(response2.body)
-    console.log(response3.body)
-    console.log(response4.body)
-    console.log(response5.body)
+    const seeker = await loginJobSeeker()
+    const employer = await loginEmployer()
+    console.log(employer.body)
 
-    const response = await request(app).get('/jobSeeker/match/1')
-    console.log(response.body)
+    const seekerToken = seeker.body.payload.token
+    const employerToken = employer.body.payload.token
+    const res4 = await request(app)
+      .post(`/employer/jobs`)
+      .set('Authorization', employerToken)
+      .send(jobPostForm)
 
+    const response = await request(app)
+      .get('/jobSeeker/match')
+      .set('Authorization', seekerToken)
+
+    console.log(response.body.message)
+    expect(res5.status).toBe(200)
+    expect(res2.body.status).toBe(201)
+    expect(res4.body.status).toBe(201)
     expect(response.status).toBe(200)
   })
 })

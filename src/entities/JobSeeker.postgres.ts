@@ -58,7 +58,10 @@ export default class JobSeeker extends BaseEntity {
   @JoinColumn()
   education!: Education
 
-  @ManyToMany(() => Skill)
+  @ManyToMany(() => Skill, (skill) => skill.jobSeekers, {
+    cascade: true,
+    eager: true,
+  })
   @JoinTable()
   skills!: Skill[]
 

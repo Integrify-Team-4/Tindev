@@ -43,7 +43,7 @@ const createJobSeeker = async () =>
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
 
-describe('user controller', () => {
+describe('Test token middleware', () => {
   beforeAll(async () => {
     await connection.create()
   })

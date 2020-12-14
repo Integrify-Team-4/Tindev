@@ -20,8 +20,8 @@ export const match = async (
   next: NextFunction
 ) => {
   try {
-    const id = req.params.id
-    const jobSeeker = await JobSeeker.findOne(id, { relations: ['skills'] })
+    const jobSeeker = req.user as JobSeeker
+    console.log('JOBSEEKER', jobSeeker)
 
     if (!jobSeeker) return next(new NotFoundError('User not found'))
 
@@ -37,6 +37,7 @@ export const match = async (
           if (skill.jobPosts.length === 0) return
           return skill.jobPosts
         } catch (error) {
+          console.log(error)
           next(new InternalServerError())
         }
       })
@@ -44,8 +45,6 @@ export const match = async (
 
     //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] to [...jobPosts] */
     const matchedPosts = posts.flat()
-
-    console.log('matched', matchedPosts)
 
     if (matchedPosts.length === 0)
       return next(new NotFoundError('No match found'))
@@ -66,8 +65,6 @@ export const match = async (
       },
       {}
     )
-
-    console.log('matchCOunt', matchCount)
 
     //**Filter posts to those that has count >= 3 */
     const filterPost: JobPost[] = []

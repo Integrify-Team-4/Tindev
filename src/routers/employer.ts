@@ -5,21 +5,18 @@ import {
   registerEmployer,
   createJobPost,
   updateJobPost,
-  getJobPosts,
   deleteJobPostbyId,
+  updateEmployer,
 } from '../controllers/employer'
-import { match } from '../controllers/match'
+import tokenVerify from '../middlewares/tokenVerify'
 
 const router = express.Router()
 
 router.post('/login/local', localLogin)
-router.post('/create', registerEmployer)
-router.post('/create', match)
-router.post('/jobs/:companyName', createJobPost)
-router.put('/jobs/:id', updateJobPost)
-router.get('/jobs', getJobPosts)
-
-// deleting job post by id
-router.delete('/jobs/:id', deleteJobPostbyId)
+router.post('/', registerEmployer)
+router.post('/jobs', tokenVerify, createJobPost)
+router.patch('/jobs/:id', tokenVerify, updateJobPost)
+router.patch('/', tokenVerify, updateEmployer)
+router.delete('/jobs/:id', tokenVerify, deleteJobPostbyId)
 
 export default router
