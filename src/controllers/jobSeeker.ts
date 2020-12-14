@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
 import jwt from 'jsonwebtoken'
+
 import {
   NotFoundError,
   UnauthorizedError,
@@ -28,11 +29,9 @@ export const jobSeekerLocalLogin = async (
       return next(new NotFoundError(info.message))
     }
     const id = jobSeeker.id
-    console.log('hello id', id)
-
     const token = jwt.sign({ id: id }, process.env.JWT_SECRET as string)
-    console.log(token)
     const userSerialize = { ...jobSeeker, token }
+
     res.status(200).send(userSerialize)
   })(req, res, next)
 }
@@ -60,9 +59,7 @@ export const createJobSeeker = async (
       ...info,
       credentials: newCredential,
     })
-
     await JobSeeker.save(newJobSeeker)
-
     res.send('success')
   } catch (error) {
     next(new InternalServerError(error.message))
@@ -79,44 +76,36 @@ export const getJobSeeker = async (
     const user = await JobSeeker.find({ relations: ['credentials'] })
     res.json(user)
   } catch (error) {
-    console.log(error)
+    next(new NotFoundError('JobSeeker not found', error))
   }
 }
 
 // JobSeek update
-
 export const updateJobSeeker = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const verifiedUser = req.user
+
+    console.log('verifiedUser in JobSeeker', verifiedUser)
+
     const update = req.body
-    console.log('update get body request', update)
     const jobSeekerId = parseInt(req.params.id)
-    console.log('Jobseeker ID ', jobSeekerId)
-    const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
+    const jobSeeker = (await JobSeeker.findOne({
+      where: { id: jobSeekerId },
+    })) as JobSeeker
     if (!jobSeeker) {
       next(new NotFoundError(`${jobSeeker} not found`))
     }
-    if (update.firstName) {
-      jobSeeker!.firstName = update.firstName
-    }
-    if (update.lastName) {
-      jobSeeker!.lastName = update.lastName
-    }
-    if (update.contact) {
-      jobSeeker!.contact = update.contact
-    }
-    if (update.relocate) {
-      jobSeeker!.relocate = update.relocate
-    }
-    if (update.seniority) {
-      jobSeeker!.seniority = update.seniority
-    }
-    if (update.startingDate) {
-      jobSeeker!.startingDate = update.startingDate
-    }
+
+    update.firstName && (jobSeeker.firstName = update.firstName)
+    update.lastName && (jobSeeker.lastName = update.lastName)
+    update.contact && (jobSeeker.contact = update.contact)
+    update.relocate && (jobSeeker.relocate = update.relocate)
+    update.seniority && (jobSeeker.seniority = update.seniority)
+    update.startingDate && (jobSeeker.startingDate = update.startingDate)
 
     await JobSeeker.update(jobSeekerId, update)
     res.status(200).json({ message: 'JobSeeker Updated' })

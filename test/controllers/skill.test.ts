@@ -17,7 +17,7 @@ describe('user controller', () => {
     const name = { name: 'Java Developer' }
     const response = await request(app).post('/skills/create').send(name)
 
-    expect(response.body.message).toBe('success to create skills')
+    expect(response.body.message).toBe('Skill created successfully')
     expect(response.status).toBe(200)
   })
 

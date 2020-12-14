@@ -2,6 +2,12 @@ import request from 'supertest'
 
 import connection from '../db-helper'
 import app from '../../src/app'
+import {Request, Response, NextFunction } from 'express'
+
+jest.mock(
+  '../../src/middlewares/tokenVerify',
+  () => (req: Request, res: Response, next: NextFunction) => next()
+)
 
 const employer = {
   info: {
@@ -89,13 +95,15 @@ describe('employer controller', () => {
       .post('/employer/login/local')
       .send(loginInput)
 
-    expect(response.status).toBe(200)
-    expect(response.body.companyName).toBe('google')
-    expect(response.body.id).toBe(1)
+    const { body: { payload, message }, status  } = response
+    expect(status).toBe(200)
+    expect(payload.id).toBe(1)
+    expect(message).toBe('Local Login Successful')
+    expect(payload.companyName).toBe('google')
   })
 
   it('should update employer', async () => {
-    await registerEmployer()
+    const res = await registerEmployer()
     await createJobPost()
 
     const update = {
@@ -110,10 +118,10 @@ describe('employer controller', () => {
       },
     }
 
-    const response = await request(app).put(`/employer/jobs/1`).send(update)
-
+    const response = await request(app).put(`/employer/1`).set('Authorization', `Bearer ${res.body.token}`).send(update)
+    console.log("UPDATE_RES:::", response.body)
     expect(response.status).toBe(200)
-    expect(response.body.message).toBe('Updated')
+    expect(response.body.message).toBe('Updated successfully')
   })
 
   it('should create a new job post', async () => {
@@ -123,12 +131,17 @@ describe('employer controller', () => {
     expect(response.body.message).toBe('posted')
   })
 
+  it.only('should get job Posts', async () => {
+    await registerEmployer()
+    const response = await request(app).get('/employer/jobs')
+    console.log("RES::::::", response.body)
+  })
   it('should update job post', async () => {
     await registerEmployer()
 
     const response = await createJobPost()
 
-    console.log(response.body)
+    // console.log(response.body)
     const jobPostId = response.body.payload.id
     const update = {
       title: 'Updated job title',

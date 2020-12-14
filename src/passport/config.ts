@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import passportJWT, { ExtractJwt } from 'passport-jwt'
 
 import Credential from '../entities/Credential.postgres'
+import { JWT_SECRET } from '../util/secrets'
 
 const LocalStrategy = passportLocal.Strategy
 const JWTStrategy = passportJWT.Strategy
@@ -38,7 +39,7 @@ export const local = new LocalStrategy(
 export const jwt = new JWTStrategy(
   {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET,
+    secretOrKey: JWT_SECRET,
   },
   async (jwtPayload, done) => {
     const { id } = jwtPayload

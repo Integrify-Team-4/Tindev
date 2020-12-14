@@ -8,6 +8,7 @@ jest.mock(
   '../../src/middlewares/tokenVerify',
   () => (req: Request, res: Response, next: NextFunction) => next()
 )
+
 const form = {
   info: {
     firstName: 'duy',
@@ -84,7 +85,6 @@ describe('jobSeeker controller', () => {
   it('job Seeker should log in', async () => {
     await createJobSeeker()
     const response = await logInJobSeeker()
-    console.log('hello i am from job seeker login test file ', response.body)
     expect(response.status).toBe(200)
   })
 
@@ -95,7 +95,7 @@ describe('jobSeeker controller', () => {
     const jobSeekerId = response.body.id
     const update = {
       firstName: 'Update Duy',
-      lastName: 'update lastname',
+      lastName: 'update lastName',
       contact: 12345,
       relocate: true,
       seniority: 'junior',
@@ -103,13 +103,15 @@ describe('jobSeeker controller', () => {
     }
     const updateResponse = await request(app)
       .put(`/jobSeeker/update/${jobSeekerId}`)
+      .set('Authorization', `Bearer ${response.body.token}`)
       .send(update)
-    console.log('update Response ', updateResponse.body)
+    
     expect(response.status).toBe(200)
     expect(updateResponse.status).toBe(200)
+    expect(updateResponse.body.message).toBe('JobSeeker Updated')
   })
 
-  // it('should match jobseeker with job posts', async () => {
+  // it('should match jobSeeker with job posts', async () => {
   //   const response = await createJobSeeker()
   //   const newUser = await request(app).get('/jobSeeker')
 

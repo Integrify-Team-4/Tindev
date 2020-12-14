@@ -57,10 +57,12 @@ describe('user controller', () => {
   it('job Seeker should create, log in and can read his profile', async () => {
     await createJobSeeker()
     const response = await logInJobSeeker()
+    expect(response.status).toBe(200)
+
     const jobSeekerId = response.body.id
     const update = {
       firstName: 'Update Duy',
-      lastName: 'update lastname',
+      lastName: 'update lastName',
       contact: 12345,
       relocate: true,
       seniority: 'junior',
@@ -70,9 +72,8 @@ describe('user controller', () => {
       .put(`/jobSeeker/update/${jobSeekerId}`)
       .set('Authorization', `Bearer ${response.body.token}`)
       .send(update)
-    console.log('update Response ', updateResponse.body)
-    expect(response.status).toBe(200)
+
     expect(updateResponse.status).toBe(200)
-    expect(response.status).toBe(200)
+    expect(updateResponse.body.message).toBe('JobSeeker Updated')
   })
 })

@@ -13,6 +13,7 @@ const tokenVerify = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     req.user = user
+    // console.log("REQ in verifyToken", req.user)
 
     return next()
   })(req, res, next)

@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
-import Skill from '../entities/Skill.postgres'
 
-import {
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-  BadRequestError,
-} from '../helpers/apiError'
+import { NotFoundError, InternalServerError } from '../helpers/apiError'
+import Skill from '../entities/Skill.postgres'
 
 // posting skills to database
 export const creatingSkills = async (
@@ -18,7 +13,7 @@ export const creatingSkills = async (
     const name = req.body
     const skill = Skill.create({ ...name })
     await Skill.save(skill)
-    await res.status(200).json({ message: 'success to create skills' })
+    res.status(200).json({ message: 'Skill created successfully' })
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -34,6 +29,6 @@ export const getSkills = async (
     const skills = await Skill.find()
     res.status(200).json({ skills })
   } catch (error) {
-    next(new InternalServerError(error.message))
+    next(new NotFoundError(error.message))
   }
 }

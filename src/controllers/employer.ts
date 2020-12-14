@@ -8,9 +8,9 @@ import {
   InternalServerError,
   BadRequestError,
 } from '../helpers/apiError'
+import JobPost from '../entities/JobPost.postgres'
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
-import JobPost from '../entities/JobPost.postgres'
 
 //**Auth controllers */
 export const localLogin = async (
@@ -28,8 +28,7 @@ export const localLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
-
-    res.status(200).send(user)
+    res.deliver(200, 'Local Login Successful', user)
   })(req, res, next)
 }
 
@@ -60,8 +59,7 @@ export const registerEmployer = async (
     })
 
     await Employer.save(newEmployer)
-
-    res.status(200).json({ message: 'Registered Successfully' })
+    res.deliver(200, 'Registered Successfully')
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -74,8 +72,11 @@ export const getEmployers = async (
   next: NextFunction
 ) => {
   try {
+    const verifiedUser = req.user
+
+    console.log('verifiedUser in getEmployers', verifiedUser)
     const users = await Employer.find({ relations: ['credentials'] })
-    res.status(200).json({ message: 'Successfully fetched employers', users })
+    res.deliver(200, 'Successfully fetched employers', users)
   } catch (error) {
     next(new NotFoundError('Employer not found'))
   }
@@ -88,6 +89,10 @@ export const updateEmployer = async (
   next: NextFunction
 ) => {
   try {
+    const verifiedEmployer = req.user
+    console.log('user in employer', req.body)
+
+    console.log('verifiedEmployer:::', verifiedEmployer)
     const employerId = parseInt(req.params.id)
     const update = req.body
     const employer = await Employer.findOne(employerId, {
@@ -97,23 +102,14 @@ export const updateEmployer = async (
     if (!employer) {
       return next(new NotFoundError())
     }
-    if (update.companyName) {
-      employer.companyName = update.companyName
-    }
-    if (update.companyInfo) {
-      employer.companyInfo = update.companyInfo
-    }
-    if (update.address) {
-      employer.address = update.address
-    }
-    if (update.email) {
-      employer.credentials.email = update.email
-    }
-    if (update.password) {
-      employer.credentials.password = update.password
-    }
+    update.companyName && (employer.companyName = update.companyName)
+    update.companyInfo && (employer.companyInfo = update.companyInfo)
+    update.address && (employer.address = update.address)
+    update.email && (employer.credentials.email = update.email)
+    update.password && (employer.credentials.password = update.password)
+
     const updatedEmployer = await Employer.save(employer)
-    res.json({ message: 'Updated successfully', data: updatedEmployer })
+    res.deliver(200, 'Updated successfully', updatedEmployer)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -127,7 +123,7 @@ export const getEmployer = async (
 ) => {
   try {
     const user = await Employer.find({ relations: ['credentials'] })
-    res.json(user)
+    res.deliver(200, 'Employer Fetched', user)
   } catch (error) {
     console.log(error)
   }
@@ -153,7 +149,7 @@ export const createJobPost = async (
     })
 
     const savedJobPost = await JobPost.save(newJobPost)
-    res.deliver(201, 'posted', savedJobPost)
+    res.deliver(201, 'Posted', savedJobPost)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
@@ -166,8 +162,10 @@ export const getJobPosts = async (
   next: NextFunction
 ) => {
   try {
+    const verifiedUser = req.user
+    console.log('verifiedUser in getJobPosts', verifiedUser)
     const jobPosts = await JobPost.find()
-    res.status(200).json({ message: 'Successfully fetched', jobPosts })
+    res.deliver(200, 'Successfully fetched', jobPosts)
   } catch (error) {
     return next(new NotFoundError(error.message))
   }
@@ -180,35 +178,27 @@ export const updateJobPost = async (
   next: NextFunction
 ) => {
   try {
-    const update = req.body // get typed in data from body.
-    const jobPostedId = parseInt(req.params.id) // get specific ID of the post.
-    const jobPost = await JobPost.findOne({ where: { id: jobPostedId } }) // find the specific jobPosted ID
+    const update = req.body
+    const jobPostedId = parseInt(req.params.id)
+    const jobPost = await JobPost.findOne({ where: { id: jobPostedId } })
 
     if (!jobPost) {
       return next(new NotFoundError(`${jobPost} is not found`))
     }
 
-    if (update.title) {
-      jobPost!.title = update.title
-    }
-    if (update.jobDescription) {
-      jobPost!.jobDescription = update.jobDescription
-    }
-    if (update.seniority) {
-      jobPost!.seniority = update.seniority
-    }
-    if (update.requiredSkills) {
-      jobPost!.requiredSkills = update.requiredSkills
-    }
+    update.title && (jobPost.title = update.title)
+    update.seniority && (jobPost.seniority = update.seniority)
+    update.jobDescription && (jobPost.jobDescription = update.jobDescription)
+    update.requiredSkills && (jobPost.requiredSkills = update.requiredSkills)
 
     await JobPost.save(jobPost)
-    res.status(200).json({ message: 'Updated' })
+    res.deliver(200, 'Updated')
   } catch (error) {
     return next(new InternalServerError(error.message))
   }
 }
 
-export const deleteJobPostbyId = async (
+export const deleteJobPostById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -219,20 +209,9 @@ export const deleteJobPostbyId = async (
     if (!jobPost) {
       return next(new NotFoundError('Job is no more available'))
     }
-    await jobPost?.remove()
-    res.json({ message: 'success' })
+    await jobPost.remove()
+    res.deliver(200, 'Success')
   } catch (error) {
     console.log(error)
-  }
-}
-
-export const getMatch = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-  } catch (error) {
-    return next(new NotFoundError())
   }
 }

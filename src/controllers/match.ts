@@ -1,14 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 
-import {
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-  BadRequestError,
-} from '../helpers/apiError'
-import JobSeeker from '../entities/JobSeeker.postgres'
-import JobPost from '../entities/JobPost.postgres'
+import { NotFoundError, InternalServerError } from '../helpers/apiError'
 import Skill from '../entities/Skill.postgres'
+import JobPost from '../entities/JobPost.postgres'
+import JobSeeker from '../entities/JobSeeker.postgres'
 
 export const match = async (
   req: Request,
@@ -37,7 +32,7 @@ export const match = async (
       [id: string]: number
     }
 
-    //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] */
+    //**Flatten the array of job posts: [[...jobPosts], [...jobPosts]] */
     const matchedPosts = posts.flat()
 
     //**Count the times that a post id come up and store it in a object */
