@@ -15,8 +15,6 @@ export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
 export const JWT_SECRET = process.env['JWT_SECRET'] as string
-console.log('port from secret file ', process.env.PORT)
-console.log('secret is coming')
 const DB_PASSWORD = process.env['DB_PASSWORD'] as string
 
 export const ormConfig = {

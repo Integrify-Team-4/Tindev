@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import passport from 'passport'
+import jwt from 'jsonwebtoken'
 
 import {
   NotFoundError,
@@ -13,28 +14,34 @@ import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
 import JobSeeker from '../entities/JobSeeker.postgres'
 
-//**Auth controllers */
 export const localLogin = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', function (error, user: Employer, info) {
+  passport.authenticate('local', function (error, employer: Employer, info) {
     if (error) {
       return next(new InternalServerError())
     }
-    if (!user) {
+    if (!employer) {
       if (info.message === 'Invalid email or password') {
         return next(new UnauthorizedError(info.message))
       }
       return next(new NotFoundError(info.message))
     }
 
-    res.status(200).send(user)
+    const id = employer.id
+    const token = jwt.sign(
+      { id: id, role: employer.role },
+      process.env.JWT_SECRET as string
+    )
+    const userSerialize = { ...employer, token }
+    console.log('USER', userSerialize)
+
+    res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
 }
 
-//**Register Employer*/
 export const registerEmployer = async (
   req: Request,
   res: Response,
@@ -45,8 +52,10 @@ export const registerEmployer = async (
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
+    console.log(info, credential)
 
     if (exists) {
+      console.log('I was called')
       return next(
         new BadRequestError(`Email ${credential.email} already exists`)
       )
@@ -62,38 +71,21 @@ export const registerEmployer = async (
 
     await Employer.save(newEmployer)
 
-    res.status(200).json({ message: 'Registered Successfully' })
+    res.deliver(201, 'Registered')
   } catch (error) {
     next(new InternalServerError(error.message))
   }
 }
 
-//**Get all employers*/
-export const getEmployers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const users = await Employer.find({ relations: ['credentials'] })
-    res.status(200).json({ message: 'Successfully fetched employers', users })
-  } catch (error) {
-    next(new NotFoundError('Employer not found'))
-  }
-}
-
-//**Update employer*/
 export const updateEmployer = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const employerId = parseInt(req.params.id)
+    const employerId = req.params.id
     const update = req.body
-    const employer = await Employer.findOne(employerId, {
-      relations: ['credentials'],
-    })
+    const employer = req.user as Employer
 
     if (!employer) {
       return next(new NotFoundError())
@@ -107,30 +99,24 @@ export const updateEmployer = async (
     if (update.address) {
       employer.address = update.address
     }
-    if (update.email) {
-      employer.credentials.email = update.email
-    }
-    if (update.password) {
-      employer.credentials.password = update.password
-    }
+
     const updatedEmployer = await Employer.save(employer)
-    res.json({ message: 'Updated successfully', data: updatedEmployer })
+    res.deliver(200, 'Updated', updatedEmployer)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
 }
 
-// getting employer based on matched credentials
 export const getEmployer = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = await Employer.find({ relations: ['credentials'] })
-    res.json(user)
+    const employer = req.user as Employer
+    res.deliver(200, 'Success', employer)
   } catch (error) {
-    console.log(error)
+    next(new InternalServerError())
   }
 }
 
@@ -141,69 +127,57 @@ export const createJobPost = async (
 ) => {
   try {
     const jobPost = req.body
-    const companyName = req.params.companyName
-    const postingEmployer = await Employer.getEmployerByCompanyName(companyName)
+    const employer = req.user as Employer
 
-    if (!postingEmployer) {
-      return next(new NotFoundError(`Employer ${companyName} not found`))
+    if (!employer) {
+      return next(new NotFoundError(`Employer ${employer} not found`))
     }
 
     const newJobPost = JobPost.create({
       ...jobPost,
-      employer: postingEmployer,
+      employer: employer,
     })
 
     const savedJobPost = await JobPost.save(newJobPost)
-    res.deliver(201, 'posted', savedJobPost)
+    res.deliver(201, 'Posted', savedJobPost)
   } catch (error) {
     next(new InternalServerError(error.message))
   }
 }
 
-//Get JobPosts
-export const getJobPosts = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const jobPosts = await JobPost.find()
-    res.status(200).json({ message: 'Successfully fetched', jobPosts })
-  } catch (error) {
-    return next(new NotFoundError(error.message))
-  }
-}
-
-//Update JobPost
 export const updateJobPost = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const update = req.body // get typed in data from body.
-    const jobPostedId = parseInt(req.params.id) // get specific ID of the post.
-    const jobPost = await JobPost.findOne({ where: { id: jobPostedId } }) // find the specific jobPosted ID
+    const update = req.body.update // get typed in data from body.
+    const employer = req.user as Employer
+    const jobPostId = req.body.id
 
-    if (!jobPost) {
-      return next(new NotFoundError(`${jobPost} is not found`))
+    const jobPost = await JobPost.findOne(jobPostId)
+
+    if (!jobPost || jobPost.employer.id !== employer.id) {
+      return next(
+        new NotFoundError('Post is not found or you do not own this port')
+      )
     }
 
     if (update.title) {
-      jobPost!.title = update.title
+      jobPost.title = update.title
     }
-    if (update.jobDescription) {
-      jobPost!.jobDescription = update.jobDescription
+    if (update.description) {
+      jobPost.jobDescription = update.jobDescription
     }
     if (update.seniority) {
-      jobPost!.seniority = update.seniority
+      jobPost.seniority = update.seniority
     }
-    if (update.requiredSkills) {
-      jobPost!.requiredSkills = update.requiredSkills
+    if (update.skills) {
+      jobPost.skills = update.skills
     }
 
-    await JobPost.save(jobPost)
-    res.status(200).json({ message: 'Updated' })
+    const updated = await JobPost.save(jobPost)
+    res.deliver(200, 'Updated', updated)
   } catch (error) {
     return next(new InternalServerError(error.message))
   }
@@ -215,25 +189,19 @@ export const deleteJobPostbyId = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id)
-    const jobPost = await JobPost.findOne(id)
-    if (!jobPost) {
-      return next(new NotFoundError('Job is no more available'))
-    }
-    await jobPost?.remove()
-    res.json({ message: 'success' })
-  } catch (error) {
-    console.log(error)
-  }
-}
+    const jobPostId = parseInt(req.params.id)
+    const employer = req.user as Employer
+    const jobPost = await JobPost.findOne(jobPostId)
 
-export const getMatch = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+    if (!jobPost || jobPost.employer.id !== employer.id) {
+      return next(
+        new NotFoundError('Post is not found or you do not own this port')
+      )
+    }
+
+    await jobPost.remove()
+    res.deliver(200, 'Removed')
   } catch (error) {
-    return next(new NotFoundError())
+    next(new InternalServerError())
   }
 }

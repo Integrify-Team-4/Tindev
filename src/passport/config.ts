@@ -6,6 +6,7 @@ import Credential from '../entities/Credential.postgres'
 
 const LocalStrategy = passportLocal.Strategy
 const JWTStrategy = passportJWT.Strategy
+
 export const local = new LocalStrategy(
   {
     usernameField: 'email',
@@ -41,11 +42,28 @@ export const jwt = new JWTStrategy(
     secretOrKey: process.env.JWT_SECRET,
   },
   async (jwtPayload, done) => {
-    const { id } = jwtPayload
-    const user = await Credential.findOne(id, {
-      relations: ['jobSeeker', 'employer'],
-    })
-    if (!user) return done(null, false)
-    return done(null, user)
+    const { id, role } = jwtPayload
+    let credential_seeker: any
+    let credential_employer: any
+    if (role === 'job seeker') {
+      credential_seeker = await Credential.findOne(id, {
+        relations: ['jobSeeker'],
+      })
+      return credential_seeker
+    }
+    if (role === 'employer') {
+      credential_employer = await Credential.findOne(id, {
+        relations: ['employer'],
+      })
+      return credential_employer
+    }
+
+    if (!credential_seeker && !credential_employer) return done(null, false)
+    if (credential_seeker) {
+      return done(null, credential_seeker.jobSeeker)
+    }
+    if (credential_employer) {
+      return done(null, credential_employer.employer)
+    }
   }
 )

@@ -17,7 +17,7 @@ export const jobSeekerLocalLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate('local', (error, jobSeeker, info) => {
+  passport.authenticate('local', (error, jobSeeker: JobSeeker, info) => {
     if (error) {
       return next(new InternalServerError())
     }
@@ -27,14 +27,14 @@ export const jobSeekerLocalLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
+    const id = jobSeeker.id
 
     const token = jwt.sign(
-      { id: jobSeeker.id },
+      { id: id, role: jobSeeker.role },
       process.env.JWT_SECRET as string
     )
-
     const userSerialize = { ...jobSeeker, token }
-    res.status(200).send(userSerialize)
+    res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
 }
 
@@ -44,7 +44,7 @@ export const createJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const { info, credential } = req.body
+    const { info, credential, skills } = req.body
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
@@ -60,17 +60,17 @@ export const createJobSeeker = async (
     const newJobSeeker = JobSeeker.create({
       ...info,
       credentials: newCredential,
+      skills: skills,
     })
 
     await JobSeeker.save(newJobSeeker)
 
-    res.send('success')
+    res.deliver(201, 'Success')
   } catch (error) {
     next(new InternalServerError(error.message))
   }
 }
 
-// getting jobSeeker based on matched credentials
 export const getJobSeeker = async (
   req: Request,
   res: Response,
@@ -84,8 +84,6 @@ export const getJobSeeker = async (
   }
 }
 
-// JobSeek update
-
 export const updateJobSeeker = async (
   req: Request,
   res: Response,
@@ -93,10 +91,10 @@ export const updateJobSeeker = async (
 ) => {
   try {
     const update = req.body
-    const jobSeekerId = parseInt(req.params.id)
-    const jobSeeker = await JobSeeker.findOne({ where: { id: jobSeekerId } })
+    const jobSeeker = (req.user as unknown) as JobSeeker
+
     if (!jobSeeker) {
-      next(new NotFoundError(`${jobSeeker} not found`))
+      return next(new NotFoundError(`${jobSeeker} not found`))
     }
     if (update.firstName) {
       jobSeeker!.firstName = update.firstName
@@ -116,9 +114,12 @@ export const updateJobSeeker = async (
     if (update.startingDate) {
       jobSeeker!.startingDate = update.startingDate
     }
+    if (update.skills) {
+      jobSeeker.skills = update.skills
+    }
 
-    await JobSeeker.update(jobSeekerId, update)
-    res.status(200).json({ message: 'JobSeeker Updated' })
+    const updated = await JobSeeker.save(jobSeeker)
+    res.deliver(200, 'Updated', updated)
   } catch (error) {
     next(new NotFoundError('ID NOT FIND'))
   }

@@ -2,53 +2,23 @@ import { NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
 import connection from '../db-helper'
+import {
+  createJobPost,
+  createEmployer,
+  updateEmployer,
+  updateJobPost,
+  createManySkills,
+} from '../controller-helpers'
+import { mockEmployerCredential } from '../dto'
 import app from '../../src/app'
 
 jest.mock(
   '../../src/middlewares/tokenVerify',
-  () => (req: Request, res: Response, next: NextFunction) => next()
+  () => (req: Request, res: Response, next: NextFunction) => {
+    req.user = mockEmployerCredential
+    next()
+  }
 )
-
-const employer = {
-  info: {
-    companyName: 'google',
-    companyInfo: 'google-home',
-    address: 'google-address',
-  },
-  credential: {
-    email: 'google1@gmail.com',
-    password: 'password',
-  },
-}
-const loginInput = {
-  email: employer.credential.email,
-  password: employer.credential.password,
-}
-const form = {
-  info: {
-    companyName: 'google',
-    companyInfo: 'google-home',
-    address: 'google-address',
-  },
-  credential: {
-    email: 'google1@gmail.com',
-    password: 'password',
-  },
-}
-const jobPost = {
-  title: 'Fullstack React- & Node.js Developer',
-  jobDescription:
-    'We create and operate the online shops of Klamotten. Your job is to participate in the further development of our existing shop system platform',
-  seniority: 'Junior',
-}
-const registerEmployer = async () =>
-  await request(app).post('/employer/create').send(form)
-
-const loginEmployer = async () =>
-  await request(app).post('/employer/login/local').send(loginInput)
-
-const createJobPost = async () =>
-  await request(app).post('/employer/jobs/google').send(jobPost)
 
 describe('employer controller', () => {
   beforeAll(async () => {
@@ -78,80 +48,42 @@ describe('employer controller', () => {
   })
 
   it('should create new employer', async () => {
-    const response = await request(app).post('/employer/create').send(form)
+    const response = await createEmployer()
     expect(response.status).toBe(200)
-    expect(response.body.message).toBe('Registered Successfully')
-  })
-
-  it('should login employer', async () => {
-    await request(app).post('/employer/create').send(employer)
-
-    const loginInput = {
-      email: employer.credential.email,
-      password: employer.credential.password,
-    }
-
-    const response = await request(app)
-      .post('/employer/login/local')
-      .send(loginInput)
-
-    expect(response.status).toBe(200)
-    expect(response.body.companyName).toBe('google')
-    expect(response.body.id).toBe(1)
+    expect(response.body.message).toBe('Registered')
   })
 
   it('should update employer', async () => {
-    await registerEmployer()
-    await createJobPost()
-
-    const update = {
-      info: {
-        companyName: 'Updated company name',
-        companyInfo: 'Updated company info',
-        address: 'Updated address',
-      },
-      credential: {
-        email: 'Updated email',
-        password: 'Updated password',
-      },
-    }
-
-    const response = await request(app).put(`/employer/jobs/1`).send(update)
+    await createEmployer()
+    const response = await updateEmployer()
 
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Updated')
   })
 
   it('should create a new job post', async () => {
-    await registerEmployer()
+    await createManySkills()
+    await createEmployer()
     const response = await createJobPost()
     expect(response.status).toBe(200)
-    expect(response.body.message).toBe('posted')
+    expect(response.body.message).toBe('Posted')
   })
 
   it('should update job post', async () => {
-    await registerEmployer()
+    await createManySkills()
+    await createEmployer()
+    await createJobPost()
+    const res = await updateJobPost(1)
 
-    const response = await createJobPost()
-
-    console.log(response.body)
-    const jobPostId = response.body.payload.id
-    const update = {
-      title: 'Updated job title',
-    }
-
-    const response1 = await request(app)
-      .put(`/employer/jobs/${jobPostId}`)
-      .send(update)
-    expect(response1.status).toBe(200)
-    expect(response1.body.message).toBe('Updated')
+    expect(res.body.message).toBe('Updated')
   })
 
   it('should delete the job', async () => {
-    await registerEmployer()
+    await createManySkills()
+    await createEmployer()
     await createJobPost()
     const response = await request(app).delete('/employer/jobs/1')
     expect(response.status).toBe(200)
-    expect(response.body.message).toBe('success')
+    expect(response.body.message).toBe('Removed')
   })
 })
