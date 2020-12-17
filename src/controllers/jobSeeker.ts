@@ -27,12 +27,17 @@ export const jobSeekerLocalLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
-    const id = jobSeeker.id
-
+    const id = jobSeeker.id // this is to extract the id of user
     const token = jwt.sign(
-      { id: id, role: jobSeeker.role },
-      process.env.JWT_SECRET as string
+      // sign method will generate the token
+      { id: id, role: jobSeeker.role }, // id and role are unique identifiers to sign the token
+      process.env.JWT_SECRET as string // this is the identity of application for JWT and
+      // using as a file module
     )
+    console.log('Encoded JWT token is ', token)
+    // when the token is decoded, we can get the user info
+    const decoded = jwt.decode(token)
+    console.log('token after decoded', decoded)
     const userSerialize = { ...jobSeeker, token }
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)

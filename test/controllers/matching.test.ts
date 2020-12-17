@@ -60,15 +60,13 @@ describe('Matcher controller', () => {
     expect(seeker.status).toBe(200)
 
     const employer_token = employer.body.payload.token
-    console.log('employer tokennnnnnnnnn----------', employer_token)
+
     const seeker_token = seeker.body.payload.token
-    console.log('Seeker tokennnnnnnnnn----------', seeker_token)
 
     const res4 = await request(app)
       .post(`/employer/jobs`)
-      .set('Authorization', `Bearer ${employer_token}`) // error says token is undefined
+      .set('Authorization', `Bearer ${employer_token}`)
       .send(jobPostForm)
-    console.log('response after creating job post.........', res4.body)
 
     const response = await request(app)
       .get('/jobSeeker/match')

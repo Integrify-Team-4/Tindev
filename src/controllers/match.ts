@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-
+import _ from 'lodash'
 import {
   NotFoundError,
   UnauthorizedError,
@@ -21,8 +21,6 @@ export const match = async (
 ) => {
   try {
     const jobSeeker = req.user as JobSeeker
-    console.log('JOBSEEKER', jobSeeker)
-
     if (!jobSeeker) return next(new NotFoundError('User not found'))
 
     const seekerSkillIds = jobSeeker.skills.map((skill) => skill.id)
@@ -37,15 +35,13 @@ export const match = async (
           if (skill.jobPosts.length === 0) return
           return skill.jobPosts
         } catch (error) {
-          console.log(error)
-          next(new InternalServerError())
+          console.log('error is coming from match ts', error)
         }
       })
     )) as JobPost[][]
-
     //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] to [...jobPosts] */
-    const matchedPosts = posts.flat()
-
+    const matchedPosts = _.flatten(posts)
+    console.log('matched postsssss', matchedPosts)
     if (matchedPosts.length === 0)
       return next(new NotFoundError('No match found'))
 

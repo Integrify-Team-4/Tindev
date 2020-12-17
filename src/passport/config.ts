@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt'
 import passportJWT, { ExtractJwt } from 'passport-jwt'
 
 import Credential from '../entities/Credential.postgres'
+import JobSeeker from '../entities/JobSeeker.postgres'
+import Employer from '../entities/Employer.postgres'
 
 const LocalStrategy = passportLocal.Strategy
 const JWTStrategy = passportJWT.Strategy
@@ -43,27 +45,20 @@ export const jwt = new JWTStrategy(
   },
   async (jwtPayload, done) => {
     const { id, role } = jwtPayload
-    let credential_seeker: any
-    let credential_employer: any
+
     if (role === 'job seeker') {
-      credential_seeker = await Credential.findOne(id, {
-        relations: ['jobSeeker'],
-      })
-      return credential_seeker
+      const jobSeeker = await JobSeeker.findOne(id)
+      if (jobSeeker) {
+        return done(null, jobSeeker)
+      }
+      return done(null, false)
     }
     if (role === 'employer') {
-      credential_employer = await Credential.findOne(id, {
-        relations: ['employer'],
-      })
-      return credential_employer
-    }
-
-    if (!credential_seeker && !credential_employer) return done(null, false)
-    if (credential_seeker) {
-      return done(null, credential_seeker.jobSeeker)
-    }
-    if (credential_employer) {
-      return done(null, credential_employer.employer)
+      const employer = await Employer.findOne(id)
+      if (employer) {
+        return done(null, employer)
+      }
+      return done(null, false)
     }
   }
 )
