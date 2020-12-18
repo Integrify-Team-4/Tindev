@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import _ from 'lodash'
 
 import {
   NotFoundError,
@@ -44,7 +45,9 @@ export const match = async (
     )) as JobPost[][]
 
     //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] to [...jobPosts] */
-    const matchedPosts = posts.flat()
+    const matchedPosts: JobPost[] = []
+    matchedPosts.concat(...posts)
+    // const matchedPosts = posts.flat()
 
     if (matchedPosts.length === 0)
       return next(new NotFoundError('No match found'))
@@ -77,6 +80,7 @@ export const match = async (
 
     res.deliver(200, 'success', filterPost)
   } catch (error) {
+    console.log(error)
     next(new InternalServerError())
   }
 }
