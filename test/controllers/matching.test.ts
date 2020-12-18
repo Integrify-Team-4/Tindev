@@ -72,7 +72,6 @@ describe('Matcher controller', () => {
       .get('/jobSeeker/match')
       .set('Authorization', `Bearer ${seeker_token}`)
 
-    console.log(response.body.message)
     expect(res5.status).toBe(200)
     expect(res4.status).toBe(200)
     expect(response.status).toBe(200)

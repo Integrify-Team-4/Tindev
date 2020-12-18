@@ -12,7 +12,7 @@ export const tokenVerify = async (
     if (error) {
       return next(new InternalServerError())
     }
-    console.log('user is from token verify ', user)
+
     if (!user) {
       return next(new UnauthorizedError('Invalid token, Please login again'))
     }

@@ -41,7 +41,6 @@ export const match = async (
     )) as JobPost[][]
     //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] to [...jobPosts] */
     const matchedPosts = _.flatten(posts)
-    console.log('matched postsssss', matchedPosts)
     if (matchedPosts.length === 0)
       return next(new NotFoundError('No match found'))
 

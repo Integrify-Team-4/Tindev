@@ -27,17 +27,12 @@ export const jobSeekerLocalLogin = async (
       }
       return next(new NotFoundError(info.message))
     }
-    const id = jobSeeker.id // this is to extract the id of user
+    const id = jobSeeker.id
     const token = jwt.sign(
-      // sign method will generate the token
-      { id: id, role: jobSeeker.role }, // id and role are unique identifiers to sign the token
-      process.env.JWT_SECRET as string // this is the identity of application for JWT and
-      // using as a file module
+      { id: id, role: jobSeeker.role },
+      process.env.JWT_SECRET as string
     )
-    console.log('Encoded JWT token is ', token)
-    // when the token is decoded, we can get the user info
-    const decoded = jwt.decode(token)
-    console.log('token after decoded', decoded)
+
     const userSerialize = { ...jobSeeker, token }
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
@@ -96,7 +91,7 @@ export const updateJobSeeker = async (
 ) => {
   try {
     const update = req.body
-    const jobSeeker = (req.user as unknown) as JobSeeker
+    const jobSeeker = req.user as JobSeeker
 
     if (!jobSeeker) {
       return next(new NotFoundError(`${jobSeeker} not found`))
@@ -129,17 +124,3 @@ export const updateJobSeeker = async (
     next(new NotFoundError('ID NOT FIND'))
   }
 }
-// read user profile
-// export const readMyProfile = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const userId = req.params.id
-//     const user = await JobSeeker.findOne(userId)
-//     console.log('I am reading my profile ', user)
-//   } catch (e) {
-//     return next(new NotFoundError())
-//   }
-// }
