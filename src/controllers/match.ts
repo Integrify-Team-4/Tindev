@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
-import {
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-  BadRequestError,
-} from '../helpers/apiError'
+import { NotFoundError, InternalServerError } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import JobPost from '../entities/JobPost.postgres'
 import Skill from '../entities/Skill.postgres'
@@ -35,7 +30,7 @@ export const match = async (
           if (skill.jobPosts.length === 0) return
           return skill.jobPosts
         } catch (error) {
-          console.log('error is coming from match ts', error)
+          next(new InternalServerError())
         }
       })
     )) as JobPost[][]

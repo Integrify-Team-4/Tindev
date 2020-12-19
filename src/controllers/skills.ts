@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import Skill from '../entities/Skill.postgres'
 
-import {
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-  BadRequestError,
-} from '../helpers/apiError'
+import { InternalServerError } from '../helpers/apiError'
 
 // posting skills to database
 export const creatingSkills = async (

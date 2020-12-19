@@ -12,7 +12,6 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
-import JobSeeker from '../entities/JobSeeker.postgres'
 
 export const localLogin = async (
   req: Request,
@@ -36,7 +35,6 @@ export const localLogin = async (
       process.env.JWT_SECRET as string
     )
     const userSerialize = { ...employer, token }
-    console.log('USER', userSerialize)
 
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
@@ -52,10 +50,8 @@ export const registerEmployer = async (
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
-    console.log(info, credential)
 
     if (exists) {
-      console.log('I was called')
       return next(
         new BadRequestError(`Email ${credential.email} already exists`)
       )
@@ -83,7 +79,6 @@ export const updateEmployer = async (
   next: NextFunction
 ) => {
   try {
-    const employerId = req.params.id
     const update = req.body
     const employer = req.user as Employer
 
