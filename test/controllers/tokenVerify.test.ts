@@ -3,20 +3,6 @@ import jwt from 'jsonwebtoken'
 import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
-const form = {
-  info: {
-    firstName: 'duy',
-    lastName: 'nguyen',
-    contact: 1234,
-    relocate: true,
-    seniority: 'junior',
-    startingDate: '10/12/2020',
-  },
-  credential: {
-    email: 'abc@gmail.com',
-    password: 'password',
-  },
-}
 
 const jobSeeker = {
   info: {
@@ -38,7 +24,7 @@ const loginInput = {
 }
 
 const createJobSeeker = async () =>
-  await request(app).post('/jobSeeker/create').send(form)
+  await request(app).post('/jobSeeker').send(jobSeeker)
 
 const logInJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(loginInput)
