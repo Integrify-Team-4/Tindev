@@ -30,9 +30,11 @@ export const localLogin = async (
     }
 
     const id = employer.id
-    const token = jwt.sign({ id: id }, process.env.JWT_SECRET as string)
+    const token = jwt.sign(
+      { id: id, role: employer.role },
+      process.env.JWT_SECRET as string
+    )
     const userSerialize = { ...employer, token }
-    console.log('USER', userSerialize)
 
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
@@ -48,10 +50,8 @@ export const registerEmployer = async (
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
-    console.log(info, credential)
 
     if (exists) {
-      console.log('I was called')
       return next(
         new BadRequestError(`Email ${credential.email} already exists`)
       )
@@ -79,7 +79,6 @@ export const updateEmployer = async (
   next: NextFunction
 ) => {
   try {
-    const employerId = req.params.id
     const update = req.body
     const employer = req.user as Employer
 

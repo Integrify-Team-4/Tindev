@@ -1,4 +1,5 @@
 import express from 'express'
+import tokenVerify from '../middlewares/tokenVerify'
 
 import {
   localLogin,
@@ -8,7 +9,6 @@ import {
   deleteJobPostbyId,
   updateEmployer,
 } from '../controllers/employer'
-import tokenVerify from '../middlewares/tokenVerify'
 
 const router = express.Router()
 

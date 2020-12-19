@@ -5,7 +5,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
 } from 'typeorm'
-
 import JobSeeker from './JobSeeker.postgres'
 import JobPost from './JobPost.postgres'
 

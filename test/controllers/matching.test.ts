@@ -1,13 +1,34 @@
-import { NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 import connection from '../db-helper'
 import app from '../../src/app'
 
+const jobSeekerForm = {
+  info: {
+    firstName: 'duy',
+    lastName: 'nguyen',
+    contact: 1234,
+    relocate: true,
+    seniority: 'junior',
+    startingDate: '10/12/2020',
+  },
+  credential: {
+    email: 'abcd@gmail.com',
+    password: 'VanKaLauda',
+  },
+  skills: [{ id: 1 }, { id: 2 }, { id: 3 }],
+}
+
+const newCreateJobSeeker = async () =>
+  await request(app).post('/jobSeeker').send(jobSeekerForm)
+
+const newJobSeekerLogin = async () =>
+  await request(app)
+    .post('/jobSeeker/login/local')
+    .send(jobSeekerForm.credential)
+
 import {
-  createJobSeeker,
   createManySkills,
   createEmployer,
-  loginJobSeeker,
   loginEmployer,
   createJobPost,
 } from '../controller-helpers'
@@ -29,29 +50,29 @@ describe('Matcher controller', () => {
   it('should find match', async () => {
     await createManySkills()
     await createEmployer()
-    await createJobPost()
-    const res2 = await createJobSeeker()
-    const res5 = await request(app).get('/skills')
-
-    const seeker = await loginJobSeeker()
     const employer = await loginEmployer()
-    console.log(employer.body)
+    await createJobPost() // this also should need token
+    const res2 = await newCreateJobSeeker()
+    expect(res2.status).toBe(200)
+    const res5 = await request(app).get('/skills')
+    const seeker = await newJobSeekerLogin()
+    expect(seeker.status).toBe(200)
 
-    const seekerToken = seeker.body.payload.token
-    const employerToken = employer.body.payload.token
+    const employer_token = employer.body.payload.token
+
+    const seeker_token = seeker.body.payload.token
+
     const res4 = await request(app)
       .post(`/employer/jobs`)
-      .set('Authorization', employerToken)
+      .set('Authorization', `Bearer ${employer_token}`)
       .send(jobPostForm)
 
     const response = await request(app)
       .get('/jobSeeker/match')
-      .set('Authorization', seekerToken)
+      .set('Authorization', `Bearer ${seeker_token}`)
 
-    console.log(response.body.message)
     expect(res5.status).toBe(200)
-    expect(res2.body.status).toBe(201)
-    expect(res4.body.status).toBe(201)
+    expect(res4.status).toBe(200)
     expect(response.status).toBe(200)
   })
 })

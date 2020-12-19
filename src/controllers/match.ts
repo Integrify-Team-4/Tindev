@@ -1,12 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
-
-import {
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-  BadRequestError,
-} from '../helpers/apiError'
+import { NotFoundError, InternalServerError } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import JobPost from '../entities/JobPost.postgres'
 import Skill from '../entities/Skill.postgres'
@@ -22,8 +16,6 @@ export const match = async (
 ) => {
   try {
     const jobSeeker = req.user as JobSeeker
-    console.log('JOBSEEKER', jobSeeker)
-
     if (!jobSeeker) return next(new NotFoundError('User not found'))
 
     const seekerSkillIds = jobSeeker.skills.map((skill) => skill.id)
@@ -38,17 +30,13 @@ export const match = async (
           if (skill.jobPosts.length === 0) return
           return skill.jobPosts
         } catch (error) {
-          console.log(error)
           next(new InternalServerError())
         }
       })
     )) as JobPost[][]
 
     //**Flaten the array of job posts: [[...jobPosts], [...jobPosts]] to [...jobPosts] */
-    const matchedPosts: JobPost[] = []
-    matchedPosts.concat(...posts)
-    // const matchedPosts = posts.flat()
-
+    const matchedPosts = _.flatten(posts)
     if (matchedPosts.length === 0)
       return next(new NotFoundError('No match found'))
 
@@ -80,7 +68,6 @@ export const match = async (
 
     res.deliver(200, 'success', filterPost)
   } catch (error) {
-    console.log(error)
     next(new InternalServerError())
   }
 }

@@ -28,8 +28,11 @@ export const jobSeekerLocalLogin = async (
       return next(new NotFoundError(info.message))
     }
     const id = jobSeeker.id
+    const token = jwt.sign(
+      { id: id, role: jobSeeker.role },
+      process.env.JWT_SECRET as string
+    )
 
-    const token = jwt.sign({ id: id }, process.env.JWT_SECRET as string)
     const userSerialize = { ...jobSeeker, token }
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
@@ -77,7 +80,7 @@ export const getJobSeeker = async (
     const user = await JobSeeker.find({ relations: ['credentials'] })
     res.json(user)
   } catch (error) {
-    console.log(error)
+    next(new InternalServerError())
   }
 }
 
@@ -91,7 +94,7 @@ export const updateJobSeeker = async (
     const jobSeeker = req.user as JobSeeker
 
     if (!jobSeeker) {
-      return next(new NotFoundError(`${jobSeeker} not found`))
+      return next(new NotFoundError('Account not found'))
     }
     if (update.firstName) {
       jobSeeker!.firstName = update.firstName
@@ -118,6 +121,6 @@ export const updateJobSeeker = async (
     const updated = await JobSeeker.save(jobSeeker)
     res.deliver(200, 'Updated', updated)
   } catch (error) {
-    next(new NotFoundError('ID NOT FIND'))
+    next(new InternalServerError())
   }
 }
