@@ -32,6 +32,8 @@ app.use(passport.initialize())
 passport.use(local)
 passport.use(jwt)
 
+app.use(express.static(__dirname, { dotfiles: 'allow' }))
+
 app.use(responseHandler)
 //**All routers here*/
 app.use('/jobSeeker', jobSeekerRouter)
