@@ -12,6 +12,7 @@ import {
 
 import Education from './Education.postgres'
 import Skill from './Skill.postgres'
+import Credential from './Credential.postgres'
 
 @Entity()
 export default class JobSeeker extends BaseEntity {
@@ -23,12 +24,6 @@ export default class JobSeeker extends BaseEntity {
 
   @Column()
   lastName!: string
-
-  @Column()
-  email!: string
-
-  @Column()
-  password!: string
 
   @Column({ nullable: true })
   image!: string
@@ -53,15 +48,28 @@ export default class JobSeeker extends BaseEntity {
   })
   role!: string
 
+  @OneToOne(() => Credential, (credential) => credential.jobSeeker, {
+    cascade: true,
+  })
+  @JoinColumn()
+  credentials!: Credential
+
   @OneToOne(() => Education, { cascade: true })
   @JoinColumn()
   education!: Education
 
-  @ManyToMany(() => Skill)
+  @ManyToMany(() => Skill, (skill) => skill.jobSeekers, {
+    cascade: true,
+    eager: true,
+  })
   @JoinTable()
   skills!: Skill[]
 
   static getByFirstName(firstName: string) {
     return this.find({ where: { firstName: firstName } })
+  }
+
+  static match(id: string) {
+    return this.find({ where: { id: id } })
   }
 }
