@@ -22,6 +22,7 @@ console.log('APP IS IN ENVIRONMENT ', ENVIRONMENT)
 app.set('port', process.env.PORT || 5000)
 
 //**Use common 3rd-party middlewares*/
+app.use(express.static(__dirname, { dotfiles: 'allow' }))
 app.use(compression())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -31,8 +32,6 @@ app.use(lusca.xssProtection(true))
 app.use(passport.initialize())
 passport.use(local)
 passport.use(jwt)
-
-app.use(express.static(__dirname, { dotfiles: 'allow' }))
 
 app.use(responseHandler)
 //**All routers here*/
