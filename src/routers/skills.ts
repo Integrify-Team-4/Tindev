@@ -5,6 +5,6 @@ import { creatingSkills, getSkills } from './../controllers/skills'
 const router = express.Router()
 
 router.get('/', getSkills)
-router.post('/create', creatingSkills)
+router.post('/', creatingSkills)
 
 export default router

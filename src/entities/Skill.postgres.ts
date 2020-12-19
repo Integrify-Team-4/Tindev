@@ -5,7 +5,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
 } from 'typeorm'
-
 import JobSeeker from './JobSeeker.postgres'
 import JobPost from './JobPost.postgres'
 
@@ -17,7 +16,7 @@ export default class Skill extends BaseEntity {
   @Column()
   name!: string
 
-  @ManyToMany(() => JobPost, (jobPost) => jobPost.requiredSkills)
+  @ManyToMany(() => JobPost, (jobPost) => jobPost.skills)
   jobPosts!: JobPost[]
 
   @ManyToMany(() => JobSeeker, (jobSeeker) => jobSeeker.skills)
