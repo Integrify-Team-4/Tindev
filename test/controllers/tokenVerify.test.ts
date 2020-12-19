@@ -43,7 +43,6 @@ describe('Test token middleware', () => {
   it('job Seeker should create, log in and can read his profile', async () => {
     await createJobSeeker()
     const response = await logInJobSeeker()
-    const jobSeekerId = response.body.id
     const update = {
       firstName: 'Update Duy',
       lastName: 'update lastname',
@@ -53,12 +52,12 @@ describe('Test token middleware', () => {
       startingDate: '10/12/2020',
     }
     const updateResponse = await request(app)
-      .put(`/jobSeeker/update/${jobSeekerId}`)
+      .patch(`/jobSeeker/update`)
       .set('Authorization', `Bearer ${response.body.token}`)
       .send(update)
-    console.log('update Response ', updateResponse.body)
+
+    expect(response.status).toBe(200)
     expect(response.status).toBe(200)
     expect(updateResponse.status).toBe(200)
-    expect(response.status).toBe(200)
   })
 })
