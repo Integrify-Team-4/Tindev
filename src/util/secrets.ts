@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
 import logger from './logger'
+import { ConnectionOptions } from 'typeorm'
 
 import Entities from '../entities'
 
@@ -14,34 +15,43 @@ if (fs.existsSync('.env')) {
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
-export const JWT_SECRET = process.env['JWT_SECRET'] as string
+const JWT_SECRET = process.env['JWT_SECRET'] as string
 const DB_PASSWORD = process.env['DB_PASSWORD'] as string
 
-export const ormConfig = {
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: DB_PASSWORD,
-  database: 'tindev',
-  synchronize: true,
-  logging: false,
-  entities: Entities,
-  cli: {
-    entitiesDir: 'entities',
-    migrationsDir: 'migrations',
-    subscribersDir: 'subscribers',
-  },
+let ormConfig
+if (prod) {
+  const dbUrl = process.env.DATABASE_URL
+  ormConfig = {
+    type: 'postgres',
+    synchronize: true,
+    logging: false,
+    entities: Entities,
+    url: dbUrl,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  }
+} else {
+  ormConfig = {
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'postgres',
+    password: DB_PASSWORD,
+    database: 'tindev',
+    synchronize: true,
+    logging: false,
+    entities: Entities,
+  }
 }
+export default ormConfig as ConnectionOptions
 
 if (!JWT_SECRET) {
   logger.error(
     'No client secret. Set SESSION_SECRET or JWT_SECRET environment variable.'
   )
-  process.exit(1)
 }
 
 if (!DB_PASSWORD) {
   logger.error('No postgres password. Set DB_PASSWORD environment variable.')
-  process.exit(1)
 }
