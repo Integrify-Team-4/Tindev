@@ -22,7 +22,6 @@ console.log('APP IS IN ENVIRONMENT ', ENVIRONMENT)
 app.set('port', process.env.PORT || 5000)
 
 //**Use common 3rd-party middlewares*/
-app.use(express.static(__dirname, { dotfiles: 'allow' }))
 app.use(compression())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
