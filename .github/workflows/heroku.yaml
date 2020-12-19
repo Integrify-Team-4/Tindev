@@ -3,7 +3,7 @@ name: heroku-deploy
 on:
   push:
     branches:
-      - feature-controller
+      - master
 
 jobs:
   deploy:
