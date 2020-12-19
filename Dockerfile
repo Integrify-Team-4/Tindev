@@ -9,7 +9,6 @@ FROM node:12-alpine3.10 as PRODUCTION
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
-COPY src/.well-known ./dist/.well-known
 COPY --from=BUILDER app/dist ./dist
 
 ENTRYPOINT ["node", "dist/server.js"]
