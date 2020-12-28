@@ -16,13 +16,13 @@ export default class Employer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   companyName!: string
 
-  @Column()
+  @Column({ nullable: true })
   companyInfo!: string
 
-  @Column()
+  @Column({ nullable: true })
   address!: string
 
   @Column({

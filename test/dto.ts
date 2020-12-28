@@ -1,10 +1,6 @@
 //*Employer form */
 export const employerForm = {
-  info: {
-    companyName: 'google',
-    companyInfo: 'google-home',
-    address: 'google-address',
-  },
+  info: {},
   credential: {
     email: 'abc@gmail.com',
     password: 'abcdf',
