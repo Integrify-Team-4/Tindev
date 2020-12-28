@@ -19,25 +19,25 @@ export default class JobSeeker extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column()
+  @Column({ nullable: true })
   firstName!: string
 
-  @Column()
+  @Column({ nullable: true })
   lastName!: string
 
   @Column({ nullable: true })
   image!: string
 
-  @Column()
+  @Column({ nullable: true })
   contact!: number
 
-  @Column()
+  @Column({ nullable: true })
   relocate!: boolean
 
-  @Column()
+  @Column({ nullable: true })
   seniority!: string
 
-  @Column()
+  @Column({ nullable: true })
   startingDate!: string
 
   @CreateDateColumn()
