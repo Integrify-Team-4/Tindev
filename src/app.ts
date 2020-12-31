@@ -34,7 +34,7 @@ passport.use(jwt)
 
 app.use(responseHandler)
 //**All routers here*/
-app.use('/jobSeeker', jobSeekerRouter)
+app.use('/jobseeker', jobSeekerRouter)
 app.use('/employer', employerRouter)
 app.use('/skills', skillsRouter)
 
