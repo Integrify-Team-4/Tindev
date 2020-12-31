@@ -15,6 +15,6 @@ router.get('/', tokenVerify, getJobSeeker)
 router.post('/', createJobSeeker)
 router.get('/match', tokenVerify, match)
 router.post('/login/local', jobSeekerLocalLogin)
-router.patch('/update', tokenVerify, updateJobSeeker)
+router.patch('/', tokenVerify, updateJobSeeker)
 
 export default router
