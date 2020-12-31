@@ -1,10 +1,6 @@
 //*Employer form */
 export const employerForm = {
-  info: {
-    companyName: 'google',
-    companyInfo: 'google-home',
-    address: 'google-address',
-  },
+  info: {},
   credential: {
     email: 'abc@gmail.com',
     password: 'abcdf',
@@ -48,14 +44,7 @@ export const updateJobPostForm = {
 
 //**Job seeker form */
 export const jobSeekerForm = {
-  info: {
-    firstName: 'duy',
-    lastName: 'nguyen',
-    contact: 1234,
-    relocate: true,
-    seniority: 'junior',
-    startingDate: '10/12/2020',
-  },
+  info: {},
   credential: {
     email: 'abc@gmail.com',
     password: 'password',
