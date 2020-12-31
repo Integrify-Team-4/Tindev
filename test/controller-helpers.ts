@@ -38,7 +38,7 @@ export const loginJobSeeker = async () =>
   await request(app).post('/jobSeeker/login/local').send(jobSeekerLogin)
 
 export const updateJobSeeker = async () =>
-  await request(app).patch('/jobSeeker/update').send(jobSeekerLogin)
+  await request(app).patch('/jobSeeker').send(jobSeekerLogin)
 
 export const getJobSeeker = async () => await request(app).get('/jobSeeker')
 
