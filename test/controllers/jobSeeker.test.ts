@@ -67,5 +67,6 @@ describe('jobSeeker controller', () => {
     const res = await updateJobSeeker()
     expect(res.status).toBe(200)
     expect(res.body.message).toBe('Updated')
+    expect(res.body.payload.firstName).toEqual('new name')
   })
 })
