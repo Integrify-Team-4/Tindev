@@ -20,7 +20,7 @@ export default class Credential extends BaseEntity {
   @Column()
   password!: string
 
-  @Column()
+  @Column({ nullable: true })
   role!: string
 
   @OneToOne(() => JobSeeker, (jobSeeker) => jobSeeker.credentials)
