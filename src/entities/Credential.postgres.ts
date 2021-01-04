@@ -20,6 +20,9 @@ export default class Credential extends BaseEntity {
   @Column()
   password!: string
 
+  @Column()
+  role!: string
+
   @OneToOne(() => JobSeeker, (jobSeeker) => jobSeeker.credentials)
   jobSeeker!: JobSeeker
 
