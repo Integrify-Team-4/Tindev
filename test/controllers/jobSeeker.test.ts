@@ -68,4 +68,43 @@ describe('jobSeeker controller', () => {
     expect(res.status).toBe(200)
     expect(res.body.message).toBe('Updated')
   })
+  // login job seeker with only credentials
+  it('should log in with only email and password', async () => {
+    // step 1 job seeker should be created
+    await request(app)
+      .post('/jobSeeker')
+      .send({
+        credential: {
+          email: 'abc@gmail.com',
+          password: 'password',
+        },
+      })
+    const loginResponse = await request(app)
+      .post('/jobSeeker/login/local')
+      .send({
+        email: 'abc@gmail.com',
+        password: 'password',
+      })
+    console.log('log in response is ', loginResponse.body) // got it what we expect
+    expect(loginResponse.status).toBe(200)
+  })
+  it('should fail to log in when user try to sign up as job seeker and sign in to employer', async () => {
+    // step 1 job seeker should be created
+    await request(app)
+      .post('/jobSeeker')
+      .send({
+        credential: {
+          email: 'abc@gmail.com',
+          password: 'password',
+        },
+      })
+    const loginResponse = await request(app)
+      .post('/employer/login/local')
+      .send({
+        email: 'abc@gmail.com',
+        password: 'password',
+      })
+    // response should have error but not :(
+    console.log('log in response is ', loginResponse.body) // can't get it what we expect
+  })
 })
