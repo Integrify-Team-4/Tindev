@@ -45,6 +45,7 @@ export const jwt = new JWTStrategy(
   },
   async (jwtPayload, done) => {
     const { id, role } = jwtPayload
+
     if (role === 'job seeker') {
       const jobSeeker = await JobSeeker.findOne(id)
       if (jobSeeker) {
