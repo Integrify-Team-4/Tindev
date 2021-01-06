@@ -2,17 +2,16 @@ import express from 'express'
 import tokenVerify from '../middlewares/tokenVerify'
 
 import {
-  localLogin,
   registerEmployer,
   createJobPost,
   updateJobPost,
   deleteJobPostbyId,
   updateEmployer,
 } from '../controllers/employer'
-
+import { jobSeekerLocalLogin } from '../controllers/login'
 const router = express.Router()
 
-router.post('/login/local', localLogin)
+router.post('/login/local', jobSeekerLocalLogin)
 router.post('/', registerEmployer)
 router.post('/jobs', tokenVerify, createJobPost)
 router.patch('/jobs/:id', tokenVerify, updateJobPost)

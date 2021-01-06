@@ -26,12 +26,10 @@ describe('jobSeeker controller', () => {
           password: 'password',
         },
       })
-    const loginResponse = await request(app)
-      .post('/jobSeeker/login/local')
-      .send({
-        email: 'abc@gmail.com',
-        password: 'password',
-      })
+    const loginResponse = await request(app).post('/login/local').send({
+      email: 'abc@gmail.com',
+      password: 'password',
+    })
     console.log('log in response is ', loginResponse.body) // got it what we expect
     expect(loginResponse.status).toBe(200)
     expect(loginResponse.body.payload.role).toEqual('job seeker')
@@ -47,12 +45,10 @@ describe('jobSeeker controller', () => {
           password: 'password',
         },
       })
-    const loginResponse = await request(app)
-      .post('/employer/login/local')
-      .send({
-        email: 'abc@gmail.com',
-        password: 'password',
-      })
+    const loginResponse = await request(app).post('/login/local').send({
+      email: 'abc@gmail.com',
+      password: 'password',
+    })
     // response should have error but not :(q
     expect(loginResponse.body.payload.role).toEqual('job seeker')
     console.log('log in response is ', loginResponse.body)
