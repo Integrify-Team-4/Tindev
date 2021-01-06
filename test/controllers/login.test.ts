@@ -64,12 +64,10 @@ describe('jobSeeker controller', () => {
           password: 'password',
         },
       })
-    const loginResponse = await request(app)
-      .post('/employer/login/local')
-      .send({
-        email: 'abc@gmail.com',
-        password: 'password',
-      })
+    const loginResponse = await request(app).post('/login/local').send({
+      email: 'abc@gmail.com',
+      password: 'password',
+    })
     // response should have error but not :(q
     expect(loginResponse.body.payload.role).toEqual('employer')
     console.log('log in response is ', loginResponse.body)
@@ -84,12 +82,10 @@ describe('jobSeeker controller', () => {
           password: 'password',
         },
       })
-    const loginResponse = await request(app)
-      .post('/jobSeeker/login/local')
-      .send({
-        email: 'abc@gmail.com',
-        password: 'password',
-      })
+    const loginResponse = await request(app).post('/login/local').send({
+      email: 'abc@gmail.com',
+      password: 'password',
+    })
     // response should have error but not :(q
     expect(loginResponse.body.payload.role).toEqual('employer')
     console.log('log in response is ', loginResponse.body.payload.role)

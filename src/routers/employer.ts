@@ -11,7 +11,6 @@ import {
 import { userLocalLogin } from '../controllers/login'
 const router = express.Router()
 
-router.post('/login/local', userLocalLogin)
 router.post('/', registerEmployer)
 router.post('/jobs', tokenVerify, createJobPost)
 router.patch('/jobs/:id', tokenVerify, updateJobPost)
