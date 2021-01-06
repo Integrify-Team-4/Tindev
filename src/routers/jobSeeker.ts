@@ -6,7 +6,6 @@ import {
   createJobSeeker,
   updateJobSeeker,
 } from '../controllers/jobSeeker'
-import { userLocalLogin } from '../controllers/login'
 import { match } from '../controllers/match'
 
 const router = express.Router()

@@ -8,7 +8,6 @@ import {
   deleteJobPostbyId,
   updateEmployer,
 } from '../controllers/employer'
-import { userLocalLogin } from '../controllers/login'
 const router = express.Router()
 
 router.post('/', registerEmployer)
