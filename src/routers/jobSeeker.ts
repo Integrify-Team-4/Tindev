@@ -6,7 +6,7 @@ import {
   createJobSeeker,
   updateJobSeeker,
 } from '../controllers/jobSeeker'
-import { jobSeekerLocalLogin as user } from '../controllers/login'
+import { userLocalLogin } from '../controllers/login'
 import { match } from '../controllers/match'
 
 const router = express.Router()
@@ -14,7 +14,7 @@ const router = express.Router()
 router.get('/', tokenVerify, getJobSeeker)
 router.post('/', createJobSeeker)
 router.get('/match', tokenVerify, match)
-router.post('/login/local', user)
+router.post('/login/local', userLocalLogin)
 router.patch('/', tokenVerify, updateJobSeeker)
 
 export default router
