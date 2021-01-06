@@ -13,6 +13,7 @@ import responseHandler from './middlewares/responseHandler'
 import jobSeekerRouter from './routers/jobSeeker'
 import employerRouter from './routers/employer'
 import skillsRouter from './routers/skills'
+import loginRouter from './routers/login'
 
 import { local, jwt } from './passport/config'
 
@@ -36,6 +37,7 @@ passport.use(jwt)
 
 app.use(responseHandler)
 //**All routers here*/
+app.use('/', loginRouter)
 app.use('/jobseeker', jobSeekerRouter)
 app.use('/employer', employerRouter)
 app.use('/skills', skillsRouter)
