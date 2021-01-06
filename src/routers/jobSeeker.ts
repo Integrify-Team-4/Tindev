@@ -3,7 +3,6 @@ import tokenVerify from '../middlewares/tokenVerify'
 
 import {
   getJobSeeker,
-  jobSeekerLocalLogin,
   createJobSeeker,
   updateJobSeeker,
 } from '../controllers/jobSeeker'
@@ -14,7 +13,6 @@ const router = express.Router()
 router.get('/', tokenVerify, getJobSeeker)
 router.post('/', createJobSeeker)
 router.get('/match', tokenVerify, match)
-router.post('/login/local', jobSeekerLocalLogin)
 router.patch('/', tokenVerify, updateJobSeeker)
 
 export default router

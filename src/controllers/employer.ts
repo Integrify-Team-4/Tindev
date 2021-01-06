@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
-import passport from 'passport'
-import jwt from 'jsonwebtoken'
 
 import {
   NotFoundError,
@@ -12,33 +10,6 @@ import {
 import Employer from '../entities/Employer.postgres'
 import Credential from '../entities/Credential.postgres'
 import JobPost from '../entities/JobPost.postgres'
-
-export const localLogin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  passport.authenticate('local', function (error, employer: Employer, info) {
-    if (error) {
-      return next(new InternalServerError())
-    }
-    if (!employer) {
-      if (info.message === 'Invalid email or password') {
-        return next(new UnauthorizedError(info.message))
-      }
-      return next(new NotFoundError(info.message))
-    }
-
-    const id = employer.id
-    const token = jwt.sign(
-      { id: id, role: employer.role },
-      process.env.JWT_SECRET as string
-    )
-    const userSerialize = { ...employer, token }
-
-    res.deliver(200, 'Success', userSerialize)
-  })(req, res, next)
-}
 
 export const registerEmployer = async (
   req: Request,

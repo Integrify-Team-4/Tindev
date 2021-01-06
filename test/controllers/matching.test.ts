@@ -22,9 +22,7 @@ const newCreateJobSeeker = async () =>
   await request(app).post('/jobSeeker').send(jobSeekerForm)
 
 const newJobSeekerLogin = async () =>
-  await request(app)
-    .post('/jobSeeker/login/local')
-    .send(jobSeekerForm.credential)
+  await request(app).post('/login/local').send(jobSeekerForm.credential)
 
 import {
   createManySkills,

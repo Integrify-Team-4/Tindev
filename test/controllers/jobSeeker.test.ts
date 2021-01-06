@@ -37,7 +37,7 @@ describe('jobSeeker controller', () => {
       password: 'duy@123',
     }
     const response = await request(app)
-      .post('/jobSeeker/login/local')
+      .post('/login/local')
       .send(wrong_loginInput)
     expect(response.body.message).toEqual('Email duy@gmail.com not found')
   })
