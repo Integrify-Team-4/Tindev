@@ -40,6 +40,9 @@ export default class JobSeeker extends BaseEntity {
   @Column({ nullable: true })
   startingDate!: string
 
+  @Column({ nullable: true })
+  workExperience!: number
+
   @CreateDateColumn()
   created!: Date
 

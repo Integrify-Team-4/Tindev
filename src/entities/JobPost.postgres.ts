@@ -26,6 +26,9 @@ export default class JobPost extends BaseEntity {
   @Column()
   seniority!: string
 
+  @Column({ nullable: true })
+  startingDate!: string
+
   @CreateDateColumn()
   createdAt!: Date
 
