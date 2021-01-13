@@ -57,6 +57,10 @@ export const jobSeekerLogin = {
   password: jobSeekerForm.credential.password,
 }
 
+export const jobSeekerUpdate = {
+  firstName: 'new name',
+}
+
 export const skillForm = [
   {
     name: 'Javascript',
