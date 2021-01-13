@@ -11,6 +11,7 @@ import {
 } from '../controller-helpers'
 import { mockJobSeekerCredential } from '../dto'
 
+// TODO remove mock for fully e2e test
 jest.mock(
   '../../src/middlewares/tokenVerify',
   () => (req: Request, res: Response, next: NextFunction) => {
@@ -50,7 +51,7 @@ describe('jobSeeker controller', () => {
     const newUser = await request(app).get('/jobSeeker')
 
     expect(response.status).toBe(200)
-    expect(newUser.body.length).toBe(1)
+    expect(newUser.body.payload).toHaveProperty('id')
   })
 
   it('job Seeker should log in', async () => {
@@ -67,6 +68,5 @@ describe('jobSeeker controller', () => {
     const res = await updateJobSeeker()
     expect(res.status).toBe(200)
     expect(res.body.message).toBe('Updated')
-    expect(res.body.payload.firstName).toEqual('new name')
   })
 })
