@@ -16,5 +16,6 @@ router.post('/', createJobSeeker)
 router.get('/match', tokenVerify, match)
 router.patch('/', tokenVerify, updateJobSeeker)
 router.post('/upload/profile', tokenVerify, uploadImages)
+router.post('/upload/profile', tokenVerify, uploadImages)
 
 export default router
