@@ -16,7 +16,7 @@ export const createEmployer = async () =>
   await request(app).post('/employer').send(employerForm)
 
 export const loginEmployer = async () =>
-  await request(app).post('/employer/login/local').send(employerLogin)
+  await request(app).post('/login/local').send(employerLogin)
 
 export const updateJobPost = async (jobPostId: number) =>
   await request(app)
@@ -36,7 +36,7 @@ export const createJobSeeker = async () =>
   await request(app).post('/jobSeeker').send(jobSeekerForm)
 
 export const loginJobSeeker = async () =>
-  await request(app).post('/jobSeeker/login/local').send(jobSeekerLogin)
+  await request(app).post('/login/local').send(jobSeekerLogin)
 
 export const updateJobSeeker = async () =>
   await request(app).patch('/jobSeeker').send({ update: jobSeekerUpdate })
