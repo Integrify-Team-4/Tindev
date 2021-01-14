@@ -1,6 +1,5 @@
 import express from 'express'
 import tokenVerify from '../middlewares/tokenVerify'
-import { uploadImages } from './../controllers/uploader'
 
 import {
   registerEmployer,
@@ -18,5 +17,4 @@ router.post('/jobs', tokenVerify, createJobPost)
 router.patch('/jobs/:id', tokenVerify, updateJobPost)
 router.patch('/', tokenVerify, updateEmployer)
 router.delete('/jobs/:id', tokenVerify, deleteJobPostbyId)
-router.post('/upload/profile', tokenVerify, uploadImages)
 export default router
