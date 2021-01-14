@@ -31,7 +31,7 @@ export const uploadImages = (
     }
     s3.getSignedUrl('putObject', s3Params, (e, data) => {
       if (e) {
-        return next(new InternalServerError(e.message))
+        return next(new InternalServerError())
       }
       const returnData = {
         signedRequest: data,
