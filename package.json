@@ -65,6 +65,7 @@
     "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
     "@types/winston": "^2.4.4",
+    "aws-sdk": "^2.826.0",
     "bcrypt": "^5.0.0",
     "bluebird": "^3.5.1",
     "compression": "^1.7.4",
