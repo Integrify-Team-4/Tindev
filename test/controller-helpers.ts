@@ -8,6 +8,7 @@ import {
   jobPostForm,
   jobSeekerForm,
   jobSeekerLogin,
+  jobSeekerUpdate,
   skillForm,
 } from './dto'
 
@@ -38,7 +39,7 @@ export const loginJobSeeker = async () =>
   await request(app).post('/login/local').send(jobSeekerLogin)
 
 export const updateJobSeeker = async () =>
-  await request(app).patch('/jobSeeker').send(jobSeekerLogin)
+  await request(app).patch('/jobSeeker').send({ update: jobSeekerUpdate })
 
 export const getJobSeeker = async () => await request(app).get('/jobSeeker')
 

@@ -50,8 +50,8 @@ export const getJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const user = await JobSeeker.find({ relations: ['credentials'] })
-    res.json(user)
+    const jobSeeker = req.user as JobSeeker
+    res.deliver(200, 'Success', jobSeeker)
   } catch (error) {
     next(new InternalServerError())
   }
