@@ -9,8 +9,8 @@ import {
 } from '../helpers/apiError'
 aws.config.update({
   region: 'us-east-1',
-  accessKeyId: process.env.AWSAccessKeyId,
-  secretAccessKey: process.env.AWSSecretKey,
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
 })
 const S3_BUCKET = process.env.bucket
 export const uploadImages = (
@@ -29,9 +29,9 @@ export const uploadImages = (
       ContentType: fileType,
       ACL: 'public-read',
     }
-    s3.getSignedUrl('putObject', s3Params, (err, data) => {
-      if (err) {
-        return new InternalServerError(err.message)
+    s3.getSignedUrl('putObject', s3Params, (e, data) => {
+      if (e) {
+        return next(new InternalServerError(e.message))
       }
       const returnData = {
         signedRequest: data,
@@ -40,6 +40,6 @@ export const uploadImages = (
       res.json({ success: true, data: { returnData } })
     })
   } catch (e) {
-    new InternalServerError(e)
+    next(new InternalServerError(e))
   }
 }
