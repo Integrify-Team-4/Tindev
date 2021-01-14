@@ -40,6 +40,6 @@ export const uploadImages = (
       res.json({ success: true, data: { returnData } })
     })
   } catch (e) {
-    next(new InternalServerError(e))
+    next(new InternalServerError())
   }
 }
