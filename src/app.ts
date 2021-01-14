@@ -41,7 +41,7 @@ app.use('/', loginRouter)
 app.use('/jobseeker', jobSeekerRouter)
 app.use('/employer', employerRouter)
 app.use('/skills', skillsRouter)
-app.use('/', uploadRouter)
+app.use('/s3', uploadRouter)
 
 //**Custom API error handler*/
 app.use(apiErrorHandler)

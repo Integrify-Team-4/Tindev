@@ -22,7 +22,6 @@ export const uploadImages = (
     const s3 = new aws.S3()
     const fileName = req.body.fileName
     const fileType = req.body.fileType
-    console.log(fileType)
     const s3Params = {
       Bucket: 'tindev-dev-test',
       Key: fileName,
@@ -38,7 +37,6 @@ export const uploadImages = (
         signedRequest: data,
         url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
       }
-      console.log(returnData.url)
       res.json({ success: true, data: { returnData } })
     })
   } catch (e) {
