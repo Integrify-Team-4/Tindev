@@ -17,5 +17,4 @@ router.post('/jobs', tokenVerify, createJobPost)
 router.patch('/jobs/:id', tokenVerify, updateJobPost)
 router.patch('/', tokenVerify, updateEmployer)
 router.delete('/jobs/:id', tokenVerify, deleteJobPostbyId)
-
 export default router
