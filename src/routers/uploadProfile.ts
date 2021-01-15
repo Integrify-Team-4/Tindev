@@ -4,6 +4,6 @@ import tokenVerify from '../middlewares/tokenVerify'
 
 const router = express.Router()
 
-router.post('/image', uploadImages)
+router.post('/image', tokenVerify, uploadImages)
 
 export default router

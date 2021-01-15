@@ -21,7 +21,6 @@ export const uploadImages = (
   try {
     console.log('the user is ', req.user)
     const s3 = new aws.S3()
-    console.log(req.body, '%%%%%%%%%%%')
     const fileName = req.body.fileName
     const fileType = req.body.fileType
     const s3Params = {
