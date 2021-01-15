@@ -12,7 +12,7 @@ aws.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
 })
-const S3_BUCKET = process.env.bucket
+const S3_BUCKET = process.env.BUCKET
 export const uploadImages = (
   req: Request,
   res: Response,
@@ -20,12 +20,13 @@ export const uploadImages = (
 ) => {
   try {
     const s3 = new aws.S3()
+    console.log(req.body, '%%%%%%%%%%%')
     const fileName = req.body.fileName
     const fileType = req.body.fileType
     const s3Params = {
       Bucket: 'tindev-dev-test',
       Key: fileName,
-      Expires: 5000,
+      Expires: 300,
       ContentType: fileType,
       ACL: 'public-read',
     }
@@ -35,7 +36,7 @@ export const uploadImages = (
       }
       const returnData = {
         signedRequest: data,
-        url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
+        url: `https://${S3_BUCKET}/tindev-image.s3.amazonaws.com/${fileName}`,
       }
       res.json({ success: true, data: { returnData } })
     })
