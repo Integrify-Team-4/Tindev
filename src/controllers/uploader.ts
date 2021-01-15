@@ -19,12 +19,13 @@ export const uploadImages = (
   next: NextFunction
 ) => {
   try {
+    console.log('the user is ', req.user)
     const s3 = new aws.S3()
     console.log(req.body, '%%%%%%%%%%%')
     const fileName = req.body.fileName
     const fileType = req.body.fileType
     const s3Params = {
-      Bucket: 'tindev-dev-test',
+      Bucket: 'tindev-dev-test/tindev-image',
       Key: fileName,
       Expires: 300,
       ContentType: fileType,
@@ -36,7 +37,7 @@ export const uploadImages = (
       }
       const returnData = {
         signedRequest: data,
-        url: `https://${S3_BUCKET}/tindev-image.s3.amazonaws.com/${fileName}`,
+        url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
       }
       res.json({ success: true, data: { returnData } })
     })
