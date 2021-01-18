@@ -36,3 +36,12 @@ export const userLocalLogin = async (
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
 }
+
+export const tokenValidate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user
+  res.deliver(200, 'Success', user)
+}
