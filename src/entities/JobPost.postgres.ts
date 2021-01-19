@@ -43,8 +43,4 @@ export default class JobPost extends BaseEntity {
     eager: true,
   })
   employer!: Employer
-
-  static match(id: string) {
-    return this.find({ where: { id: id } })
-  }
 }
