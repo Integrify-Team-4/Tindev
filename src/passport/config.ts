@@ -37,7 +37,6 @@ export const local = new LocalStrategy(
     }
   }
 )
-
 export const jwt = new JWTStrategy(
   {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
