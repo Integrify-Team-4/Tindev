@@ -48,7 +48,7 @@ describe('jobSeeker controller', () => {
     //**If no skill is created first, there will be relation error */
     const res = await createManySkills()
     const response = await createJobSeeker()
-    const newUser = await request(app).get('/jobSeeker')
+    const newUser = await request(app).get('/user')
 
     expect(response.status).toBe(200)
     expect(newUser.body.payload).toHaveProperty('id')

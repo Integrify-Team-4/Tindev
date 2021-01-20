@@ -44,19 +44,6 @@ export const createJobSeeker = async (
   }
 }
 
-export const getJobSeeker = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const jobSeeker = req.user as JobSeeker
-    res.deliver(200, 'Success', jobSeeker)
-  } catch (error) {
-    next(new InternalServerError())
-  }
-}
-
 export const updateJobSeeker = async (
   req: Request,
   res: Response,

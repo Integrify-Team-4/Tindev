@@ -10,7 +10,6 @@ import { match } from '../controllers/match'
 
 const router = express.Router()
 
-router.get('/', tokenVerify, getJobSeeker)
 router.post('/', createJobSeeker)
 router.get('/match', tokenVerify, match)
 router.patch('/', tokenVerify, updateJobSeeker)

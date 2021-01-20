@@ -37,11 +37,15 @@ export const userLocalLogin = async (
   })(req, res, next)
 }
 
-export const tokenValidate = async (
+export const getUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user
-  res.deliver(200, 'Success', user)
+  try {
+    const user = req.user
+    res.deliver(200, 'Success', user)
+  } catch (error) {
+    next(new InternalServerError())
+  }
 }
