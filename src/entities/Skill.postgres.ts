@@ -13,7 +13,7 @@ export default class Skill extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column({ unique: true })
+  @Column()
   name!: string
 
   @ManyToMany(() => JobPost, (jobPost) => jobPost.skills)
