@@ -17,7 +17,7 @@ export const createJobSeeker = async (
   next: NextFunction
 ) => {
   try {
-    const { info, credential, skills } = req.body
+    const { info, credential } = req.body
     const exists = await Credential.findOne({
       where: { email: credential.email },
     })
@@ -33,7 +33,6 @@ export const createJobSeeker = async (
     const newJobSeeker = JobSeeker.create({
       ...info,
       credentials: newCredential,
-      skills: skills,
     })
 
     await JobSeeker.save(newJobSeeker)
@@ -52,28 +51,27 @@ export const updateJobSeeker = async (
   try {
     const update = req.body
     const jobSeeker = req.user as JobSeeker
-    console.log('controller', update)
 
     if (!jobSeeker) {
       return next(new NotFoundError('Account not found'))
     }
     if (update.firstName) {
-      jobSeeker!.firstName = update.firstName
+      jobSeeker.firstName = update.firstName
     }
     if (update.lastName) {
-      jobSeeker!.lastName = update.lastName
+      jobSeeker.lastName = update.lastName
     }
     if (update.contact) {
-      jobSeeker!.contact = update.contact
+      jobSeeker.contact = update.contact
     }
     if (update.relocate) {
-      jobSeeker!.relocate = update.relocate
+      jobSeeker.relocate = update.relocate
     }
     if (update.seniority) {
-      jobSeeker!.seniority = update.seniority
+      jobSeeker.seniority = update.seniority
     }
     if (update.startingDate) {
-      jobSeeker!.startingDate = update.startingDate
+      jobSeeker.startingDate = update.startingDate
     }
     if (update.skills) {
       jobSeeker.skills = update.skills
