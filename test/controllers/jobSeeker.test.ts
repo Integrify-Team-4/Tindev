@@ -66,6 +66,7 @@ describe('jobSeeker controller', () => {
     await createManySkills()
     await createJobSeeker()
     const res = await updateJobSeeker()
+    console.log(res.body)
     expect(res.status).toBe(200)
     expect(res.body.message).toBe('Updated')
   })

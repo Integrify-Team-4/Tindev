@@ -52,6 +52,7 @@ export const updateJobSeeker = async (
   try {
     const update = req.body
     const jobSeeker = req.user as JobSeeker
+    console.log('controller', update)
 
     if (!jobSeeker) {
       return next(new NotFoundError('Account not found'))
