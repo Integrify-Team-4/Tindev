@@ -30,6 +30,9 @@ export default class Employer extends BaseEntity {
   })
   role!: string
 
+  @Column({ nullable: true })
+  image!: string
+
   @OneToOne(() => Credential, (credential) => credential.employer, {
     cascade: true,
   })
