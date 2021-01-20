@@ -40,6 +40,7 @@ export default class JobPost extends BaseEntity {
 
   @ManyToOne(() => Employer, (employer) => employer.jobPosts, {
     cascade: ['insert'],
+    eager: true,
   })
   employer!: Employer
 }
