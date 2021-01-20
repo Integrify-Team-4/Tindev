@@ -53,7 +53,9 @@ export const jwt = new JWTStrategy(
       return done(null, false)
     }
     if (role === 'employer') {
-      const employer = await Employer.findOne(id, { relations: ['jobPosts'] })
+      const employer = await Employer.findOne(id, {
+        relations: ['jobPosts', 'jobPosts.skills'],
+      })
       if (employer) {
         return done(null, employer)
       }
