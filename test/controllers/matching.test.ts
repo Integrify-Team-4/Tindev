@@ -15,6 +15,9 @@ const jobSeekerForm = {
     email: 'abcd@gmail.com',
     password: 'VanKaLauda',
   },
+}
+
+const jobSeekerUpdate = {
   skills: [{ id: 1 }, { id: 2 }, { id: 3 }],
 }
 
@@ -23,6 +26,12 @@ const newCreateJobSeeker = async () =>
 
 const newJobSeekerLogin = async () =>
   await request(app).post('/login/local').send(jobSeekerForm.credential)
+
+const updateJobSeeker = async (token: string) =>
+  await request(app)
+    .patch('/jobSeeker')
+    .send(jobSeekerUpdate)
+    .set('Authorization', `Bearer ${token}`)
 
 import {
   createManySkills,
@@ -59,6 +68,7 @@ describe('Matcher controller', () => {
     const employer_token = employer.body.payload.token
 
     const seeker_token = seeker.body.payload.token
+    await updateJobSeeker(seeker_token)
 
     const res4 = await request(app)
       .post(`/employer/jobs`)
