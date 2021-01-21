@@ -49,7 +49,6 @@ export const jobSeekerForm = {
     email: 'abc@gmail.com',
     password: 'password',
   },
-  skills: [{ id: 1 }, { id: 2 }, { id: 3 }],
 }
 
 export const jobSeekerLogin = {

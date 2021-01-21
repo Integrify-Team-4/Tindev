@@ -43,16 +43,4 @@ export default class Employer extends BaseEntity {
     cascade: ['remove'],
   })
   jobPosts!: JobPost[]
-
-  static getEmployerByCompanyName(companyName: string) {
-    return this.findOne({ where: { companyName: companyName } })
-  }
-
-  static localLogin(email: string, password: string) {
-    return this.find({ where: { email: email, password: password } })
-  }
-
-  static updateEmployer(id: string, update: Partial<Employer>) {
-    return this.find({ where: { id: id, update: update } })
-  }
 }

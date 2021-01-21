@@ -36,3 +36,16 @@ export const userLocalLogin = async (
     res.deliver(200, 'Success', userSerialize)
   })(req, res, next)
 }
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user
+    res.deliver(200, 'Success', user)
+  } catch (error) {
+    next(new InternalServerError())
+  }
+}
