@@ -73,19 +73,6 @@ export const updateEmployer = async (
   }
 }
 
-export const getEmployer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const employer = req.user as Employer
-    res.deliver(200, 'Success', employer)
-  } catch (error) {
-    next(new InternalServerError())
-  }
-}
-
 export const createJobPost = async (
   req: Request,
   res: Response,

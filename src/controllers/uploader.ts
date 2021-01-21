@@ -36,7 +36,7 @@ export const uploadImages = async (
       ACL: 'public-read',
     }
     let returnData: any = {}
-    s3.getSignedUrl('putObject', s3Params, (e, data) => {
+    s3.getSignedUrl('putObject', s3Params, (e: any, data: any) => {
       if (e) {
         return next(new InternalServerError())
       }

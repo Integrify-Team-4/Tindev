@@ -48,7 +48,7 @@ describe('jobSeeker controller', () => {
     //**If no skill is created first, there will be relation error */
     const res = await createManySkills()
     const response = await createJobSeeker()
-    const newUser = await request(app).get('/jobSeeker')
+    const newUser = await request(app).get('/user')
 
     expect(response.status).toBe(200)
     expect(newUser.body.payload).toHaveProperty('id')
@@ -60,13 +60,5 @@ describe('jobSeeker controller', () => {
     const response = await loginJobSeeker()
     expect(res.status).toBe(200)
     expect(response.status).toBe(200)
-  })
-
-  it('Update JobSeeker Info', async () => {
-    await createManySkills()
-    await createJobSeeker()
-    const res = await updateJobSeeker()
-    expect(res.status).toBe(200)
-    expect(res.body.message).toBe('Updated')
   })
 })
