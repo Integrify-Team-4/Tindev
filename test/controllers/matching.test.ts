@@ -1,6 +1,20 @@
 import request from 'supertest'
+
 import connection from '../db-helper'
 import app from '../../src/app'
+import {
+  createManySkills,
+  createEmployer,
+  loginEmployer,
+  createJobPost,
+} from '../controller-helpers'
+import { jobPostForm } from '../dto'
+
+const createPost = async (token: string) =>
+  await request(app)
+    .post(`/employer/jobs`)
+    .send(jobPostForm)
+    .set('Authorization', `Bearer ${token}`)
 
 const jobSeekerForm = {
   info: {
@@ -32,14 +46,6 @@ const updateJobSeeker = async (token: string) =>
     .patch('/jobSeeker')
     .send(jobSeekerUpdate)
     .set('Authorization', `Bearer ${token}`)
-
-import {
-  createManySkills,
-  createEmployer,
-  loginEmployer,
-  createJobPost,
-} from '../controller-helpers'
-import { jobPostForm } from '../dto'
 
 describe('Matcher controller', () => {
   beforeAll(async () => {
@@ -102,14 +108,13 @@ describe('match result for employer', () => {
     await createManySkills()
     await createEmployer()
     const employer = await loginEmployer()
-    const jobPost = await createJobPost()
+    const employer_token = employer.body.payload.token
+    const jobPost = await createPost(employer_token)
     const res2 = await newCreateJobSeeker()
     expect(res2.status).toBe(200)
     const res5 = await request(app).get('/skills')
     const seeker = await newJobSeekerLogin()
     expect(seeker.status).toBe(200)
-
-    const employer_token = employer.body.payload.token
 
     const seeker_token = seeker.body.payload.token
     await updateJobSeeker(seeker_token)
