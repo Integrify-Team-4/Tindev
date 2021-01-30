@@ -128,7 +128,7 @@ describe('match result for employer', () => {
 
     const response = await request(app)
       .get(`/employer/match/${postId}`)
-      .set('Authorization', `Bearer ${seeker_token}`)
+      .set('Authorization', `Bearer ${employer_token}`)
     console.log(response.body)
 
     expect(res5.status).toBe(200)
