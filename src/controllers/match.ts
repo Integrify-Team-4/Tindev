@@ -4,12 +4,13 @@ import { NotFoundError, InternalServerError } from '../helpers/apiError'
 import JobSeeker from '../entities/JobSeeker.postgres'
 import JobPost from '../entities/JobPost.postgres'
 import Skill from '../entities/Skill.postgres'
+import Employer from '../entities/Employer.postgres'
 
-type JobPostResult = {
-  [id: string]: { count: number; jobPost: JobPost }
+type CountResult = {
+  [id: string]: { count: number; result: JobPost | JobSeeker }
 }
 
-export const match = async (
+export const jobseekerMatch = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -43,14 +44,14 @@ export const match = async (
     //**Count the times that a post come up and store it in a object*/
     //**The count is equivalent to how many skills is matched */
     const matchCount = matchedPosts.reduce(
-      (acc: JobPostResult, next: JobPost) => {
+      (acc: CountResult, next: JobPost) => {
         if (next.id in acc) {
           acc[next.id].count++
           return acc
         }
         acc[next.id] = {
           count: 1,
-          jobPost: next,
+          result: next,
         }
         return acc
       },
@@ -62,11 +63,77 @@ export const match = async (
 
     for (const id in matchCount) {
       if (matchCount[id].count >= 3) {
-        filterPost.push(matchCount[id].jobPost)
+        filterPost.push(matchCount[id].result as JobPost)
       }
     }
 
     res.deliver(200, 'success', filterPost)
+  } catch (error) {
+    next(new InternalServerError())
+  }
+}
+
+export const employerMatch = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const employer = req.user as Employer
+    const postId = (req as any).postId
+    if (!employer) return next(new NotFoundError('User not found'))
+
+    const post = await JobPost.findOne(postId)
+    if (!post) return next(new NotFoundError('Job Post not found'))
+    const skillsInPost = post.skills.map((skill) => skill.id)
+
+    const jobseeker = (await Promise.all(
+      skillsInPost.map(async (id) => {
+        try {
+          const skill = (await Skill.findOne(id, {
+            relations: ['jobSeekers'],
+          })) as Skill
+
+          if (skill.jobSeekers.length === 0) return
+          return skill.jobSeekers
+        } catch (error) {
+          next(new InternalServerError())
+        }
+      })
+    )) as JobSeeker[][]
+
+    //**Flaten the array of jobseekers
+    const matchedJobseekers = _.flatten(jobseeker)
+    if (matchedJobseekers.length === 0)
+      return next(new NotFoundError('No match found'))
+
+    //**Count the times that a jobseeker come up and store it in a object*/
+    //**The count is equivalent to how many skills is matched */
+    const matchCount = matchedJobseekers.reduce(
+      (acc: CountResult, next: JobSeeker) => {
+        if (next.id in acc) {
+          acc[next.id].count++
+          return acc
+        }
+        acc[next.id] = {
+          count: 1,
+          result: next,
+        }
+        return acc
+      },
+      {}
+    )
+
+    //**Filter jobseeker to those that has count >= 3 */
+    const filterJobseekers: JobSeeker[] = []
+
+    for (const id in matchCount) {
+      if (matchCount[id].count >= 3) {
+        filterJobseekers.push(matchCount[id].result as JobSeeker)
+      }
+    }
+
+    res.deliver(200, 'success', filterJobseekers)
   } catch (error) {
     next(new InternalServerError())
   }

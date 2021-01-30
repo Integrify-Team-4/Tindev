@@ -84,3 +84,48 @@ describe('Matcher controller', () => {
     expect(response.status).toBe(200)
   })
 })
+
+describe('match result for employer', () => {
+  beforeAll(async () => {
+    await connection.create()
+  })
+
+  beforeEach(async () => {
+    await connection.clear()
+  })
+
+  afterAll(async () => {
+    await connection.close()
+  })
+
+  it('should find match for employer', async () => {
+    await createManySkills()
+    await createEmployer()
+    const employer = await loginEmployer()
+    await createJobPost()
+    const res2 = await newCreateJobSeeker()
+    expect(res2.status).toBe(200)
+    const res5 = await request(app).get('/skills')
+    const seeker = await newJobSeekerLogin()
+    expect(seeker.status).toBe(200)
+
+    const employer_token = employer.body.payload.token
+
+    const seeker_token = seeker.body.payload.token
+    await updateJobSeeker(seeker_token)
+
+    const res4 = await request(app)
+      .post(`/employer/jobs`)
+      .set('Authorization', `Bearer ${employer_token}`)
+      .send(jobPostForm)
+
+    const response = await request(app)
+      .get('/employer/match')
+      .set('Authorization', `Bearer ${seeker_token}`)
+    console.log(response.body)
+
+    expect(res5.status).toBe(200)
+    expect(res4.status).toBe(200)
+    expect(response.status).toBe(200)
+  })
+})
