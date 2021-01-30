@@ -83,7 +83,7 @@ export const employerMatch = async (
     const postId = req.params.postId
     if (!employer) return next(new NotFoundError('User not found'))
 
-    const post = await JobPost.findOne(postId)
+    const post = await JobPost.findOne(postId, { relations: ['skills'] })
     console.log('post in match', post)
     if (!post) return next(new NotFoundError('Job Post not found'))
     const skillsInPost = post.skills.map((skill) => skill.id)
