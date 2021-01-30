@@ -114,7 +114,8 @@ describe('match result for employer', () => {
     const seeker_token = seeker.body.payload.token
     await updateJobSeeker(seeker_token)
 
-    const postId = jobPost.body.payload[0].id
+    console.log(jobpost.body.payload)
+    const postId = jobPost.body.payload.id
     const res4 = await request(app)
       .post(`/employer/jobs`)
       .set('Authorization', `Bearer ${employer_token}`)
