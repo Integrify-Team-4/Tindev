@@ -80,7 +80,7 @@ export const employerMatch = async (
 ) => {
   try {
     const employer = req.user as Employer
-    const postId = (req as any).postId
+    const postId = req.params.postId
     if (!employer) return next(new NotFoundError('User not found'))
 
     const post = await JobPost.findOne(postId)

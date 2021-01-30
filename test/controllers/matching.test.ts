@@ -102,7 +102,7 @@ describe('match result for employer', () => {
     await createManySkills()
     await createEmployer()
     const employer = await loginEmployer()
-    await createJobPost()
+    const jobPost = await createJobPost()
     const res2 = await newCreateJobSeeker()
     expect(res2.status).toBe(200)
     const res5 = await request(app).get('/skills')
@@ -114,13 +114,14 @@ describe('match result for employer', () => {
     const seeker_token = seeker.body.payload.token
     await updateJobSeeker(seeker_token)
 
+    const postId = jobPost.body.payload[0].id
     const res4 = await request(app)
       .post(`/employer/jobs`)
       .set('Authorization', `Bearer ${employer_token}`)
       .send(jobPostForm)
 
     const response = await request(app)
-      .get('/employer/match')
+      .get(`/employer/match/${postId}`)
       .set('Authorization', `Bearer ${seeker_token}`)
     console.log(response.body)
 
