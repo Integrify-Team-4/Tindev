@@ -114,7 +114,7 @@ describe('match result for employer', () => {
     const seeker_token = seeker.body.payload.token
     await updateJobSeeker(seeker_token)
 
-    console.log(jobpost.body.payload)
+    console.log(jobPost.body.payload)
     const postId = jobPost.body.payload.id
     const res4 = await request(app)
       .post(`/employer/jobs`)
