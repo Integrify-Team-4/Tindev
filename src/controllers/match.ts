@@ -84,6 +84,7 @@ export const employerMatch = async (
     if (!employer) return next(new NotFoundError('User not found'))
 
     const post = await JobPost.findOne(postId)
+    console.log('post in match', post)
     if (!post) return next(new NotFoundError('Job Post not found'))
     const skillsInPost = post.skills.map((skill) => skill.id)
 
@@ -97,10 +98,12 @@ export const employerMatch = async (
           if (skill.jobSeekers.length === 0) return
           return skill.jobSeekers
         } catch (error) {
+          console.log('error in match', error)
           next(new InternalServerError())
         }
       })
     )) as JobSeeker[][]
+    console.log('jk in match', jobseeker)
 
     //**Flaten the array of jobseekers
     const matchedJobseekers = _.flatten(jobseeker)
