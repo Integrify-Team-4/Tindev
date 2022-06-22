@@ -11,6 +11,7 @@ import {
 } from '../controller-helpers'
 import { mockJobSeekerCredential } from '../dto'
 
+// TODO remove mock for fully e2e test
 jest.mock(
   '../../src/middlewares/tokenVerify',
   () => (req: Request, res: Response, next: NextFunction) => {
@@ -37,7 +38,7 @@ describe('jobSeeker controller', () => {
       password: 'duy@123',
     }
     const response = await request(app)
-      .post('/jobSeeker/login/local')
+      .post('/login/local')
       .send(wrong_loginInput)
     expect(response.body.message).toEqual('Email duy@gmail.com not found')
   })
@@ -47,10 +48,10 @@ describe('jobSeeker controller', () => {
     //**If no skill is created first, there will be relation error */
     const res = await createManySkills()
     const response = await createJobSeeker()
-    const newUser = await request(app).get('/jobSeeker')
+    const newUser = await request(app).get('/user')
 
     expect(response.status).toBe(200)
-    expect(newUser.body.length).toBe(1)
+    expect(newUser.body.payload).toHaveProperty('id')
   })
 
   it('job Seeker should log in', async () => {
@@ -59,13 +60,5 @@ describe('jobSeeker controller', () => {
     const response = await loginJobSeeker()
     expect(res.status).toBe(200)
     expect(response.status).toBe(200)
-  })
-
-  it('Update JobSeeker Info', async () => {
-    await createManySkills()
-    await createJobSeeker()
-    const res = await updateJobSeeker()
-    expect(res.status).toBe(200)
-    expect(res.body.message).toBe('Updated')
   })
 })

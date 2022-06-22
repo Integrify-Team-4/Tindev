@@ -49,12 +49,15 @@ export const jobSeekerForm = {
     email: 'abc@gmail.com',
     password: 'password',
   },
-  skills: [{ id: 1 }, { id: 2 }, { id: 3 }],
 }
 
 export const jobSeekerLogin = {
   email: jobSeekerForm.credential.email,
   password: jobSeekerForm.credential.password,
+}
+
+export const jobSeekerUpdate = {
+  firstName: 'new name',
 }
 
 export const skillForm = [

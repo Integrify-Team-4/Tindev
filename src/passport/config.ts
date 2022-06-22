@@ -37,7 +37,6 @@ export const local = new LocalStrategy(
     }
   }
 )
-
 export const jwt = new JWTStrategy(
   {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -54,7 +53,9 @@ export const jwt = new JWTStrategy(
       return done(null, false)
     }
     if (role === 'employer') {
-      const employer = await Employer.findOne(id)
+      const employer = await Employer.findOne(id, {
+        relations: ['jobPosts', 'jobPosts.skills'],
+      })
       if (employer) {
         return done(null, employer)
       }

@@ -40,6 +40,9 @@ export default class JobSeeker extends BaseEntity {
   @Column({ nullable: true })
   startingDate!: string
 
+  @Column({ nullable: true })
+  workExperience!: number
+
   @CreateDateColumn()
   created!: Date
 
@@ -64,12 +67,4 @@ export default class JobSeeker extends BaseEntity {
   })
   @JoinTable()
   skills!: Skill[]
-
-  static getByFirstName(firstName: string) {
-    return this.find({ where: { firstName: firstName } })
-  }
-
-  static match(id: string) {
-    return this.find({ where: { id: id } })
-  }
 }

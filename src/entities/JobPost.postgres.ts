@@ -26,6 +26,9 @@ export default class JobPost extends BaseEntity {
   @Column()
   seniority!: string
 
+  @Column({ nullable: true })
+  startingDate!: string
+
   @CreateDateColumn()
   createdAt!: Date
 
@@ -40,8 +43,4 @@ export default class JobPost extends BaseEntity {
     eager: true,
   })
   employer!: Employer
-
-  static match(id: string) {
-    return this.find({ where: { id: id } })
-  }
 }

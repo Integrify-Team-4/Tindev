@@ -38,9 +38,7 @@ describe('employer controller', () => {
       email: 'kirsi.trospe@gmail.com',
       password: 'kirsi',
     }
-    const response = await request(app)
-      .post('/employer/login/local')
-      .send(loginInput)
+    const response = await request(app).post('/login/local').send(loginInput)
 
     expect(response.body.message).toEqual(
       'Email kirsi.trospe@gmail.com not found'

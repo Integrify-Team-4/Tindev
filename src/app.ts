@@ -13,7 +13,8 @@ import responseHandler from './middlewares/responseHandler'
 import jobSeekerRouter from './routers/jobSeeker'
 import employerRouter from './routers/employer'
 import skillsRouter from './routers/skills'
-
+import loginRouter from './routers/login'
+import uploadRouter from './routers/uploadProfile'
 import { local, jwt } from './passport/config'
 
 const app = express()
@@ -36,9 +37,11 @@ passport.use(jwt)
 
 app.use(responseHandler)
 //**All routers here*/
-app.use('/jobSeeker', jobSeekerRouter)
+app.use('/', loginRouter)
+app.use('/jobseeker', jobSeekerRouter)
 app.use('/employer', employerRouter)
 app.use('/skills', skillsRouter)
+app.use('/s3', uploadRouter)
 
 //**Custom API error handler*/
 app.use(apiErrorHandler)
